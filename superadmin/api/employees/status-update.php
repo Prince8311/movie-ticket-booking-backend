@@ -47,7 +47,7 @@ if ($requestMethod == 'POST') {
             exit;
         }
 
-        $sql = "UPDATE `users` SET `status` = '$newStatus' WHERE `id` = '$userId'";
+        $sql = "UPDATE `admin_users` SET `status` = '$newStatus' WHERE `id` = '$userId'";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {

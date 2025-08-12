@@ -35,7 +35,7 @@ if($requestMethod == 'GET') {
     $authHeader = getAuthorizationHeader();
     $cookieToken = $_COOKIE['authToken'] ?? '';
 
-    $sql = "SELECT * FROM `users` WHERE `user_type`='employee'";
+    $sql = "SELECT * FROM `admin_users` WHERE `user_type`='employee'";
     $result = mysqli_query($conn, $sql);
     $totalEmployees = mysqli_num_rows($result);
     $limit = 10; 
@@ -44,7 +44,7 @@ if($requestMethod == 'GET') {
     : 1;
     $offset = ($page - 1) * $limit;
 
-    $limitSql = "SELECT * FROM `users` WHERE `user_type`='employee' LIMIT $limit OFFSET $offset";
+    $limitSql = "SELECT * FROM `admin_users` WHERE `user_type`='employee' LIMIT $limit OFFSET $offset";
     $limitResult = mysqli_query($conn, $limitSql);
     $employees = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
 

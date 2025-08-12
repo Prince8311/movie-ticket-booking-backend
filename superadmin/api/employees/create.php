@@ -45,7 +45,7 @@ if ($requestMethod == 'POST') {
 
         if($password == $confirmPassword) {
             $hashPass = password_hash($password,PASSWORD_DEFAULT);
-            $sql = "INSERT INTO `users`(`name`, `email`, `phone`, `password`, `status`, `user_type`, `user_role`) VALUES ('$empName','$empMail','$empPhone','$hashPass','$status','$userType','$empRole')";
+            $sql = "INSERT INTO `admin_users`(`name`, `email`, `phone`, `password`, `status`, `user_type`, `user_role`) VALUES ('$empName','$empMail','$empPhone','$hashPass','$status','$userType','$empRole')";
             $result = mysqli_query($conn, $sql);
 
             if($result) {
