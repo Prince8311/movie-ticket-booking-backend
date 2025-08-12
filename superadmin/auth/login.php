@@ -78,7 +78,7 @@ if ($requestMethod == 'POST') {
                                                         <div class="logo" style="position: relative; text-align: center;"><img src="https://ticketbay.in/Backend/Images/Logo.png" alt="Logo" style="width: 55px;"></div>
                                                         <div class="body_message" style="position: relative; margin-top: 15px;">
                                                             <p style="position: relative; text-align: center;">
-                                                                <span style="position: relative; text-align: center; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your OTP for authentication in <a href="" style="color: #FC6736;" >ride.ticketbay.in</a> is,</span>
+                                                                <span style="position: relative; text-align: center; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your OTP for authentication in <a href="" style="color: #FC6736;" >superadmin.ticketbay.in</a> is,</span>
                                                             </p>
                                                         </div>
                                                         <div class="body_message" style="position: relative; margin-top: 5px;">
