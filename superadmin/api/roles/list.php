@@ -32,7 +32,7 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $sql = "SELECT rp.role_name, COUNT(u.id) AS user_count FROM ( SELECT DISTINCT role_name FROM roles_permissions) rp LEFT JOIN users u ON rp.role_name = u.user_role GROUP BY rp.role_name";
+    $sql = "SELECT rp.role_name, COUNT(u.id) AS user_count FROM ( SELECT DISTINCT role_name FROM roles_permissions) rp LEFT JOIN admin_users u ON rp.role_name = u.user_role GROUP BY rp.role_name";
     $result = mysqli_query($conn, $sql);
     $roles = [];
 

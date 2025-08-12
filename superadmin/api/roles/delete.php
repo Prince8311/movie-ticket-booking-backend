@@ -36,7 +36,7 @@ if ($requestMethod == 'POST') {
     if (!empty($inputData)) {
         $roleName = mysqli_real_escape_string($conn, $inputData['roleName']);
 
-        $checkUserSql = "SELECT * FROM `users` WHERE `user_role` = '$roleName'";
+        $checkUserSql = "SELECT * FROM `admin_users` WHERE `user_role` = '$roleName'";
         $checkResult = mysqli_query($conn, $checkUserSql);
 
         if(mysqli_num_rows($checkResult) > 0) {
