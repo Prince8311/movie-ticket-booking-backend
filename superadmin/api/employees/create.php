@@ -148,9 +148,9 @@ if ($requestMethod == 'POST') {
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Thanks & Regards,</span>
                                                             </p>
                                                         </div>
-                                                        <div style="position: relative; margin-top: 2px;">
+                                                        <div style="position: relative;">
                                                             <p style="position: relative;">
-                                                                <span style="position: relative; font-family: cursive; color: #fc6736; font-size: 15px; line-height: 1.4;"><b>Shetty Ticket Counter Pvt. Ltd.</b></span>
+                                                                <span style="position: relative; font-family: cursive; color: #fc6736; font-size: 18px; line-height: 1.4;"><b>Shetty Ticket Counter Pvt. Ltd.</b></span>
                                                             </p>
                                                         </div>
                                                         <div style="position: relative; margin-top: 20px;">
