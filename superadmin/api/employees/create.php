@@ -94,6 +94,7 @@ if ($requestMethod == 'POST') {
             $result = mysqli_query($conn, $sql);
 
             if ($result) {
+                $mail = new PHPMailer(true);
                 try {
                     $mail->isSMTP();
                     $mail->Host       = 'mail.ticketbay.in';
@@ -106,7 +107,7 @@ if ($requestMethod == 'POST') {
 
                     $mail->isHTML(true);
                     $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
-                    $mail->addAddress("$empMail", '$empName');
+                    $mail->addAddress("$empMail", 'Employee');
                     $mail->Subject = 'Account has been created.';
                     $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
