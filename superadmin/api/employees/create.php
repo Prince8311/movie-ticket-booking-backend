@@ -123,20 +123,22 @@ if ($requestMethod == 'POST') {
                                                         <div class="body_message" style="position: relative; margin-top: 15px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #222; font-size: 15px; line-height: 1.4;">Dear <b>' . $empName . '</b></span>
-                                                            </p>
-                                                            <br/>
+                                                            </p> 
+                                                        </div>
+                                                        <div style="position: relative; margin-top: 2px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your account has been created as an employee of our company for the role of <b>' . $empRole . '</b>. You can signin now in <a href="superadmin.ticketbay.in" style="color: #FC6736;" >superadmin.ticketbay.in</a> with the credentials:</span>
                                                             </p>
-                                                            <br/><br/>
+                                                        </div>
+                                                        <div style="position: relative; margin-top: 6px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">User ID: <b>' . $empMail . '</b></span>
                                                             </p>
-                                                            <br/>
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Password: <b>' . $password . '</b></span>
                                                             </p>
-                                                            <br/><br/>
+                                                        </div>
+                                                        <div style="position: relative; margin-top: 6px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Later you can change the password by self.</span>
                                                             </p>
@@ -145,9 +147,10 @@ if ($requestMethod == 'POST') {
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Thanks & Regards,</span>
                                                             </p>
-                                                            <br/>
+                                                        </div>
+                                                        <div style="position: relative; margin-top: 2px;">
                                                             <p style="position: relative;">
-                                                                <span style="position: relative; font-family: cursive; color: #fc6736; font-size: 15px; line-height: 1.4;">Shetty Ticket Counter Pvt. Ltd.</span>
+                                                                <span style="position: relative; font-family: cursive; color: #fc6736; font-size: 15px; line-height: 1.4;"><b>Shetty Ticket Counter Pvt. Ltd.</b></span>
                                                             </p>
                                                         </div>
                                                         <div style="position: relative; margin-top: 20px;">
