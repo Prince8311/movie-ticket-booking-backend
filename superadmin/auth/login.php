@@ -74,7 +74,7 @@ if ($requestMethod == 'POST') {
                                             <body style="position: relative; margin: 0; padding: 0;">
                                                 <div class="template_wrapper" style="position: relative; width: 100%;  padding: 10px; box-sizing: border-box; ">
                                                     <div class="template" style="position: relative; background: #FFF; padding-bottom: 50px; border-radius: 5px;" >
-                                                        <div class="logo" style="position: relative; text-align: center;"><img src="https://ticketbay.in/Backend/Images/Logo.png" alt="Logo" style="width: 55px;"></div>
+                                                        <div class="logo" style="position: relative; text-align: center;"><img src="https://ticketbay.in/Backend/Images/Logo.png" alt="Logo" style="width: 50px;"></div>
                                                         <div class="body_message" style="position: relative; margin-top: 15px;">
                                                             <p style="position: relative; text-align: center;">
                                                                 <span style="position: relative; text-align: center; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your OTP for authentication in <a href="" style="color: #FC6736;" >superadmin.ticketbay.in</a> is,</span>
@@ -161,3 +161,5 @@ if ($requestMethod == 'POST') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
+
+?>

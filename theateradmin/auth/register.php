@@ -1,6 +1,7 @@
-<?php
+<?php 
 
 session_start();
+error_reporting(0);
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -18,22 +19,8 @@ if ($requestMethod == 'OPTIONS') {
     exit();
 }
 
-require "../../../utils/middleware.php";
-
-$authResult = authenticateRequest();
-
-if (!$authResult['authenticated']) {
-    $data = [
-        'status' => $authResult['status'],
-        'message' => $authResult['message']
-    ];
-    header("HTTP/1.0 " . $authResult['status']);
-    echo json_encode($data);
-    exit;
-}
-
 if ($requestMethod == 'POST') {
-    require "../../../_db-connect.php";
+    require "../../_db-connect.php";
     global $conn;
 
     require "../../../PHPMailer/Exception.php";
@@ -41,20 +28,25 @@ if ($requestMethod == 'POST') {
     require "../../../PHPMailer/SMTP.php";
 
     $inputData = json_decode(file_get_contents("php://input"), true);
+
     if (!empty($inputData)) {
-        $userType = 'employee';
-        $empName = mysqli_real_escape_string($conn, $inputData['name']);
-        $empPhone = mysqli_real_escape_string($conn, $inputData['phone']);
-        $empMail = mysqli_real_escape_string($conn, $inputData['email']);
-        $empRole = mysqli_real_escape_string($conn, $inputData['roleName']);
+        $name = mysqli_real_escape_string($conn, $inputData['name']);
+        $email = mysqli_real_escape_string($conn, $inputData['email']);
+        $phone = mysqli_real_escape_string($conn, $inputData['phone']);
         $password = mysqli_real_escape_string($conn, $inputData['password']);
-        $confirmPassword = mysqli_real_escape_string($conn, $inputData['confirmPassword']);
-        $status = 1;
 
-        if ($password == $confirmPassword) {
-            $hashPass = password_hash($password, PASSWORD_DEFAULT);
+        $checkSql = "SELECT * FROM `admin_users` WHERE `name` = '$name' OR `email` = '$email' OR `phone` = '$phone'";
+        $checkResult = mysqli_query($conn, $checkSql);
 
-            $checkNameSql = "SELECT * FROM `admin_users` WHERE `name` = '$empName'";
+        if(mysqli_num_rows($checkResult) > 0) {
+            $data = [
+                'status' => 400,
+                'message' => 'You are already an admin.'
+            ];
+            header("HTTP/1.0 400 Authentication denied");
+            echo json_encode($data);
+        } else {
+            $checkNameSql = "SELECT * FROM `theater_users` WHERE `name` = '$name'";
             $nameResult = mysqli_query($conn, $checkNameSql);
             if (mysqli_num_rows($nameResult) > 0) {
                 $data = [
@@ -66,7 +58,7 @@ if ($requestMethod == 'POST') {
                 exit;
             }
 
-            $checkEmailSql = "SELECT * FROM `admin_users` WHERE `email` = '$empMail'";
+            $checkEmailSql = "SELECT * FROM `theater_users` WHERE `email` = '$email'";
             $emailResult = mysqli_query($conn, $checkEmailSql);
             if (mysqli_num_rows($emailResult) > 0) {
                 $data = [
@@ -78,7 +70,7 @@ if ($requestMethod == 'POST') {
                 exit;
             }
 
-            $checkPhoneSql = "SELECT * FROM `admin_users` WHERE `phone` = '$empPhone'";
+            $checkPhoneSql = "SELECT * FROM `theater_users` WHERE `phone` = '$phone'";
             $phoneResult = mysqli_query($conn, $checkPhoneSql);
             if (mysqli_num_rows($phoneResult) > 0) {
                 $data = [
@@ -90,11 +82,13 @@ if ($requestMethod == 'POST') {
                 exit;
             }
 
-            $sql = "INSERT INTO `admin_users`(`name`, `email`, `phone`, `password`, `status`, `user_type`, `user_role`) VALUES ('$empName','$empMail','$empPhone','$hashPass','$status','$userType','$empRole')";
+            $hashPass = password_hash($password,PASSWORD_DEFAULT);
+            $sql = "INSERT INTO `theater_users`(`name`, `phone`, `email`, `password`) VALUES ('$name','$phone','$email','$hashPass')";
             $result = mysqli_query($conn, $sql);
 
-            if ($result) {
+            if($result) {
                 $mail = new PHPMailer(true);
+
                 try {
                     $mail->isSMTP();
                     $mail->Host       = 'mail.ticketbay.in';
@@ -107,8 +101,8 @@ if ($requestMethod == 'POST') {
 
                     $mail->isHTML(true);
                     $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
-                    $mail->addAddress("$empMail", 'Employee');
-                    $mail->Subject = 'Account has been created.';
+                    $mail->addAddress("$userEmail", 'User');
+                    $mail->Subject = 'OTP for Authentication';
                     $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
                                             <head>
@@ -122,25 +116,12 @@ if ($requestMethod == 'POST') {
                                                         <div class="logo" style="position: relative; text-align: center;"><img src="https://ticketbay.in/Backend/Images/Logo.png" alt="Logo" style="width: 30px;"></div>
                                                         <div class="body_message" style="position: relative; margin-top: 15px;">
                                                             <p style="position: relative;">
-                                                                <span style="position: relative; font-family: sans-serif; color: #222; font-size: 15px; line-height: 1.4;">Dear <b>' . $empName . ',</b></span>
+                                                                <span style="position: relative; font-family: sans-serif; color: #222; font-size: 15px; line-height: 1.4;">Dear <b>' . $name . ',</b></span>
                                                             </p> 
                                                         </div>
                                                         <div style="position: relative; margin-top: 2px;">
                                                             <p style="position: relative;">
-                                                                <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your account has been created as an employee of our company for the role of <b>' . $empRole . '</b>. You can signin now in <a href="superadmin.ticketbay.in" style="color: #FC6736;" >superadmin.ticketbay.in</a> with the credentials:</span>
-                                                            </p>
-                                                        </div>
-                                                        <div style="position: relative; margin-top: 6px;">
-                                                            <p style="position: relative;">
-                                                                <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">User ID: <b>' . $empMail . '</b></span>
-                                                            </p>
-                                                            <p style="position: relative;">
-                                                                <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Password: <b>' . $password . '</b></span>
-                                                            </p>
-                                                        </div>
-                                                        <div style="position: relative; margin-top: 6px;">
-                                                            <p style="position: relative;">
-                                                                <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Later you can change the password by self.</span>
+                                                                <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">You have successfully registered. Now, please login to your account in <a href="theateradmin.ticketbay.in" style="color: #FC6736;" >theateradmin.ticketbay.in</a> and register your theater.</span>
                                                             </p>
                                                         </div>
                                                         <div style="position: relative; margin-top: 15px;">
@@ -161,11 +142,12 @@ if ($requestMethod == 'POST') {
                                             </body>
                                         </html>';
                     $mail->send();
+
                     $data = [
                         'status' => 200,
-                        'message' => 'Employee created successfully.'
+                        'message' => 'User Created Successfully',
                     ];
-                    header("HTTP/1.0 200 OK");
+                    header("HTTP/1.0 200 Added");
                     echo json_encode($data);
                 } catch (Exception $e) {
                     $data = [
@@ -174,21 +156,17 @@ if ($requestMethod == 'POST') {
                     ];
                     header("HTTP/1.0 500 Message could not be sent");
                 }
-            } else {
+            } else{
+
                 $data = [
                     'status' => 500,
-                    'message' => 'Database error: ' . $error
+                    'message' => 'Internal Server Error',
                 ];
                 header("HTTP/1.0 500 Internal Server Error");
                 echo json_encode($data);
+
             }
-        } else {
-            $data = [
-                'status' => 400,
-                'message' => 'Password mismatch'
-            ];
-            header("HTTP/1.0 400 Validation error");
-            echo json_encode($data);
+
         }
     } else {
         $data = [
@@ -198,11 +176,6 @@ if ($requestMethod == 'POST') {
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);
     }
-} else {
-    $data = [
-        'status' => 405,
-        'message' => $requestMethod . ' Method Not Allowed',
-    ];
-    header("HTTP/1.0 405 Method Not Allowed");
-    echo json_encode($data);
 }
+
+?>
