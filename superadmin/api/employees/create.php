@@ -54,6 +54,18 @@ if ($requestMethod == 'POST') {
         if ($password == $confirmPassword) {
             $hashPass = password_hash($password, PASSWORD_DEFAULT);
 
+            $checkSql = "SELECT * FROM `theater_users` WHERE `name` = '$name' OR `email` = '$email' OR `phone` = '$phone'";
+            $checkResult = mysqli_query($conn, $checkSql);
+            if(mysqli_num_rows($checkResult) > 0) {
+                $data = [
+                    'status' => 400,
+                    'message' => 'User exists as a Theater Admin.'
+                ];
+                header("HTTP/1.0 400 Already exists");
+                echo json_encode($data);
+                exit;
+            } 
+
             $checkNameSql = "SELECT * FROM `admin_users` WHERE `name` = '$empName'";
             $nameResult = mysqli_query($conn, $checkNameSql);
             if (mysqli_num_rows($nameResult) > 0) {
