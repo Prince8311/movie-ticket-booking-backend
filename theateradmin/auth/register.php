@@ -40,7 +40,7 @@ if ($requestMethod == 'POST') {
         if(mysqli_num_rows($checkResult) > 0) {
             $data = [
                 'status' => 400,
-                'message' => 'You are already an admin.'
+                'message' => 'You are already an employee.'
             ];
             header("HTTP/1.0 400 Authentication denied");
             echo json_encode($data);
@@ -100,7 +100,7 @@ if ($requestMethod == 'POST') {
 
                     $mail->isHTML(true);
                     $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
-                    $mail->addAddress("$userEmail", 'User');
+                    $mail->addAddress("$email", 'User');
                     $mail->Subject = 'OTP for Authentication';
                     $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
@@ -144,7 +144,7 @@ if ($requestMethod == 'POST') {
 
                     $data = [
                         'status' => 200,
-                        'message' => 'User Created Successfully',
+                        'message' => 'Registration Successful.',
                     ];
                     header("HTTP/1.0 200 Added");
                     echo json_encode($data);
