@@ -23,9 +23,9 @@ if ($requestMethod == 'POST') {
     require "../../_db-connect.php";
     global $conn;
 
-    require "../../../PHPMailer/Exception.php";
-    require "../../../PHPMailer/PHPMailer.php";
-    require "../../../PHPMailer/SMTP.php";
+    require '../../PHPMailer/Exception.php';
+    require '../../PHPMailer/PHPMailer.php';
+    require '../../PHPMailer/SMTP.php';
 
     $inputData = json_decode(file_get_contents("php://input"), true);
 
@@ -157,16 +157,13 @@ if ($requestMethod == 'POST') {
                     header("HTTP/1.0 500 Message could not be sent");
                 }
             } else{
-
                 $data = [
                     'status' => 500,
                     'message' => 'Internal Server Error',
                 ];
                 header("HTTP/1.0 500 Internal Server Error");
                 echo json_encode($data);
-
             }
-
         }
     } else {
         $data = [
