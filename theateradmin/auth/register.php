@@ -100,8 +100,8 @@ if ($requestMethod == 'POST') {
 
                     $mail->isHTML(true);
                     $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
-                    $mail->addAddress("$email", 'User');
-                    $mail->Subject = 'OTP for Authentication';
+                    $mail->addAddress("$email", 'Admin');
+                    $mail->Subject = 'Thearter admin registration';
                     $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
                                             <head>
