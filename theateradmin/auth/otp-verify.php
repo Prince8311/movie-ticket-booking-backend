@@ -14,9 +14,7 @@ if ($requestMethod == 'OPTIONS') {
     exit();
 }
 
-
 if($requestMethod == 'POST') {
-
     require "../../_db-connect.php";
     global $conn;
 
@@ -26,7 +24,7 @@ if($requestMethod == 'POST') {
     if(!empty($inputData)) {
         $otp = mysqli_real_escape_string($conn, $inputData['otp']);
 
-        $sql = "SELECT * FROM `admin_users` WHERE `id` = '$userId'";
+        $sql = "SELECT * FROM `theater_users` WHERE `id` = '$userId'";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
         $savedOtp = $row['mail_otp'];
@@ -44,7 +42,7 @@ if($requestMethod == 'POST') {
         if($savedOtp == $otp) {
             $authToken = bin2hex(random_bytes(64));
             setcookie("authToken", $authToken, time() + 86400, "/", ".ticketbay.in", true, true);
-            $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL, `token`='$authToken' WHERE `id` = '$userId'";
+            $updateUserSql = "UPDATE `theater_users` SET `mail_otp` = NULL, `token`='$authToken' WHERE `id` = '$userId'";
             $updateUserResult = mysqli_query($conn, $updateUserSql);
             $data = [
                 'status' => 200,
@@ -57,7 +55,7 @@ if($requestMethod == 'POST') {
         } else {
             $data = [
                 'status' => 404,
-                'message' => 'Wrong OTP',
+                'message' => 'Wrong OTP'
             ];
             header("HTTP/1.0 404 Wrong OTP");
             echo json_encode($data);
@@ -70,7 +68,6 @@ if($requestMethod == 'POST') {
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);
     }
-
 } else{
     $data = [
         'status' => 405,
