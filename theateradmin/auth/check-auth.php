@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 session_start();
 header('Access-Control-Allow-Origin: http://localhost:3000');
@@ -14,7 +14,7 @@ if ($requestMethod == 'OPTIONS') {
     exit();
 }
 
-require "../../../utils/middleware.php";
+require "../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 
@@ -29,40 +29,34 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'GET') {
-    require "../../../_db-connect.php";
+
+    require "../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['name'])) {
-        $stateName  = mysqli_real_escape_string($conn, $_GET['name'] ?? '');
+    $authToken = $authResult['token'];
 
-        $sql = "SELECT `city` FROM `state_cities` WHERE `state`='$stateName'";
-        $result = mysqli_query($conn, $sql);
+    $sql = "SELECT * FROM `theater_users` WHERE `token` = '$authToken'";
+    $result = mysqli_query($conn, $sql);
 
-        if ($result) {
-            $cities = mysqli_fetch_all($result, MYSQLI_ASSOC);
-            $data = [
-                'status' => 200,
-                'message' => 'Cities fetched successfully.',
-                'cities' => $cities,
-            ];
-            header("HTTP/1.0 200 OK");
-            echo json_encode($data);
-        } else {
-            $data = [
-                'status' => 500,
-                'message' => 'Database error: ' . mysqli_error($conn)
-            ];
-            header("HTTP/1.0 500 Internal Server Error");
-            echo json_encode($data);
-        }
+    if(mysqli_num_rows($result) > 0)  {
+        $user = mysqli_fetch_assoc($result);
+
+        $data = [
+            'status' => 200,
+            'message' => 'Authenticated',
+            'user' => $user
+        ];
+        header("HTTP/1.0 200 Authenticated");
+        echo json_encode($data);
     } else {
         $data = [
             'status' => 400,
-            'message' => 'State name is missing'
+            'message' => 'No Authentication'
         ];
-        header("HTTP/1.0 400 Bad Request");
+        header("HTTP/1.0 400 No Authentication");
         echo json_encode($data);
     }
+
 } else {
     $data = [
         'status' => 405,

@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 session_start();
 header('Access-Control-Allow-Origin: http://localhost:3000');
@@ -28,22 +28,32 @@ if (!$authResult['authenticated']) {
     exit;
 }
 
-if ($requestMethod == 'GET') {
+if ($requestMethod == 'POST') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['name'])) {
-        $stateName  = mysqli_real_escape_string($conn, $_GET['name'] ?? '');
+    $inputData = json_decode(file_get_contents("php://input"), true);
+    if(!empty($inputData)) {
+        $userId = mysqli_real_escape_string($conn, $inputData['id']);
+        $newStatus = mysqli_real_escape_string($conn, $inputData['status']);
 
-        $sql = "SELECT `city` FROM `state_cities` WHERE `state`='$stateName'";
+        if ($userId === '' || !in_array($newStatus, ['0', '1'])) {
+            $data = [
+                'status' => 400,
+                'message' => 'Invalid ID or status value'
+            ];
+            header("HTTP/1.0 400 Bad Request");
+            echo json_encode($data);
+            exit;
+        }
+
+        $sql = "UPDATE `admin_users` SET `status` = '$newStatus' WHERE `id` = '$userId'";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
-            $cities = mysqli_fetch_all($result, MYSQLI_ASSOC);
             $data = [
                 'status' => 200,
-                'message' => 'Cities fetched successfully.',
-                'cities' => $cities,
+                'message' => 'Status updated successfully.'
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
@@ -58,7 +68,7 @@ if ($requestMethod == 'GET') {
     } else {
         $data = [
             'status' => 400,
-            'message' => 'State name is missing'
+            'message' => 'Empty request data'
         ];
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);
