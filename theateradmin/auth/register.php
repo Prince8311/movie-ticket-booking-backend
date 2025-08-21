@@ -33,7 +33,8 @@ if ($requestMethod == 'POST') {
         $email = mysqli_real_escape_string($conn, $inputData['email']);
         $phone = mysqli_real_escape_string($conn, $inputData['phone']);
         $password = mysqli_real_escape_string($conn, $inputData['password']);
-
+        $userType = 'admin';
+        $userRole = 'Admin';
         $checkSql = "SELECT * FROM `admin_users` WHERE `name` = '$name' OR `email` = '$email' OR `phone` = '$phone'";
         $checkResult = mysqli_query($conn, $checkSql);
 
@@ -82,7 +83,7 @@ if ($requestMethod == 'POST') {
             }
 
             $hashPass = password_hash($password,PASSWORD_DEFAULT);
-            $sql = "INSERT INTO `theater_users`(`name`, `phone`, `email`, `password`) VALUES ('$name','$phone','$email','$hashPass')";
+            $sql = "INSERT INTO `theater_users`(`name`, `phone`, `email`, `password`, `user_type`, `user_role`) VALUES ('$name','$phone','$email','$hashPass','$userType','$userRole')";
             $result = mysqli_query($conn, $sql);
 
             if($result) {
