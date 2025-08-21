@@ -29,7 +29,6 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'GET') {
-
     require "../../_db-connect.php";
     global $conn;
 

@@ -14,7 +14,7 @@ if ($requestMethod == 'OPTIONS') {
     exit();
 }
 
-require "../../utils/middleware.php";
+require "../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 
@@ -29,33 +29,29 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'GET') {
-    require "../../_db-connect.php";
+    require "../../../_db-connect.php";
     global $conn;
 
-    $authToken = $authResult['token'];
-
-    $sql = "SELECT * FROM `admin_users` WHERE `token` = '$authToken'";
+    $sql = "SELECT * FROM `screen_types`";
     $result = mysqli_query($conn, $sql);
 
-    if(mysqli_num_rows($result) > 0)  {
-        $user = mysqli_fetch_assoc($result);
-
+    if($result) {
+        $types = mysqli_fetch_all($result, MYSQLI_ASSOC);
         $data = [
             'status' => 200,
-            'message' => 'Authenticated',
-            'user' => $user
+            'message' => 'Screen types fetched successfully.',
+            'types' => $types,
         ];
-        header("HTTP/1.0 200 Authenticated");
+        header("HTTP/1.0 200 OK");
         echo json_encode($data);
     } else {
         $data = [
-            'status' => 400,
-            'message' => 'No Authentication'
+            'status' => 500,
+            'message' => 'Database error: ' . mysqli_error($conn)
         ];
-        header("HTTP/1.0 400 No Authentication");
+        header("HTTP/1.0 500 Internal Server Error");
         echo json_encode($data);
     }
-
 } else {
     $data = [
         'status' => 405,
