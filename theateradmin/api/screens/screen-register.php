@@ -31,7 +31,6 @@ if (!$authResult['authenticated']) {
 if ($requestMethod == 'POST') {
     require "../../../_db-connect.php";
     global $conn;
-    include "../../../";
 
     if(isset($_POST['theater']) && isset($_POST['userName']) && isset($_POST['screen']) && isset($_POST['screen_type']) &&  isset($_FILES['image'])) {
         $theater = mysqli_real_escape_string($conn, $_POST['theater']);
