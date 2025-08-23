@@ -45,6 +45,7 @@ if ($requestMethod == 'POST') {
     if (!empty($inputData)) {
         $userId = mysqli_real_escape_string($conn, $inputData['userId']);
         $userName = mysqli_real_escape_string($conn, $inputData['userName']);
+        $userEmail = mysqli_real_escape_string($conn, $inputData['userEmail']);
         $theaterName = mysqli_real_escape_string($conn, $inputData['theaterName']);
         $gstNo = mysqli_real_escape_string($conn, $inputData['gstNo']);
         $screenNo = mysqli_real_escape_string($conn, $inputData['screenNo']);
@@ -55,7 +56,15 @@ if ($requestMethod == 'POST') {
         $findTheaterSql = "SELECT * FROM `registered_theaters` WHERE `name`='$theaterName'";
         $findTheaterResult = mysqli_query($conn, $findTheaterSql);
 
-       
+        if (mysqli_num_rows($findTheaterResult) > 0) {
+            $data = [
+                'status' => 400,
+                'message' => 'Theater already registered',
+            ];
+            header("HTTP/1.0 400 Already registered");
+            echo json_encode($data);
+            exit;
+        }
 
         $theaterSql = "INSERT INTO `registered_theaters`(`name`, `gst_no`, `screen_no`, `state`, `city`, `location`) VALUES ('$theaterName','$gstNo','$screenNo','$state','$city','$location')";
         $theaterResult = mysqli_query($conn, $theaterSql);
@@ -75,7 +84,7 @@ if ($requestMethod == 'POST') {
 
                 $mail->isHTML(true);
                 $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
-                $mail->addAddress("$email", 'Admin');
+                $mail->addAddress("$userEmail", 'Admin');
                 $mail->Subject = 'Thearter registration';
                 $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
