@@ -123,12 +123,21 @@ if ($requestMethod == 'POST') {
                 $updateUserSql = "UPDATE `theater_users` SET `theater_name`='$theaterName' WHERE `id`='$userId'";
                 $updateResult = mysqli_query($conn, $updateUserSql);
 
-                $data = [
-                    'status' => 200,
-                    'message' => 'Theater registration successful.',
-                ];
-                header("HTTP/1.0 200 Registered");
-                echo json_encode($data);
+                if($updateResult) {
+                    $data = [
+                        'status' => 200,
+                        'message' => 'Theater registration successful.',
+                    ];
+                    header("HTTP/1.0 200 Registered");
+                    echo json_encode($data);
+                } else {
+                    $data = [
+                        'status' => 500,
+                        'message' => 'Internal Server Error',
+                    ];
+                    header("HTTP/1.0 500 Server Error");
+                    echo json_encode($data);
+                }
             } catch (Exception $e) {
                 $data = [
                     'status' => 500,
