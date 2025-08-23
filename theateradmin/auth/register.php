@@ -102,7 +102,7 @@ if ($requestMethod == 'POST') {
                     $mail->isHTML(true);
                     $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
                     $mail->addAddress("$email", 'Admin');
-                    $mail->Subject = 'Thearter admin registration';
+                    $mail->Subject = 'Thearter user registration';
                     $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
                                             <head>
