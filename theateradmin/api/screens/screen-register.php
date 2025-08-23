@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 session_start();
 header('Access-Control-Allow-Origin: http://localhost:3000');
@@ -32,7 +32,7 @@ if ($requestMethod == 'POST') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if(isset($_POST['theater']) && isset($_POST['userName']) && isset($_POST['screen']) && isset($_POST['screen_type']) &&  isset($_FILES['image'])) {
+    if (isset($_POST['theater']) && isset($_POST['userName']) && isset($_POST['screen']) && isset($_POST['screen_type']) || isset($_FILES['image'])) {
         $theater = mysqli_real_escape_string($conn, $_POST['theater']);
         $userName = mysqli_real_escape_string($conn, $_POST['userName']);
         $screen = mysqli_real_escape_string($conn, $_POST['screen']);
@@ -49,11 +49,11 @@ if ($requestMethod == 'POST') {
         $imageData = $_FILES['image'];
 
         $folder = "../../../screen-layouts/";
-        $imageName = $theater . '-'. $screen .'.png';
+        $imageName = $theater . '-' . $screen . '.png';
         $imageDirectory = $folder . $imageName;
         $image = getimagesize($imageData['tmp_name']);
 
-        if($image === false) {
+        if (isset($_FILES['image']) && $image === false) {
             $data = [
                 'status' => 400,
                 'message' => 'File is not an image.'
@@ -66,23 +66,85 @@ if ($requestMethod == 'POST') {
         $existSql = "SELECT * FROM `requested_screens` WHERE `theater_name`='$theater' AND `screen`='$screen'";
         $existResult = mysqli_query($conn, $existSql);
 
-        if(mysqli_num_rows($existResult) > 0) {
+        if (mysqli_num_rows($existResult) > 0) {
             $screenData = mysqli_fetch_assoc($existResult);
             $existImageName = $screenData['layout_image'];
-            $existImageDirectory = $folder.$existImageName;
-            if (file_exists($existImageDirectory)) {
-                unlink($existImageDirectory);
-                $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
-                if($save) {
-                    $updateSql = "UPDATE `requested_screens` SET `screen_type`='$screenType',`layout_image`='$imageName' WHERE `theater_name`='$theater' AND `screen`='$screen'";
-                    $updateResult = mysqli_query($conn, $updateSql);
+            $existImageDirectory = $folder . $existImageName;
 
-                    if($updateResult){
+            if (isset($_FILES['image'])) {
+                if (file_exists($existImageDirectory)) {
+                    unlink($existImageDirectory);
+                    $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
+                    if ($save) {
+                        $updateSql = "UPDATE `requested_screens` SET `screen_type`='$screenType',`layout_image`='$imageName' WHERE `theater_name`='$theater' AND `screen`='$screen'";
+                        $updateResult = mysqli_query($conn, $updateSql);
+
+                        if ($updateResult) {
+                            $data = [
+                                'status' => 200,
+                                'message' => 'Screen details updated.'
+                            ];
+                            header("HTTP/1.0 200 Updated");
+                            echo json_encode($data);
+                        } else {
+                            unlink($imageDirectory);
+                            $data = [
+                                'status' => 500,
+                                'message' => 'Internal Server Error'
+                            ];
+                            header("HTTP/1.0 403 Internal Server Error");
+                            echo json_encode($data);
+                        }
+                    } else {
+                        $data = [
+                            'status' => 500,
+                            'message' => 'Error in uploading the image.'
+                        ];
+                        header("HTTP/1.0 500 Uploading Error");
+                        echo json_encode($data);
+                    }
+                } else {
+                    $data = [
+                        'status' => 400,
+                        'message' => 'Image not found.'
+                    ];
+                    header("HTTP/1.0 400 Not found");
+                    echo json_encode($data);
+                }
+            } else {
+                $updateSql = "UPDATE `requested_screens` SET `screen_type`='$screenType' WHERE `theater_name`='$theater' AND `screen`='$screen'";
+                $updateResult = mysqli_query($conn, $updateSql);
+
+                if ($updateResult) {
+                    $data = [
+                        'status' => 200,
+                        'message' => 'Screen details updated.'
+                    ];
+                    header("HTTP/1.0 200 Updated");
+                    echo json_encode($data);
+                } else {
+                    unlink($imageDirectory);
+                    $data = [
+                        'status' => 500,
+                        'message' => 'Internal Server Error'
+                    ];
+                    header("HTTP/1.0 403 Internal Server Error");
+                    echo json_encode($data);
+                }
+            }
+        } else {
+            if (isset($_FILES['image'])) {
+                $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
+                if ($save) {
+                    $insertSql = "INSERT INTO `requested_screens`(`theater_name`, `screen`, `screen_id`, `screen_type`, `layout_image`) VALUES ('$theater','$screen','$screenId','$screenType','$imageName')";
+                    $insertResult = mysqli_query($conn, $insertSql);
+
+                    if ($insertResult) {
                         $data = [
                             'status' => 200,
-                            'message' => 'Screen details updated.'
+                            'message' => 'Screen details uploaded.'
                         ];
-                        header("HTTP/1.0 200 Updated");
+                        header("HTTP/1.0 200 Uploaded");
                         echo json_encode($data);
                     } else {
                         unlink($imageDirectory);
@@ -101,42 +163,19 @@ if ($requestMethod == 'POST') {
                     header("HTTP/1.0 500 Uploading Error");
                     echo json_encode($data);
                 }
-            }
-        } else {
-            $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
-            if($save) {
-                $insertSql = "INSERT INTO `requested_screens`(`theater_name`, `screen`, `screen_id`, `screen_type`, `layout_image`) VALUES ('$theater','$screen','$screenId','$screenType','$imageName')";
-                $insertResult = mysqli_query($conn, $insertSql);
-
-                if($insertResult){
-                    $data = [
-                        'status' => 200,
-                        'message' => 'Screen details uploaded.'
-                    ];
-                    header("HTTP/1.0 200 Uploaded");
-                    echo json_encode($data);
-                } else {
-                    unlink($imageDirectory);
-                    $data = [
-                        'status' => 500,
-                        'message' => 'Internal Server Error'
-                    ];
-                    header("HTTP/1.0 403 Internal Server Error");
-                    echo json_encode($data);
-                }
             } else {
                 $data = [
-                    'status' => 500,
-                    'message' => 'Error in uploading the image.'
+                    'status' => 400,
+                    'message' => 'Image is missing.'
                 ];
-                header("HTTP/1.0 500 Uploading Error");
+                header("HTTP/1.0 400 Bad Request");
                 echo json_encode($data);
             }
         }
     } else {
         $data = [
             'status' => 400,
-            'message' => 'Empty request data'
+            'message' => 'Empty request data.'
         ];
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);
@@ -149,5 +188,3 @@ if ($requestMethod == 'POST') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-?>
