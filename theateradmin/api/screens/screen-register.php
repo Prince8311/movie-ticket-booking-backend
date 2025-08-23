@@ -49,18 +49,26 @@ if ($requestMethod == 'POST') {
         $imageData = $_FILES['image'];
 
         $folder = "../../../screen-layouts/";
-        $imageName = $theater . '-' . $screen . '.png';
-        $imageDirectory = $folder . $imageName;
-        $image = getimagesize($imageData['tmp_name']);
+        $imageData = null;
+        $imageName = null;
+        $imageDirectory = null;
+        $timestamp = date("Ymd_His");
 
-        if (isset($_FILES['image']) && $image === false) {
-            $data = [
-                'status' => 400,
-                'message' => 'File is not an image.'
-            ];
-            header("HTTP/1.0 400 Bad Request");
-            echo json_encode($data);
-            exit;
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $imageData = $_FILES['image'];
+            $imageName = $theater . ' - ' . $screen . ' - ' . $timestamp . '.png';
+            $imageDirectory = $folder . $imageName;
+        
+            $image = getimagesize($imageData['tmp_name']);
+            if ($image === false) {
+                $data = [
+                    'status' => 400,
+                    'message' => 'File is not an image.'
+                ];
+                header("HTTP/1.0 400 Bad Request");
+                echo json_encode($data);
+                exit;
+            }
         }
 
         $existSql = "SELECT * FROM `requested_screens` WHERE `theater_name`='$theater' AND `screen`='$screen'";
