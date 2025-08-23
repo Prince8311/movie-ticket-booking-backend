@@ -137,6 +137,13 @@ if ($requestMethod == 'POST') {
                 header("HTTP/1.0 500 Message could not be sent");
                 echo json_encode($data);
             }
+        } else {
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.0 500 Server Error");
+            echo json_encode($data);
         }
     } else {
         $data = [
