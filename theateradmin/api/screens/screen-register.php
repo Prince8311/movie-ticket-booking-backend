@@ -71,7 +71,7 @@ if ($requestMethod == 'POST') {
             }
         }
 
-        $existSql = "SELECT * FROM `requested_screens` WHERE `theater_name`='$theater' AND `screen`='$screen'";
+        $existSql = "SELECT * FROM `registered_screens` WHERE `theater_name`='$theater' AND `screen`='$screen'";
         $existResult = mysqli_query($conn, $existSql);
 
         if (mysqli_num_rows($existResult) > 0) {
@@ -84,7 +84,7 @@ if ($requestMethod == 'POST') {
                     unlink($existImageDirectory);
                     $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
                     if ($save) {
-                        $updateSql = "UPDATE `requested_screens` SET `screen_type`='$screenType',`layout_image`='$imageName' WHERE `theater_name`='$theater' AND `screen`='$screen'";
+                        $updateSql = "UPDATE `registered_screens` SET `screen_type`='$screenType',`layout_image`='$imageName' WHERE `theater_name`='$theater' AND `screen`='$screen'";
                         $updateResult = mysqli_query($conn, $updateSql);
 
                         if ($updateResult) {
@@ -120,7 +120,7 @@ if ($requestMethod == 'POST') {
                     echo json_encode($data);
                 }
             } else {
-                $updateSql = "UPDATE `requested_screens` SET `screen_type`='$screenType' WHERE `theater_name`='$theater' AND `screen`='$screen'";
+                $updateSql = "UPDATE `registered_screens` SET `screen_type`='$screenType' WHERE `theater_name`='$theater' AND `screen`='$screen'";
                 $updateResult = mysqli_query($conn, $updateSql);
 
                 if ($updateResult) {
@@ -144,7 +144,7 @@ if ($requestMethod == 'POST') {
             if (isset($_FILES['image'])) {
                 $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
                 if ($save) {
-                    $insertSql = "INSERT INTO `requested_screens`(`theater_name`, `screen`, `screen_id`, `screen_type`, `layout_image`) VALUES ('$theater','$screen','$screenId','$screenType','$imageName')";
+                    $insertSql = "INSERT INTO `registered_screens`(`theater_name`, `screen`, `screen_id`, `screen_type`, `layout_image`) VALUES ('$theater','$screen','$screenId','$screenType','$imageName')";
                     $insertResult = mysqli_query($conn, $insertSql);
 
                     if ($insertResult) {

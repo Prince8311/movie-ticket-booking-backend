@@ -35,7 +35,7 @@ if ($requestMethod == 'GET') {
     if (isset($_GET['theaterName'])) {
         $theaterName  = mysqli_real_escape_string($conn, $_GET['theaterName'] ?? '');
 
-        $sql = "SELECT * FROM `requested_screens` WHERE `theater_name`='$theaterName'";
+        $sql = "SELECT * FROM `registered_screens` WHERE `theater_name`='$theaterName'";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
