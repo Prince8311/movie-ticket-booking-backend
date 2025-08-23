@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 session_start();
 header('Access-Control-Allow-Origin: http://localhost:3000');
@@ -34,53 +34,27 @@ if ($requestMethod == 'GET') {
 
     if (isset($_GET['theaterName'])) {
         $theaterName  = mysqli_real_escape_string($conn, $_GET['theaterName'] ?? '');
-        
-        if (isset($_GET['screen'])) {
-            $screen  = mysqli_real_escape_string($conn, $_GET['screen'] ?? '');
 
-            $sql = "SELECT * FROM `requested_screens` WHERE `theater_name`='$theaterName' AND `screen`='$screen'";
-            $result = mysqli_query($conn, $sql);
+        $sql = "SELECT * FROM `requested_screens` WHERE `theater_name`='$theaterName'";
+        $result = mysqli_query($conn, $sql);
 
-            if($result) {
-                $screenData = mysqli_fetch_assoc($result);
+        if ($result) {
+            $screenData = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-                $data = [
-                    'status' => 200,
-                    'message' => 'Screen details fetched',
-                    'screenDetails' => $screenData,
-                ];
-                header("HTTP/1.0 200 Details fetched");
-                echo json_encode($data);
-            } else {
-                $data = [
-                    'status' => 500,
-                    'message' => 'Database error: ' . mysqli_error($conn)
-                ];
-                header("HTTP/1.0 500 Internal Server Error");
-                echo json_encode($data);
-            }
+            $data = [
+                'status' => 200,
+                'message' => 'Screen details fetched',
+                'screenDetails' => $screenData,
+            ];
+            header("HTTP/1.0 200 Details fetched");
+            echo json_encode($data);
         } else {
-            $sql = "SELECT * FROM `requested_screens` WHERE `theater_name`='$theaterName'";
-            $result = mysqli_query($conn, $sql);
-
-            if($result) {
-                $screenData = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-                $data = [
-                    'status' => 200,
-                    'message' => 'Screen details fetched',
-                    'screenDetails' => $screenData,
-                ];
-                header("HTTP/1.0 200 Details fetched");
-                echo json_encode($data);
-            } else {
-                $data = [
-                    'status' => 500,
-                    'message' => 'Database error: ' . mysqli_error($conn)
-                ];
-                header("HTTP/1.0 500 Internal Server Error");
-                echo json_encode($data);
-            }
+            $data = [
+                'status' => 500,
+                'message' => 'Database error: ' . mysqli_error($conn)
+            ];
+            header("HTTP/1.0 500 Internal Server Error");
+            echo json_encode($data);
         }
     } else {
         $data = [
@@ -90,7 +64,7 @@ if ($requestMethod == 'GET') {
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);
     }
-} else { 
+} else {
     $data = [
         'status' => 405,
         'message' => $requestMethod . ' Method Not Allowed',
@@ -98,5 +72,3 @@ if ($requestMethod == 'GET') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-?>
