@@ -33,37 +33,34 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if(isset($_GET['name'])) {
-        $theaterName  = mysqli_real_escape_string($conn, $_GET['name'] ?? '');
-
-        $sql = "SELECT `status` FROM `registered_theaters` WHERE `name`='$theaterName'";
-        $result = mysqli_query($conn, $sql);
-
-        if ($result) {
-            $status = mysqli_fetch_assoc($result);
-            $data = [
-                'status' => 200,
-                'message' => 'Status fetched successfully.',
-                'registrationStatus' => $status,
-            ];
-            header("HTTP/1.0 200 OK");
-            echo json_encode($data);
-        } else {
-            $data = [
-                'status' => 500,
-                'message' => 'Database error: ' . mysqli_error($conn)
-            ];
-            header("HTTP/1.0 500 Internal Server Error");
-            echo json_encode($data);
-        }
-    } else {
-        $data = [
-            'status' => 400,
-            'message' => 'Theater name is missing'
-        ];
-        header("HTTP/1.0 400 Bad Request");
-        echo json_encode($data);
+    $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
+    $whereClause = "";
+    
+    if ($status && in_array($status, $allowedStatuses)) {
+        $whereClause = "WHERE `status` = '" . mysqli_real_escape_string($conn, $status) . "'";
     }
+    $sql = "SELECT * FROM `registered_theaters` $whereClause";
+    $result = mysqli_query($conn, $sql);
+    $totalTheaters = mysqli_num_rows($result);
+    $limit = 10;
+    $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
+        ? (int)$_GET['page']
+        : 1;
+    $offset = ($page - 1) * $limit;
+
+    $limitSql = "SELECT * FROM `registered_theaters` $whereClause LIMIT $limit OFFSET $offset";
+    $limitResult = mysqli_query($conn, $limitSql);
+    $theaters = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
+
+    $data = [
+        'status' => 200,
+        'message' => 'Registered theaters fetched',
+        'totalCount' => $totalTheaters,
+        'currentPage' => $page,
+        'theaters' => $theaters,
+    ];
+    header("HTTP/1.0 200 Theater list");
+    echo json_encode($data);
 } else {
     $data = [
         'status' => 405,

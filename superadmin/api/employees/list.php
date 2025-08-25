@@ -32,9 +32,6 @@ if($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $authHeader = getAuthorizationHeader();
-    $cookieToken = $_COOKIE['authToken'] ?? '';
-
     $sql = "SELECT * FROM `admin_users` WHERE `user_type`='employee'";
     $result = mysqli_query($conn, $sql);
     $totalEmployees = mysqli_num_rows($result);
