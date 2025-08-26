@@ -48,7 +48,7 @@ if ($requestMethod == 'GET') {
         : 1;
     $offset = ($page - 1) * $limit;
 
-    $limitSql = "SELECT * FROM `registered_theaters` $whereClause LIMIT $limit OFFSET $offset";
+    $limitSql = "SELECT rt.*, tu.phone FROM `registered_theaters` rt LEFT JOIN `theater_users` tu ON rt.`name` = tu.`theater_name` $whereClause LIMIT $limit OFFSET $offset";
     $limitResult = mysqli_query($conn, $limitSql);
     $theaters = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
 
