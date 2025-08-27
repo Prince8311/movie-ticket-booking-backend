@@ -65,7 +65,7 @@ if ($requestMethod == 'POST') {
                         $mail->CharSet = 'UTF-8';
 
                         $mail->isHTML(true);
-                        $mail->setFrom('noreply@ticketbay.in', 'Request Completed 🤘🤘🤘');
+                        $mail->setFrom('noreply@ticketbay.in', 'Request Completed 📜📜📜');
                         $mail->addAddress("$userEmail", 'Admin');
                         $mail->Subject = 'Registration status';
                         $mail->Body    = '<!DOCTYPE html>
