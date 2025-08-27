@@ -89,7 +89,7 @@ if ($requestMethod == 'POST') {
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your request for your theater <b>"' . $theaterName . '"</b> is completed and Rs. ' . $amount . ' is paid to you as an advance payment. Now, please login to your account <a href="theateradmin.ticketbay.in" style="color: #FC6736;" >theateradmin.ticketbay.in</a> here and publish your screen(s).</span>
                                                             </p>
                                                         </div>
-                                                        <div style="position: relative; margin-top: 15px;">
+                                                        <div style="position: relative; margin-top: 30px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Thanks & Regards,</span>
                                                             </p>
@@ -174,7 +174,7 @@ if ($requestMethod == 'POST') {
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your request for your theater <b>"' . $theaterName . '"</b> has been rejected by admin. Because, "' . $reason . '". Now, please login to your account <a href="theateradmin.ticketbay.in" style="color: #FC6736;" >theateradmin.ticketbay.in</a> here and resubmit the form.</span>
                                                             </p>
                                                         </div>
-                                                        <div style="position: relative; margin-top: 15px;">
+                                                        <div style="position: relative; margin-top: 30px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Thanks & Regards,</span>
                                                             </p>
@@ -257,7 +257,7 @@ if ($requestMethod == 'POST') {
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your request for your theater <b>"' . $theaterName . '"</b> has been confirmed by admin. Also you can check <a href="theateradmin.ticketbay.in" style="color: #FC6736;" >theateradmin.ticketbay.in</a> here.</span>
                                                             </p>
                                                         </div>
-                                                        <div style="position: relative; margin-top: 15px;">
+                                                        <div style="position: relative; margin-top: 30px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Thanks & Regards,</span>
                                                             </p>
@@ -332,7 +332,7 @@ if ($requestMethod == 'POST') {
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your request for your theater <b>"' . $theaterName . '"</b> is under process. Please, wait we will notify you when completed, also you can check <a href="theateradmin.ticketbay.in" style="color: #FC6736;" >theateradmin.ticketbay.in</a> here.</span>
                                                             </p>
                                                         </div>
-                                                        <div style="position: relative; margin-top: 15px;">
+                                                        <div style="position: relative; margin-top: 30px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Thanks & Regards,</span>
                                                             </p>

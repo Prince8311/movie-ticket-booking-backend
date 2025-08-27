@@ -107,7 +107,7 @@ if ($requestMethod == 'POST') {
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">You have successfully registered your theater <b>"' . $theaterName . '"</b>. Now, please wait for admin reponse. You will be notified via email or you can check the status <a href="theateradmin.ticketbay.in" style="color: #FC6736;" >theateradmin.ticketbay.in</a> here.</span>
                                                             </p>
                                                         </div>
-                                                        <div style="position: relative; margin-top: 15px;">
+                                                        <div style="position: relative; margin-top: 30px;">
                                                             <p style="position: relative;">
                                                                 <span style="position: relative; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Thanks & Regards,</span>
                                                             </p>
