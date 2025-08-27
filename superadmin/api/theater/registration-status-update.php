@@ -44,6 +44,7 @@ if ($requestMethod == 'POST') {
 
     if (!empty($inputData)) {
         $userName = mysqli_real_escape_string($conn, $inputData['userName']);
+        $userEmail = mysqli_real_escape_string($conn, $inputData['userEmail']);
         $theaterName = mysqli_real_escape_string($conn, $inputData['theaterName']);
         $status = mysqli_real_escape_string($conn, $inputData['status']);
         if ($status === 'Completed') {
@@ -64,7 +65,7 @@ if ($requestMethod == 'POST') {
                         $mail->CharSet = 'UTF-8';
 
                         $mail->isHTML(true);
-                        $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
+                        $mail->setFrom('noreply@ticketbay.in', 'Request Completed 🤘🤘🤘');
                         $mail->addAddress("$userEmail", 'Admin');
                         $mail->Subject = 'Registration status';
                         $mail->Body    = '<!DOCTYPE html>
@@ -149,7 +150,7 @@ if ($requestMethod == 'POST') {
                         $mail->CharSet = 'UTF-8';
 
                         $mail->isHTML(true);
-                        $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
+                        $mail->setFrom('noreply@ticketbay.in', 'Request Cancelled 🔴🔴🔴');
                         $mail->addAddress("$userEmail", 'Admin');
                         $mail->Subject = 'Registration status';
                         $mail->Body    = '<!DOCTYPE html>
@@ -232,7 +233,7 @@ if ($requestMethod == 'POST') {
                     $mail->CharSet = 'UTF-8';
 
                     $mail->isHTML(true);
-                    $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
+                    $mail->setFrom('noreply@ticketbay.in', 'Request Confirmed 📌📌📌');
                     $mail->addAddress("$userEmail", 'Admin');
                     $mail->Subject = 'Registration status';
                     $mail->Body    = '<!DOCTYPE html>
@@ -307,7 +308,7 @@ if ($requestMethod == 'POST') {
                     $mail->CharSet = 'UTF-8';
 
                     $mail->isHTML(true);
-                    $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
+                    $mail->setFrom('noreply@ticketbay.in', 'Request Under Process 📋📋📋');
                     $mail->addAddress("$userEmail", 'Admin');
                     $mail->Subject = 'Registration status';
                     $mail->Body    = '<!DOCTYPE html>
