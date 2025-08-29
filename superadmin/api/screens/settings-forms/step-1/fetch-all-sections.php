@@ -37,7 +37,7 @@ if ($requestMethod == 'GET') {
         $theaterName = mysqli_real_escape_string($conn, $_GET['theaterName']);
         $screen = mysqli_real_escape_string($conn, $_GET['screen']);
         $screenId = mysqli_real_escape_string($conn, $_GET['screenId']);
-        $sql = "SELECT `section`, `section_name` FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId'";
+        $sql = "SELECT `section`, `section_name` FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' ORDER BY CAST(SUBSTRING_INDEX(`section`, ' ', -1) AS UNSIGNED) ASC";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
