@@ -33,22 +33,13 @@ if ($requestMethod == 'GET') {
     require "../../../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['theaterName']) && isset($_GET['screen']) && isset($_GET['screenId'])) {
-        $data = [
-            'status' => 200,
-            'message' => 'Screen sections fetched successfully.',
-            'theaterName' => 'dvdsvsvb'
-        ];
-        header("HTTP/1.0 200 OK");
-        echo json_encode($data);
-    } else {
-        $data = [
-            'status' => 400,
-            'message' => 'Theater name and screen is missing.'
-        ];
-        header("HTTP/1.0 400 Bad Request");
-        echo json_encode($data);
-    }
+    $data = [
+        'status' => 200,
+        'message' => 'Screen sections fetched successfully.',
+        'theaterName' => 'dvdsvsvb'
+    ];
+    header("HTTP/1.0 200 OK");
+    echo json_encode($data);
 } else {
     $data = [
         'status' => 405,
