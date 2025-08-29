@@ -42,12 +42,11 @@ if ($requestMethod == 'GET') {
 
         if ($result) {
             $allSections = mysqli_fetch_all($result, MYSQLI_ASSOC);
-            
+
             $data = [
                 'status' => 200,
                 'message' => 'Screen sections fetched successfully.',
-                'allSections' => $allSections,
-                'selectedSectionName' => $selctedSecName
+                'allSections' => $allSections
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
