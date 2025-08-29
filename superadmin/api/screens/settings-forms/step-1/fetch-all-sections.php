@@ -37,7 +37,7 @@ if ($requestMethod == 'GET') {
         $data = [
             'status' => 200,
             'message' => 'Screen sections fetched successfully.',
-            'theaterName' => $theaterName
+            'theaterName' => 'dvdsvsvb'
         ];
         header("HTTP/1.0 200 OK");
         echo json_encode($data);
