@@ -42,40 +42,15 @@ if ($requestMethod == 'GET') {
 
         if ($result) {
             $allSections = mysqli_fetch_all($result, MYSQLI_ASSOC);
-            if (isset($_GET['section'])) {
-                $section = mysqli_real_escape_string($conn, $_GET['section']);
-
-                $fetchNameSql = "SELECT `section_name` FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
-                $fetchNameResult = mysqli_query($conn, $fetchNameSql);
-
-                if ($fetchNameResult) {
-                    $nameData = mysqli_fetch_assoc($fetchNameResult);
-                    $selctedSecName = $nameData['section_name'];
-
-                    $data = [
-                        'status' => 200,
-                        'message' => 'Screen sections fetched successfully.',
-                        'allSections' => $allSections,
-                        'selectedSectionName' => $selctedSecName
-                    ];
-                    header("HTTP/1.0 200 OK");
-                    echo json_encode($data);
-                } else {
-                    $data = [
-                        'status' => 500,
-                        'message' => 'Database error: ' . $error
-                    ];
-                    header("HTTP/1.0 500 Internal Server Error");
-                    echo json_encode($data);
-                }
-            } else {
-                $data = [
-                    'status' => 400,
-                    'message' => 'Section is missing'
-                ];
-                header("HTTP/1.0 400 Bad Request");
-                echo json_encode($data);
-            }
+            
+            $data = [
+                'status' => 200,
+                'message' => 'Screen sections fetched successfully.',
+                'allSections' => $allSections,
+                'selectedSectionName' => $selctedSecName
+            ];
+            header("HTTP/1.0 200 OK");
+            echo json_encode($data);
         } else {
             $data = [
                 'status' => 500,
