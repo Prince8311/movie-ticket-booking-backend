@@ -39,14 +39,19 @@ if ($requestMethod == 'GET') {
         $screenId = mysqli_real_escape_string($conn, $_GET['screenId']);
         $sql = "SELECT `id`, `section`, `section_name` FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' ORDER BY CAST(SUBSTRING_INDEX(`section`, ' ', -1) AS UNSIGNED) ASC";
         $result = mysqli_query($conn, $sql);
+        $screenSql = "SELECT * FROM `registered_screens` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId'";
+        $screenResult = mysqli_query($conn, $screenSql);
 
-        if ($result) {
+        if ($result && $screenResult) {
             $allSections = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $screenData = mysqli_fetch_assoc($screenResult);
+            $noOfSections = $screenData['sections']; 
             
             $data = [
                 'status' => 200,
                 'message' => 'Screen sections fetched successfully.',
                 'allSections' => $allSections,
+                'noOfSections' => $noOfSections
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);

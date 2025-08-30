@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 session_start();
 
@@ -34,24 +34,25 @@ if ($requestMethod == 'POST') {
     global $conn;
 
     $inputData = json_decode(file_get_contents("php://input"), true);
-    
+
     if (!empty($inputData)) {
         $theaterName = mysqli_real_escape_string($conn, $inputData['theaterName']);
         $screen = mysqli_real_escape_string($conn, $inputData['screen']);
         $screenId = mysqli_real_escape_string($conn, $inputData['screenId']);
-        $section = mysqli_real_escape_string($conn, $inputData['section']);
-        $sectionName = mysqli_real_escape_string($conn, $inputData['sectionName']);
         $submitType = mysqli_real_escape_string($conn, $inputData['submitType']);
 
         if ($submitType === 'sectionName-submit') {
+            $section = mysqli_real_escape_string($conn, $inputData['section']);
+            $sectionName = mysqli_real_escape_string($conn, $inputData['sectionName']);
+
             $checkSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' AND `section_name`='$sectionName'";
             $checkResult = mysqli_query($conn, $checkSql);
 
-            if(mysqli_num_rows($checkResult) > 0) {
+            if (mysqli_num_rows($checkResult) > 0) {
                 $updateSql = "UPDATE `screen_sections` SET `section_name`='$sectionName' WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
                 $updateResult = mysqli_query($conn, $updateSql);
 
-                if($updateResult) {
+                if ($updateResult) {
                     $data = [
                         'status' => 200,
                         'message' => 'Section name updated.'
@@ -70,7 +71,7 @@ if ($requestMethod == 'POST') {
                 $insertSql = "INSERT INTO `screen_sections`(`theater_name`, `screen`, `screen_id`, `section`, `section_name`) VALUES ('$theaterName','$screen','$screenId','$section','$sectionName')";
                 $insertResult = mysqli_query($conn, $insertSql);
 
-                if($insertResult) {
+                if ($insertResult) {
                     $data = [
                         'status' => 200,
                         'message' => 'Section name created.'
@@ -95,7 +96,7 @@ if ($requestMethod == 'POST') {
             if ($checkResult) {
                 $checkData = mysqli_fetch_assoc($checkResult);
                 $sections = $checkData['sections'];
-            
+
                 if ($sections === null) {
                     $wasNull = true;
                 }
@@ -103,7 +104,7 @@ if ($requestMethod == 'POST') {
             $updateSql = "UPDATE `registered_screens` SET `sections`='$sectionNo' WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId'";
             $updateResult = mysqli_query($conn, $updateSql);
 
-            if($updateResult) {
+            if ($updateResult) {
                 $data = [
                     'status' => 200,
                     'message' => $wasNull ? 'Step-1 Completed successfully.' : 'Section names updated.'
@@ -135,5 +136,3 @@ if ($requestMethod == 'POST') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-?>
