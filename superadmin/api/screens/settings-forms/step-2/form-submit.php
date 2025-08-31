@@ -43,10 +43,9 @@ if ($requestMethod == 'POST') {
 
         if ($submitType === 'rowNo-submit') {
             $section = mysqli_real_escape_string($conn, $inputData['section']);
-            $sectionName = mysqli_real_escape_string($conn, $inputData['sectionName']);
             $rowNo = mysqli_real_escape_string($conn, $inputData['rowNo']);
 
-            $checkSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' AND `section_name`='$sectionName'";
+            $checkSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
             $checkResult = mysqli_query($conn, $checkSql);
             if ($checkResult) {
                 $screenData = mysqli_fetch_assoc($checkResult);
@@ -57,7 +56,7 @@ if ($requestMethod == 'POST') {
                     $wasNull = true;
                 }
 
-                $updateSql = "UPDATE `screen_sections` SET `row`='$rowNo' WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' AND `section_name`='$sectionName'";
+                $updateSql = "UPDATE `screen_sections` SET `row`='$rowNo' WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
                 $updateResult = mysqli_query($conn, $updateSql);
 
                 if ($updateResult) {
