@@ -45,7 +45,7 @@ if ($requestMethod == 'POST') {
             $section = mysqli_real_escape_string($conn, $inputData['section']);
             $sectionName = mysqli_real_escape_string($conn, $inputData['sectionName']);
 
-            $checkSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' AND `section_name`='$sectionName'";
+            $checkSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
             $checkResult = mysqli_query($conn, $checkSql);
 
             if (mysqli_num_rows($checkResult) > 0) {
