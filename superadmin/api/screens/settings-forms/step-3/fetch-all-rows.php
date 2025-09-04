@@ -15,7 +15,7 @@ if ($requestMethod == 'OPTIONS') {
     exit();
 }
 
-require "../../../utils/middleware.php";
+require "../../../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 
@@ -30,7 +30,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'GET') {
-    require "../../../_db-connect.php";
+    require "../../../../../_db-connect.php";
     global $conn;
 
     if (isset($_GET['theaterName']) && isset($_GET['screen']) && isset($_GET['screenId']) && isset($_GET['section'])) {
@@ -42,13 +42,19 @@ if ($requestMethod == 'GET') {
         $sql = "SELECT `id`, `row`, `seats` FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' ORDER BY CAST(SUBSTRING_INDEX(`row`, ' ', -1) AS UNSIGNED) ASC";
         $result = mysqli_query($conn, $sql);
 
-        if ($result) {
+        $sectionSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
+        $sectionResult = mysqli_query($conn, $sectionSql);
+
+        if ($result && $sectionResult) {
             $allRows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $sectionData = mysqli_fetch_assoc($sectionResult);
+            $noOfRows = $sectionData['row']; 
             
             $data = [
                 'status' => 200,
                 'message' => 'Screen rows fetched successfully.',
                 'allRows' => $allRows,
+                'noOfRows' => $noOfRows
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
