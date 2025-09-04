@@ -45,7 +45,7 @@ if ($requestMethod == 'GET') {
         $sectionSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
         $sectionResult = mysqli_query($conn, $sectionSql);
 
-        if ($result && $screenResult && $sectionResult) {
+        if ($result && $sectionResult) {
             $allRows = mysqli_fetch_all($result, MYSQLI_ASSOC);
             $sectionData = mysqli_fetch_assoc($sectionResult);
             $noOfRows = $sectionData['row']; 
