@@ -39,6 +39,27 @@ if ($requestMethod == 'GET') {
         $screenId = mysqli_real_escape_string($conn, $_GET['screenId']);
         $section = mysqli_real_escape_string($conn, $_GET['section']);
         $row = mysqli_real_escape_string($conn, $_GET['row']);
+
+        $sql = "SELECT * FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' AND `row`='$row'";
+        $result = mysqli_query($conn, $sql);
+
+        if($result) {
+            $rowDetails = mysqli_fetch_assoc($result);
+            $data = [
+                'status' => 200,
+                'message' => 'Row details fetched successfully.',
+                'rowDetails' => $rowDetails,
+            ];
+            header("HTTP/1.0 200 OK");
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 500,
+                'message' => 'Database error: ' . $error
+            ];
+            header("HTTP/1.0 500 Internal Server Error");
+            echo json_encode($data);
+        }
     } else {
         $data = [
             'status' => 400,

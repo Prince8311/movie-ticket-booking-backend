@@ -49,6 +49,7 @@ if ($requestMethod == 'GET') {
             $allRows = mysqli_fetch_all($result, MYSQLI_ASSOC);
             $sectionData = mysqli_fetch_assoc($sectionResult);
             $noOfRows = $sectionData['row']; 
+            $noOfSeats = $sectionData['seats']; 
             
             $data = [
                 'status' => 200,
