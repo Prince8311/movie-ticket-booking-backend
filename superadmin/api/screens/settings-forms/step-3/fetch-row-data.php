@@ -15,7 +15,7 @@ if ($requestMethod == 'OPTIONS') {
     exit();
 }
 
-require "../../../utils/middleware.php";
+require "../../../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 
@@ -30,7 +30,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'GET') {
-    require "../../../_db-connect.php";
+    require "../../../../../_db-connect.php";
     global $conn;
 
     if (isset($_GET['theaterName']) && isset($_GET['screen']) && isset($_GET['screenId']) && isset($_GET['section']) && isset($_GET['row'])) {
