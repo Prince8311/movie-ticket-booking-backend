@@ -120,31 +120,33 @@ if ($requestMethod == 'POST') {
                 $noOfSections = (int)$screenData['sections'];
                 $sectionData = mysqli_fetch_assoc($sectionResult);
                 $noOfRows = (int)$sectionData['row'];
-                $countRes = mysqli_fetch_assoc($sectionRowSeatResult);
-
-                if($noOfSections === mysqli_num_rows($sectionRowCountResult)) {
-                    $data = [
-                        'status' => 200,
-                        'message' => 'Step-3 Completed.',
-                        'countRes' => $countRes
-                    ];
-                    header("HTTP/1.0 200 Completed");
-                    echo json_encode($data);
-                    exit;
-                }
+                $seatData = mysqli_fetch_assoc($sectionRowSeatResult);
+                $noOfSeats = $seatData['totalSeats'];
 
                 if($noOfRows === mysqli_num_rows($rowResult)) {
-                    $data = [
-                        'status' => 200,
-                        'message' => $section . ' setting Completed.',
-                        'countRes' => $countRes
-                    ];
-                    header("HTTP/1.0 200 Completed");
-                    echo json_encode($data);
+                    $updateSql = "UPDATE `screen_sections` SET `seats`='$noOfSeats' WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
+                    $updateResult = mysqli_query($conn, $updateSql);
+
+                    if($updateResult) {
+                        $data = [
+                            'status' => 200,
+                            'message' => $section . ' setting Completed.',
+                            'countRes' => $countRes
+                        ];
+                        header("HTTP/1.0 200 Completed");
+                        echo json_encode($data);
+                    } else {
+                        $data = [
+                            'status' => 500,
+                            'message' => 'Database error: ' . $error
+                        ];
+                        header("HTTP/1.0 500 Internal Server Error");
+                        echo json_encode($data);
+                    }
                 } else {
                     $data = [
                         'status' => 400,
-                        'message' => 'Please fill all the sections.'
+                        'message' => 'Please fill all the rows.'
                     ];
                     header("HTTP/1.0 400 Bad request");
                     echo json_encode($data);
