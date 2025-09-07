@@ -109,9 +109,6 @@ if ($requestMethod == 'POST') {
             $rowSql = "SELECT * FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
             $rowResult = mysqli_query($conn, $rowSql);
 
-            $sectionRowCountSql = "SELECT `section`, GROUP_CONCAT(`row` ORDER BY CAST(SUBSTRING_INDEX(`row`, ' ', -1) AS UNSIGNED)) AS rows, SUM(`seats`) AS totalSeats, GROUP_CONCAT(`seats` ORDER BY CAST(SUBSTRING_INDEX(`row`, ' ', -1) AS UNSIGNED)) AS seats FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' GROUP BY `section`";
-            $sectionRowCountResult = mysqli_query($conn, $sectionRowCountSql);
-
             $data = [
                 'status' => 200,
                 'message' => 'Step-3 Completed.'
