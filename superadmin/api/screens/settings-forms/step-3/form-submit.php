@@ -112,12 +112,15 @@ if ($requestMethod == 'POST') {
             $sectionRowCountSql = "SELECT `section`, SUM(`seats`) AS totalSeats FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' GROUP BY `section`";
             $sectionRowCountResult = mysqli_query($conn, $sectionRowCountSql);
 
+            $sectionSeatCountSql = "SELECT `section`, SUM(`seats`) AS totalSeats FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' GROUP BY `section`";
+            $sectionRowSeatResult = mysqli_query($conn, $sectionSeatCountSql);
+
             if ($screenResult && $sectionResult && $rowResult && $sectionRowCountResult) {
                 $screenData = mysqli_fetch_assoc($screenResult);
                 $noOfSections = (int)$screenData['sections'];
                 $sectionData = mysqli_fetch_assoc($sectionResult);
                 $noOfRows = (int)$sectionData['row'];
-                $countRes = mysqli_fetch_all($sectionRowCountResult, MYSQLI_ASSOC);
+                $countRes = mysqli_fetch_assoc($sectionRowSeatResult);
 
                 if($noOfSections === mysqli_num_rows($sectionRowCountResult)) {
                     $data = [
