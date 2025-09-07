@@ -122,7 +122,8 @@ if ($requestMethod == 'POST') {
                 if($noOfSections === mysqli_num_rows($sectionRowCountResult)) {
                     $data = [
                         'status' => 200,
-                        'message' => 'Step-3 Completed.'
+                        'message' => 'Step-3 Completed.',
+                        'countRes' => $countRes
                     ];
                     header("HTTP/1.0 200 Completed");
                     echo json_encode($data);
