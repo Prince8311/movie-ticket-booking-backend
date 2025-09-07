@@ -40,6 +40,7 @@ if ($requestMethod == 'POST') {
         $screen = mysqli_real_escape_string($conn, $inputData['screen']);
         $screenId = mysqli_real_escape_string($conn, $inputData['screenId']);
         $section = mysqli_real_escape_string($conn, $inputData['section']);
+        $submitType = mysqli_real_escape_string($conn, $inputData['submitType']);
 
         if ($submitType === 'row-submit') {
             $row = mysqli_real_escape_string($conn, $inputData['row']);
@@ -47,7 +48,6 @@ if ($requestMethod == 'POST') {
             $starting = mysqli_real_escape_string($conn, $inputData['starting']);
             $gapSeats = mysqli_real_escape_string($conn, $inputData['gapSeats']);
             $gapAmounts = mysqli_real_escape_string($conn, $inputData['gapAmounts']);
-            $submitType = mysqli_real_escape_string($conn, $inputData['submitType']);
 
             $checkSql = "SELECT * FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' AND `row`='$row'";
             $checkResult = mysqli_query($conn, $checkSql);
