@@ -55,7 +55,8 @@ if ($requestMethod == 'GET') {
                 'status' => 200,
                 'message' => 'Screen rows fetched successfully.',
                 'allRows' => $allRows,
-                'noOfRows' => $noOfRows
+                'noOfRows' => $noOfRows,
+                'noOfSeats' => $noOfSeats
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
