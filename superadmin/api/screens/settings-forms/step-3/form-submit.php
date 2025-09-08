@@ -128,14 +128,9 @@ if ($requestMethod == 'POST') {
                     $updateResult = mysqli_query($conn, $updateSql);
 
                     if ($updateResult) {
-                        $sectionWithSeatsSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `seats` IS NOT NULL";
-                        $sectionWithSeatsResult = mysqli_query($conn, $sectionWithSeatsSql);
-                        $noOfSectionsWithSeats = mysqli_num_rows($sectionWithSeatsResult);
-                        
                         $data = [
                             'status' => 200,
-                            'message' => $section . ' setting Completed.',
-                            'noOfSectionsWithSeats' => $noOfSectionsWithSeats
+                            'message' => $section . ' setting Completed.'
                         ];
                         header("HTTP/1.0 200 Completed");
                         echo json_encode($data);
