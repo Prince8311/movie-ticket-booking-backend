@@ -131,7 +131,6 @@ if ($requestMethod == 'POST') {
                         $data = [
                             'status' => 200,
                             'message' => $section . ' setting Completed.',
-                            'countRes' => $countRes
                         ];
                         header("HTTP/1.0 200 Completed");
                         echo json_encode($data);
