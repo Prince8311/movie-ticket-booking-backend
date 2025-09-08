@@ -45,15 +45,11 @@ if ($requestMethod == 'GET') {
         $sectionSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
         $sectionResult = mysqli_query($conn, $sectionSql);
 
-        $sectionWithSeatsSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `seats` IS NOT NULL";
-        $sectionWithSeatsResult = mysqli_query($conn, $sectionWithSeatsSql);
-
         if ($result && $sectionResult) {
             $allRows = mysqli_fetch_all($result, MYSQLI_ASSOC);
             $sectionData = mysqli_fetch_assoc($sectionResult);
             $noOfRows = $sectionData['row']; 
             $noOfSeats = $sectionData['seats']; 
-            $noOfSectionsWithSeats = mysqli_num_rows($sectionWithSeatsResult); 
             
             $data = [
                 'status' => 200,
@@ -61,7 +57,6 @@ if ($requestMethod == 'GET') {
                 'allRows' => $allRows,
                 'noOfRows' => $noOfRows,
                 'noOfSeats' => $noOfSeats,
-                'noOfSectionsWithSeats' => $noOfSectionsWithSeats
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
