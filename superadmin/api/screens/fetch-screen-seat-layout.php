@@ -52,10 +52,21 @@ if ($requestMethod == 'GET') {
                 $sectionData = mysqli_fetch_all($sectionResult, MYSQLI_ASSOC);
                 $seatData = [];
 
+                foreach ($sectionData as $section) {
+                    $sectionNo = $section['section'];
+                    $rowSql = "SELECT * FROM `screen_rows` WHERE `section` = '$sectionNo' AND `screen_id` = '$screenId' AND `seats` IS NOT NULL";
+                    $rowResult = mysqli_query($conn, $rowSql);
+                    $rows = mysqli_fetch_all($rowResult, MYSQLI_ASSOC);
+                    
+                    $section['rows'] = $rows;
+                    $seatData[] = $section;
+                }
+
                 $data = [
                     'status' => 200,
                     'message' => 'Seat layout fetched',
-                    'noOfSectionsss' => $noOfSections
+                    'noOfSections' => $noOfSections,
+                    'seatLayout' => $seatData
                 ];
                 header("HTTP/1.0 200 Seat layout");
                 echo json_encode($data);
