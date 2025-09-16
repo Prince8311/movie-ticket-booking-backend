@@ -115,17 +115,25 @@ if ($requestMethod == 'POST') {
             $sectionSeatCountSql = "SELECT `section`, SUM(`seats`) AS totalSeats FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section' GROUP BY `section`";
             $sectionRowSeatResult = mysqli_query($conn, $sectionSeatCountSql);
 
-            if ($screenResult && $sectionResult && $rowResult && $sectionRowCountResult) {
+            $sreenSeatCountSql = "SELECT `section`, SUM(`seats`) AS grandTotalSeats FROM `screen_rows` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId'";
+            $screenSeatResult = mysqli_query($conn, $sreenSeatCountSql);
+
+            if ($screenResult && $sectionResult && $rowResult && $sectionRowCountResult && $screenSeatResult) {
                 $screenData = mysqli_fetch_assoc($screenResult);
                 $noOfSections = (int)$screenData['sections'];
                 $sectionData = mysqli_fetch_assoc($sectionResult);
                 $noOfRows = (int)$sectionData['row'];
                 $seatData = mysqli_fetch_assoc($sectionRowSeatResult);
                 $noOfSeats = $seatData['totalSeats'];
+                $capacityData = mysqli_fetch_assoc($screenSeatResult);
+                $screenCapacity = $capacityData['grandTotalSeats'];
 
                 if ($noOfRows === mysqli_num_rows($rowResult)) {
                     $updateSql = "UPDATE `screen_sections` SET `seats`='$noOfSeats' WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section`='$section'";
                     $updateResult = mysqli_query($conn, $updateSql);
+
+                    $screenUpdateSql = "UPDATE `registered_screens` SET `capacity`='$screenCapacity' WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId'";
+                    $screenUpdateResult = mysqli_query($conn, $screenUpdateSql);
 
                     if ($updateResult) {
                         $sectionWithSeatsSql = "SELECT * FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `seats` IS NOT NULL";
