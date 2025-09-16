@@ -70,14 +70,7 @@ if ($requestMethod == 'GET') {
                 ];
                 header("HTTP/1.0 200 Seat layout");
                 echo json_encode($data);
-            } else {
-                $data = [
-                    'status' => 400,
-                    'message' => 'No section found'
-                ];
-                header("HTTP/1.0 400 No Data");
-                echo json_encode($data);
-            }
+            } 
         }
     } else {
         $data = [
