@@ -48,6 +48,16 @@ if ($requestMethod == 'POST') {
         $theaterName = mysqli_real_escape_string($conn, $inputData['theaterName']);
         $status = mysqli_real_escape_string($conn, $inputData['status']);
         if ($status === 'Completed') {
+            $notSettedScreenSql = "SELECT * FROM `registered_screens` WHERE `theater_name`='$theaterName' AND `capacity` IS NULL";
+            $notSettedResult = mysqli_query($conn, $notSettedScreenSql);
+            if (mysqli_num_rows($notSettedResult) > 0) {
+                $data = [
+                    'status' => 400,
+                    'message' => mysqli_num_rows($notSettedResult). mysqli_num_rows($notSettedResult) > 1 ? 'screens are not setted.' : 'screen is not setted.',
+                ];
+                header("HTTP/1.0 400 Not setted");
+                echo json_encode($data);
+            }
             $amount = mysqli_real_escape_string($conn, $inputData['amount']);
             if ($amount !== '') {
                 $updateSql = "UPDATE `registered_theaters` SET `status`='$status',`advance_payment`='$amount' WHERE `name`='$theaterName'";
