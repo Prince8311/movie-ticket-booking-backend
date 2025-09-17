@@ -51,9 +51,10 @@ if ($requestMethod == 'POST') {
             $notSettedScreenSql = "SELECT * FROM `registered_screens` WHERE `theater_name`='$theaterName' AND `capacity` IS NULL";
             $notSettedResult = mysqli_query($conn, $notSettedScreenSql);
             if (mysqli_num_rows($notSettedResult) > 0) {
+                $count = mysqli_num_rows($notSettedResult);
                 $data = [
                     'status' => 400,
-                    'message' => mysqli_num_rows($notSettedResult). mysqli_num_rows($notSettedResult) > 1 ? 'screens are not setted.' : 'screen is not setted.',
+                    'message' => $count . ($count > 1 ? ' screens are not setted.' : ' screen is not setted.'),
                 ];
                 header("HTTP/1.0 400 Not setted");
                 echo json_encode($data);
