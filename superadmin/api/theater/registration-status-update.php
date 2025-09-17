@@ -58,6 +58,7 @@ if ($requestMethod == 'POST') {
                 ];
                 header("HTTP/1.0 400 Not setted");
                 echo json_encode($data);
+                return;
             }
             $amount = mysqli_real_escape_string($conn, $inputData['amount']);
             if ($amount !== '') {
