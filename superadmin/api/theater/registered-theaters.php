@@ -34,11 +34,9 @@ if ($requestMethod == 'GET') {
     global $conn;
 
     $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
-    $whereClause = "";
-
-    if ($status && in_array($status, $allowedStatuses)) {
-        $whereClause = "WHERE rt.`status` = '" . mysqli_real_escape_string($conn, $status) . "'";
-    }
+    $allowedStatusesSql = "'" . implode("','", $allowedStatuses) . "'";
+    $whereClause = "WHERE rt.`status` IN ($allowedStatusesSql)";
+    
     $sql = "SELECT * FROM `registered_theaters` rt $whereClause";
     $result = mysqli_query($conn, $sql);
     $totalTheaters = mysqli_num_rows($result);
