@@ -191,7 +191,7 @@ if ($requestMethod == 'POST') {
                         $mail->send();
                         $data = [
                             'status' => 200,
-                            'message' => 'Status updated successfully.',
+                            'message' => 'Registration completed successfully.',
                         ];
                         header("HTTP/1.0 200 Updated");
                         echo json_encode($data);
