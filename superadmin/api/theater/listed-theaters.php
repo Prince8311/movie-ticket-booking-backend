@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 session_start();
 
@@ -33,11 +33,11 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
+    $allowedStatuses = ['Completed', 'Published'];
     $whereClause = "";
-
+    
     if ($status && in_array($status, $allowedStatuses)) {
-        $whereClause = "WHERE rt.`status` = '" . mysqli_real_escape_string($conn, $status) . "'";
+        $whereClause = "WHERE `status` = '" . mysqli_real_escape_string($conn, $status) . "'";
     }
     $sql = "SELECT * FROM `registered_theaters` $whereClause";
     $result = mysqli_query($conn, $sql);
@@ -69,3 +69,5 @@ if ($requestMethod == 'GET') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
+
+?>
