@@ -33,7 +33,7 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
+    $allowedStatuses = ['Completed', 'Published'];
     $allowedStatusesSql = "'" . implode("','", $allowedStatuses) . "'";
     $whereClause = "WHERE rt.`status` IN ($allowedStatusesSql)";
 
