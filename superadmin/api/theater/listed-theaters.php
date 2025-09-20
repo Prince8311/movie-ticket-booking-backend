@@ -36,8 +36,8 @@ if ($requestMethod == 'GET') {
     $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
     $allowedStatusesSql = "'" . implode("','", $allowedStatuses) . "'";
     $whereClause = "WHERE rt.`status` IN ($allowedStatusesSql)";
-    
-    $sql = "SELECT * FROM `registered_theaters` $whereClause";
+
+    $sql = "SELECT * FROM `registered_theaters` rt $whereClause";
     $result = mysqli_query($conn, $sql);
     $totalTheaters = mysqli_num_rows($result);
     $limit = 10;
