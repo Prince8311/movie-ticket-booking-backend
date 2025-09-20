@@ -33,12 +33,10 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $allowedStatuses = ['Completed', 'Published'];
-    $whereClause = "";
+    $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
+    $allowedStatusesSql = "'" . implode("','", $allowedStatuses) . "'";
+    $whereClause = "WHERE rt.`status` IN ($allowedStatusesSql)";
     
-    if ($status && in_array($status, $allowedStatuses)) {
-        $whereClause = "WHERE `status` = '" . mysqli_real_escape_string($conn, $status) . "'";
-    }
     $sql = "SELECT * FROM `registered_theaters` $whereClause";
     $result = mysqli_query($conn, $sql);
     $totalTheaters = mysqli_num_rows($result);
