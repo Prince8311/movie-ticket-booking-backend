@@ -33,7 +33,7 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $sql = "SELECT `language` FROM `movie_languages`";
+    $sql = "SELECT `name` FROM `movie_languages`";
     $result = mysqli_query($conn, $sql);
 
     if($result) {
