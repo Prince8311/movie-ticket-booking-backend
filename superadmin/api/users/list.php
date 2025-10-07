@@ -33,7 +33,7 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $sql = "SELECT `name`, `phone`, `email`, `city`, FROM `users`";
+    $sql = "SELECT `name`, `phone`, `email`, `city` FROM `users`";
     $result = mysqli_query($conn, $sql);
 
     if($result) {
