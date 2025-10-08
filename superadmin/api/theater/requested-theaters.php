@@ -33,32 +33,36 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
-    $allowedStatusesSql = "'" . implode("','", $allowedStatuses) . "'";
-    $whereClause = "WHERE rt.`status` IN ($allowedStatusesSql)";
-    
-    $sql = "SELECT * FROM `registered_theaters` rt $whereClause";
-    $result = mysqli_query($conn, $sql);
-    $totalTheaters = mysqli_num_rows($result);
     $limit = 10;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
         ? (int)$_GET['page']
         : 1;
     $offset = ($page - 1) * $limit;
-
-    $limitSql = "SELECT rt.*, tu.phone FROM `registered_theaters` rt LEFT JOIN `theater_users` tu ON rt.`name` = tu.`theater_name` $whereClause LIMIT $limit OFFSET $offset";
+    $sql = "SELECT `name`, `theater_name`, `email`, `phone`, `city` FROM `requested_theaters`";
+    $result = mysqli_query($conn, $sql);
+    $totalTheaters = mysqli_num_rows($result);
+    $limitSql = "SELECT `name`, `theater_name`, `email`, `phone`, `city` FROM `requested_theaters` LIMIT $limit OFFSET $offset";
     $limitResult = mysqli_query($conn, $limitSql);
-    $theaters = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
 
-    $data = [
-        'status' => 200,
-        'message' => 'Registered theaters fetched.',
-        'totalCount' => $totalTheaters,
-        'currentPage' => $page,
-        'theaters' => $theaters,
-    ];
-    header("HTTP/1.0 200 Theater list");
-    echo json_encode($data);
+    if($result) {
+        $theaters = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
+        $data = [
+            'status' => 200,
+            'message' => 'Requested theaters fetched.',
+            'totalCount' => $totalTheaters,
+            'currentPage' => $page,
+            'theaters' => $theaters
+        ];
+        header("HTTP/1.0 200 Theater list");
+        echo json_encode($data);
+    } else {
+        $data = [
+            'status' => 500,
+            'message' => 'Database error: ' . $error
+        ];
+        header("HTTP/1.0 500 Internal Server Error");
+        echo json_encode($data);
+    }
 } else {
     $data = [
         'status' => 405,

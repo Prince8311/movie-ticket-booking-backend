@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 session_start();
 
@@ -33,32 +33,36 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
-    $allowedStatusesSql = "'" . implode("','", $allowedStatuses) . "'";
-    $whereClause = "WHERE rt.`status` IN ($allowedStatusesSql)";
-    
-    $sql = "SELECT * FROM `registered_theaters` rt $whereClause";
-    $result = mysqli_query($conn, $sql);
-    $totalTheaters = mysqli_num_rows($result);
     $limit = 10;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
         ? (int)$_GET['page']
         : 1;
     $offset = ($page - 1) * $limit;
-
-    $limitSql = "SELECT rt.*, tu.phone FROM `registered_theaters` rt LEFT JOIN `theater_users` tu ON rt.`name` = tu.`theater_name` $whereClause LIMIT $limit OFFSET $offset";
+    $sql = "SELECT * FROM `requested_movies`";
+    $result = mysqli_query($conn, $sql);
+    $totalMovies = mysqli_num_rows($result);
+    $limitSql = "SELECT * FROM `requested_movies` LIMIT $limit OFFSET $offset";
     $limitResult = mysqli_query($conn, $limitSql);
-    $theaters = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
 
-    $data = [
-        'status' => 200,
-        'message' => 'Registered theaters fetched.',
-        'totalCount' => $totalTheaters,
-        'currentPage' => $page,
-        'theaters' => $theaters,
-    ];
-    header("HTTP/1.0 200 Theater list");
-    echo json_encode($data);
+    if($result) {
+        $movies = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
+        $data = [
+            'status' => 200,
+            'message' => 'Requested movies fetched.',
+            'totalCount' => $totalMovies,
+            'currentPage' => $page,
+            'movies' => $movies
+        ];
+        header("HTTP/1.0 200 Movie list");
+        echo json_encode($data);
+    } else {
+        $data = [
+            'status' => 500,
+            'message' => 'Database error: ' . $error
+        ];
+        header("HTTP/1.0 500 Internal Server Error");
+        echo json_encode($data);
+    }
 } else {
     $data = [
         'status' => 405,
@@ -67,3 +71,5 @@ if ($requestMethod == 'GET') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
+
+?>
