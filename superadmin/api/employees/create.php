@@ -48,80 +48,78 @@ if ($requestMethod == 'POST') {
         $empMail = mysqli_real_escape_string($conn, $inputData['email']);
         $empRole = mysqli_real_escape_string($conn, $inputData['roleName']);
         $password = mysqli_real_escape_string($conn, $inputData['password']);
-        $confirmPassword = mysqli_real_escape_string($conn, $inputData['confirmPassword']);
         $status = 1;
+        $password = bin2hex(random_bytes(4));
+        $hashPass = password_hash($password, PASSWORD_DEFAULT);
 
-        if ($password == $confirmPassword) {
-            $hashPass = password_hash($password, PASSWORD_DEFAULT);
+        $checkSql = "SELECT * FROM `theater_users` WHERE `name` = '$empName' OR `email` = '$empMail' OR `phone` = '$empPhone'";
+        $checkResult = mysqli_query($conn, $checkSql);
+        if (mysqli_num_rows($checkResult) > 0) {
+            $data = [
+                'status' => 400,
+                'message' => 'User exists as a Theater Admin.'
+            ];
+            header("HTTP/1.0 400 Already exists");
+            echo json_encode($data);
+            exit;
+        }
 
-            $checkSql = "SELECT * FROM `theater_users` WHERE `name` = '$empName' OR `email` = '$empMail' OR `phone` = '$empPhone'";
-            $checkResult = mysqli_query($conn, $checkSql);
-            if(mysqli_num_rows($checkResult) > 0) {
-                $data = [
-                    'status' => 400,
-                    'message' => 'User exists as a Theater Admin.'
-                ];
-                header("HTTP/1.0 400 Already exists");
-                echo json_encode($data);
-                exit;
-            } 
+        $checkNameSql = "SELECT * FROM `admin_users` WHERE `name` = '$empName'";
+        $nameResult = mysqli_query($conn, $checkNameSql);
+        if (mysqli_num_rows($nameResult) > 0) {
+            $data = [
+                'status' => 400,
+                'message' => 'This name already exists.'
+            ];
+            header("HTTP/1.0 400 Already exists");
+            echo json_encode($data);
+            exit;
+        }
 
-            $checkNameSql = "SELECT * FROM `admin_users` WHERE `name` = '$empName'";
-            $nameResult = mysqli_query($conn, $checkNameSql);
-            if (mysqli_num_rows($nameResult) > 0) {
-                $data = [
-                    'status' => 400,
-                    'message' => 'This name already exists.'
-                ];
-                header("HTTP/1.0 400 Already exists");
-                echo json_encode($data);
-                exit;
-            }
+        $checkEmailSql = "SELECT * FROM `admin_users` WHERE `email` = '$empMail'";
+        $emailResult = mysqli_query($conn, $checkEmailSql);
+        if (mysqli_num_rows($emailResult) > 0) {
+            $data = [
+                'status' => 400,
+                'message' => 'This email is already registered.'
+            ];
+            header("HTTP/1.0 400 Already exists");
+            echo json_encode($data);
+            exit;
+        }
 
-            $checkEmailSql = "SELECT * FROM `admin_users` WHERE `email` = '$empMail'";
-            $emailResult = mysqli_query($conn, $checkEmailSql);
-            if (mysqli_num_rows($emailResult) > 0) {
-                $data = [
-                    'status' => 400,
-                    'message' => 'This email is already registered.'
-                ];
-                header("HTTP/1.0 400 Already exists");
-                echo json_encode($data);
-                exit;
-            }
+        $checkPhoneSql = "SELECT * FROM `admin_users` WHERE `phone` = '$empPhone'";
+        $phoneResult = mysqli_query($conn, $checkPhoneSql);
+        if (mysqli_num_rows($phoneResult) > 0) {
+            $data = [
+                'status' => 400,
+                'message' => 'This phone no. is already registered.'
+            ];
+            header("HTTP/1.0 400 Already exists");
+            echo json_encode($data);
+            exit;
+        }
 
-            $checkPhoneSql = "SELECT * FROM `admin_users` WHERE `phone` = '$empPhone'";
-            $phoneResult = mysqli_query($conn, $checkPhoneSql);
-            if (mysqli_num_rows($phoneResult) > 0) {
-                $data = [
-                    'status' => 400,
-                    'message' => 'This phone no. is already registered.'
-                ];
-                header("HTTP/1.0 400 Already exists");
-                echo json_encode($data);
-                exit;
-            }
+        $sql = "INSERT INTO `admin_users`(`name`, `email`, `phone`, `password`, `status`, `user_type`, `user_role`) VALUES ('$empName','$empMail','$empPhone','$hashPass','$status','$userType','$empRole')";
+        $result = mysqli_query($conn, $sql);
 
-            $sql = "INSERT INTO `admin_users`(`name`, `email`, `phone`, `password`, `status`, `user_type`, `user_role`) VALUES ('$empName','$empMail','$empPhone','$hashPass','$status','$userType','$empRole')";
-            $result = mysqli_query($conn, $sql);
+        if ($result) {
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host       = 'mail.ticketbay.in';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'noreply@ticketbay.in';
+                $mail->Password   = 'abhay$ticketbay@2024';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port       = 465;
+                $mail->CharSet = 'UTF-8';
 
-            if ($result) {
-                $mail = new PHPMailer(true);
-                try {
-                    $mail->isSMTP();
-                    $mail->Host       = 'mail.ticketbay.in';
-                    $mail->SMTPAuth   = true;
-                    $mail->Username   = 'noreply@ticketbay.in';
-                    $mail->Password   = 'abhay$ticketbay@2024';
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-                    $mail->Port       = 465;
-                    $mail->CharSet = 'UTF-8';
-
-                    $mail->isHTML(true);
-                    $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
-                    $mail->addAddress("$empMail", 'Employee');
-                    $mail->Subject = 'Account has been created.';
-                    $mail->Body    = '<!DOCTYPE html>
+                $mail->isHTML(true);
+                $mail->setFrom('noreply@ticketbay.in', 'noreply@ticketbay.in');
+                $mail->addAddress("$empMail", 'Employee');
+                $mail->Subject = 'Account has been created.';
+                $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
                                             <head>
                                                 <meta charset="UTF-8">
@@ -170,34 +168,26 @@ if ($requestMethod == 'POST') {
                                                 </div>
                                             </body>
                                         </html>';
-                    $mail->send();
-                    $data = [
-                        'status' => 200,
-                        'message' => 'Employee created successfully.'
-                    ];
-                    header("HTTP/1.0 200 OK");
-                    echo json_encode($data);
-                } catch (Exception $e) {
-                    $data = [
-                        'status' => 500,
-                        'message' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}",
-                    ];
-                    header("HTTP/1.0 500 Message could not be sent");
-                }
-            } else {
+                $mail->send();
+                $data = [
+                    'status' => 200,
+                    'message' => 'Employee created successfully.'
+                ];
+                header("HTTP/1.0 200 OK");
+                echo json_encode($data);
+            } catch (Exception $e) {
                 $data = [
                     'status' => 500,
-                    'message' => 'Database error: ' . $error
+                    'message' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}",
                 ];
-                header("HTTP/1.0 500 Internal Server Error");
-                echo json_encode($data);
+                header("HTTP/1.0 500 Message could not be sent");
             }
         } else {
             $data = [
-                'status' => 400,
-                'message' => 'Password mismatch'
+                'status' => 500,
+                'message' => 'Database error: ' . $error
             ];
-            header("HTTP/1.0 400 Validation error");
+            header("HTTP/1.0 500 Internal Server Error");
             echo json_encode($data);
         }
     } else {
