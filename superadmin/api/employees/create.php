@@ -54,7 +54,7 @@ if ($requestMethod == 'POST') {
         if ($password == $confirmPassword) {
             $hashPass = password_hash($password, PASSWORD_DEFAULT);
 
-            $checkSql = "SELECT * FROM `theater_users` WHERE `name` = '$name' OR `email` = '$email' OR `phone` = '$phone'";
+            $checkSql = "SELECT * FROM `theater_users` WHERE `name` = '$empName' OR `email` = '$empMail' OR `phone` = '$empPhone'";
             $checkResult = mysqli_query($conn, $checkSql);
             if(mysqli_num_rows($checkResult) > 0) {
                 $data = [
