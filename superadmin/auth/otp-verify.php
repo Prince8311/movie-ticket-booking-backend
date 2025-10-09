@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 session_start();
 header('Access-Control-Allow-Origin: http://localhost:3000');
@@ -15,22 +15,23 @@ if ($requestMethod == 'OPTIONS') {
 }
 
 
-if($requestMethod == 'POST') {
+if ($requestMethod == 'POST') {
     require "../../_db-connect.php";
     global $conn;
 
     $userId = $_SESSION['userId'] ?? '';
     $inputData = json_decode(file_get_contents("php://input"), true);
 
-    if(!empty($inputData)) {
+    if (!empty($inputData)) {
         $otp = mysqli_real_escape_string($conn, $inputData['otp']);
+        $authentication = isset($inputData['authentication']) ? (bool)$inputData['authentication'] : false;
 
         $sql = "SELECT * FROM `admin_users` WHERE `id` = '$userId'";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
         $savedOtp = $row['mail_otp'];
 
-        if($savedOtp === null) {
+        if ($savedOtp === null) {
             $data = [
                 'status' => 401,
                 'message' => 'Authentication error'
@@ -40,17 +41,30 @@ if($requestMethod == 'POST') {
             exit;
         }
 
-        if($savedOtp == $otp) {
-            $authToken = bin2hex(random_bytes(64));
-            setcookie("authToken", $authToken, time() + 86400, "/", ".ticketbay.in", true, true);
-            $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL, `token`='$authToken' WHERE `id` = '$userId'";
-            $updateUserResult = mysqli_query($conn, $updateUserSql);
-            $data = [
-                'status' => 200,
-                'message' => 'Authectication Successful',
-                'userId' => $userId,
-                'authToken' => $authToken
-            ];
+        if ($savedOtp == $otp) {
+            if ($authentication) {
+                $authToken = bin2hex(random_bytes(64));
+                setcookie("authToken", $authToken, time() + 86400, "/", ".ticketbay.in", true, true);
+
+                $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL, `token`='$authToken' WHERE `id` = '$userId'";
+                mysqli_query($conn, $updateUserSql);
+
+                $data = [
+                    'status' => 200,
+                    'message' => 'Authentication Successful',
+                    'userId' => $userId,
+                    'authToken' => $authToken
+                ];
+            } else {
+                $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL WHERE `id` = '$userId'";
+                mysqli_query($conn, $updateUserSql);
+
+                $data = [
+                    'status' => 200,
+                    'message' => 'Verification Successful'
+                ];
+            }
+
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
         } else {
@@ -69,14 +83,11 @@ if($requestMethod == 'POST') {
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);
     }
-
-} else{
+} else {
     $data = [
         'status' => 405,
-        'message' => $requestMethod. ' Method Not Allowed',
+        'message' => $requestMethod . ' Method Not Allowed',
     ];
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-?>
