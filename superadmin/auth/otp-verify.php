@@ -14,7 +14,6 @@ if ($requestMethod == 'OPTIONS') {
     exit();
 }
 
-
 if ($requestMethod == 'POST') {
     require "../../_db-connect.php";
     global $conn;

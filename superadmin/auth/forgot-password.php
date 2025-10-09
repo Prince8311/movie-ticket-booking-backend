@@ -93,7 +93,7 @@ if ($requestMethod == 'POST') {
                         $updateSql = "UPDATE `admin_users` SET `mail_otp`='$otp' WHERE `id` = '$userId'";
                         $updateResult = mysqli_query($conn, $updateSql);
 
-                        if ($result) {
+                        if ($updateResult) {
                             $_SESSION['userId'] = $userId;
                             $data = [
                                 'status' => 200,
