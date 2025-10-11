@@ -54,7 +54,18 @@ if ($requestMethod == 'POST') {
         if ($savedOtp == $otp) {
             if ($authentication) {
                 $authToken = bin2hex(random_bytes(64));
-                setcookie("authToken", $authToken, time() + 86400, "/", ".ticketbay.in", true, true);
+                setcookie(
+                    "authToken",
+                    $authToken,
+                    [
+                        'expires' => time() + 86400,
+                        'path' => '/',
+                        'domain' => '.ticketbay.in',
+                        'secure' => true, 
+                        'httponly' => true,
+                        'samesite' => 'None'    
+                    ]
+                );
 
                 $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL, `token`='$authToken' WHERE `id` = '$userId'";
                 mysqli_query($conn, $updateUserSql);
