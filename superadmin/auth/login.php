@@ -1,5 +1,15 @@
 <?php
 
+ini_set('session.cookie_samesite', 'None');
+ini_set('session.cookie_secure', 'true'); // only if using HTTPS
+session_set_cookie_params([
+    'lifetime' => 86400,
+    'path' => '/',
+    'domain' => '.ticketbay.in',  // important for cross-subdomain (superadmin.ticketbay.in, api.ticketbay.in, etc.)
+    'secure' => true,              // must be true if SameSite=None
+    'httponly' => true,
+    'samesite' => 'None'
+]);
 session_start();
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -160,5 +170,3 @@ if ($requestMethod == 'POST') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-?>
