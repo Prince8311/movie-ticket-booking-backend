@@ -33,7 +33,8 @@ if ($requestMethod == 'POST') {
         if ($savedOtp === null) {
             $data = [
                 'status' => 401,
-                'message' => 'Authentication error'
+                'message' => 'Authentication error',
+                'userId' => $userId
             ];
             header("HTTP/1.0 401 Authentication error");
             echo json_encode($data);
