@@ -1,32 +1,9 @@
 <?php
 
-ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_secure', 'true'); // only if using HTTPS
-session_set_cookie_params([
-    'lifetime' => 86400,
-    'path' => '/',
-    'domain' => '.ticketbay.in',  // important for cross-subdomain (superadmin.ticketbay.in, api.ticketbay.in, etc.)
-    'secure' => true,              // must be true if SameSite=None
-    'httponly' => true,
-    'samesite' => 'None'
-]);
-session_start();
+require "../../utils/headers.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-
-$requestMethod = $_SERVER["REQUEST_METHOD"];
-
-if ($requestMethod == 'OPTIONS') {
-    header('HTTP/1.1 200 OK');
-    exit();
-}
 
 if ($requestMethod == 'POST') {
     require "../../_db-connect.php";

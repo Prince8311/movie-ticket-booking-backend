@@ -1,19 +1,6 @@
 <?php
 
-session_start();
-header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-
-$requestMethod = $_SERVER["REQUEST_METHOD"];
-
-if ($requestMethod == 'OPTIONS') {
-    header('HTTP/1.1 200 OK');
-    exit();
-}
-
+require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
 $authResult = authenticateRequest();
@@ -36,7 +23,18 @@ if ($requestMethod == 'POST') {
     $sql = "UPDATE `admin_users` SET `token`= NULL WHERE `token`='$token'";
     $result = mysqli_query($conn, $sql);
     session_destroy();
-    setcookie("authToken", "", time() - 3600, "/", ".ticketbay.in", true, true);
+    setcookie(
+        "authToken",
+        "",
+        [
+            'expires' => time() - 3600,
+            'path' => '/',
+            'domain' => '.ticketbay.in',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None'
+        ]
+    );
     $data = [
         'status' => 200,
         'message' => 'Logged out successfylly.',

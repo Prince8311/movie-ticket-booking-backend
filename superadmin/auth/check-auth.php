@@ -1,29 +1,6 @@
-<?php 
+<?php
 
-ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_secure', 'true'); // only if using HTTPS
-session_set_cookie_params([
-    'lifetime' => 86400,
-    'path' => '/',
-    'domain' => '.ticketbay.in',  // important for cross-subdomain (superadmin.ticketbay.in, api.ticketbay.in, etc.)
-    'secure' => true,              // must be true if SameSite=None
-    'httponly' => true,
-    'samesite' => 'None'
-]);
-session_start();
-header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-
-$requestMethod = $_SERVER["REQUEST_METHOD"];
-
-if ($requestMethod == 'OPTIONS') {
-    header('HTTP/1.1 200 OK');
-    exit();
-}
-
+require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
 $authResult = authenticateRequest();
@@ -47,7 +24,7 @@ if ($requestMethod == 'GET') {
     $sql = "SELECT `name`, `image`, `email`, `phone`, `status`, `user_type`, `user_role` FROM `admin_users` WHERE `token` = '$authToken'";
     $result = mysqli_query($conn, $sql);
 
-    if(mysqli_num_rows($result) > 0)  {
+    if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
 
         $data = [
@@ -65,7 +42,6 @@ if ($requestMethod == 'GET') {
         header("HTTP/1.0 400 No Authentication");
         echo json_encode($data);
     }
-
 } else {
     $data = [
         'status' => 405,
@@ -74,5 +50,3 @@ if ($requestMethod == 'GET') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-?>
