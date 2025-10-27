@@ -40,11 +40,12 @@ if ($requestMethod == 'GET') {
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
-            $status = mysqli_fetch_assoc($result);
+            $res = mysqli_fetch_assoc($result);
+            $registrationStatus = $res['status'];
             $data = [
                 'status' => 200,
                 'message' => 'Status fetched successfully.',
-                'registrationStatus' => $status,
+                'registrationStatus' => $registrationStatus,
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
