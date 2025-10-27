@@ -36,7 +36,18 @@ if ($requestMethod == 'POST') {
     $sql = "UPDATE `theater_users` SET `token`= NULL WHERE `token`='$token'";
     $result = mysqli_query($conn, $sql);
     session_destroy();
-    setcookie("authToken", "", time() - 3600, "/", ".ticketbay.in", true, true);
+    setcookie(
+        "authToken",
+        "",
+        [
+            'expires' => time() - 3600,
+            'path' => '/',
+            'domain' => '.ticketbay.in',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None'
+        ]
+    );
     $data = [
         'status' => 200,
         'message' => 'Logged out successfylly.',
