@@ -29,6 +29,7 @@ if ($requestMethod == 'GET') {
             $screenData = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
             foreach ($screenData as &$screen) {
+                $screen['status'] = $screen['status'] == 1 ? true : false;
                 $screenId = $screen['screen_id'];
                 $sectionQuery = "SELECT * FROM `screen_sections` WHERE `screen_id`='$screenId'";
                 $sectionResult = mysqli_query($conn, $sectionQuery);
