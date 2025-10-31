@@ -30,15 +30,25 @@ if ($requestMethod == 'GET') {
 
             foreach ($screenData as &$screen) {
                 $screen['status'] = $screen['status'] == 1 ? true : false;
-                $screenId = $screen['screen_id'];
+                $screenId = $screen['id'];
                 $sectionQuery = "SELECT * FROM `screen_sections` WHERE `screen_id`='$screenId'";
                 $sectionResult = mysqli_query($conn, $sectionQuery);
 
                 if ($sectionResult) {
                     $sections = mysqli_fetch_all($sectionResult, MYSQLI_ASSOC);
                     $screen['sections'] = $sections;
+                    $allNullPrices = true;
+                    foreach ($sections as $section) {
+                        if (!is_null($section['price']) && $section['price'] !== '') {
+                            $allNullPrices = false;
+                            break;
+                        }
+                    }
+
+                    $screen['price'] = $allNullPrices ? false : true;
                 } else {
                     $screen['sections'] = [];
+                    $screen['price'] = false;
                 }
             }
 
