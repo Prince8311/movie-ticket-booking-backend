@@ -47,7 +47,6 @@ if ($requestMethod == 'GET') {
 
                     $screen['price'] = $allNullPrices ? false : true;
                 } else {
-                    $screen['sections'] = [];
                     $screen['price'] = false;
                 }
             }
