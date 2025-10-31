@@ -37,6 +37,15 @@ if ($requestMethod == 'GET') {
                 if ($sectionResult) {
                     $sections = mysqli_fetch_all($sectionResult, MYSQLI_ASSOC);
                     $screen['sections'] = $sections;
+                    $allNullPrices = true;
+                    foreach ($sections as $section) {
+                        if (!is_null($section['price']) && $section['price'] !== '') {
+                            $allNullPrices = false;
+                            break;
+                        }
+                    }
+
+                    $screen['price'] = $allNullPrices ? false : true;
                 } else {
                     $screen['sections'] = [];
                 }
