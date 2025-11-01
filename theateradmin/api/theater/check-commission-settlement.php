@@ -32,7 +32,7 @@ if ($requestMethod == 'GET') {
             if (is_null($theaterCommission)) {
                 $data = [
                     'status' => 201,
-                    'message' => 'Bad Request',
+                    'message' => 'Not Settled',
                     'note' => 'Commission is not settled yet. Please wait or contact admin to settle your commission.'
                 ];
                 header("HTTP/1.0 201 Not Settled");
@@ -43,7 +43,7 @@ if ($requestMethod == 'GET') {
             if (is_null($adminCommission)) {
                 $data = [
                     'status' => 201,
-                    'message' => 'Bad Request',
+                    'message' => 'Not Settled',
                     'note' => 'Taxes and charges are not settled yet. Please wait or contact admin to settle them, so that user can visit your theater after publish.'
                 ];
                 header("HTTP/1.0 201 Not Settled");
