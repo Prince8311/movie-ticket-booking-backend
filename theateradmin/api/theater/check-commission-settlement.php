@@ -31,22 +31,22 @@ if ($requestMethod == 'GET') {
 
             if (is_null($theaterCommission)) {
                 $data = [
-                    'status' => 400,
+                    'status' => 201,
                     'message' => 'Bad Request',
                     'note' => 'Commission is not settled yet. Please wait or contact admin to settle your commission.'
                 ];
-                header("HTTP/1.0 400 Bad Request");
+                header("HTTP/1.0 201 Not Settled");
                 echo json_encode($data);
                 return;
             }
 
             if (is_null($adminCommission)) {
                 $data = [
-                    'status' => 400,
+                    'status' => 201,
                     'message' => 'Bad Request',
                     'note' => 'Taxes and charges are not settled yet. Please wait or contact admin to settle them, so that user can visit your theater after publish.'
                 ];
-                header("HTTP/1.0 400 Bad Request");
+                header("HTTP/1.0 201 Not Settled");
                 echo json_encode($data);
                 return;
             }
