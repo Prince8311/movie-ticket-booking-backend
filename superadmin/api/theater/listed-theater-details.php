@@ -50,13 +50,13 @@ if ($requestMethod == 'GET') {
                 } else {
                     $screen['sections'] = [];
                 }
+                $theaterData['screens'] = $screenData;
             }
 
             $data = [
                 'status' => 200,
                 'message' => 'Theater details fetched',
-                'theaterDetails' => $theaterData,
-                'screenDetails' => $screenData
+                'theaterDetails' => $theaterData
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
