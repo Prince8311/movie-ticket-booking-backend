@@ -19,12 +19,12 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['theaterName']) && isset($_GET['range']) && isset($_GET['commissionTo'])) {
+    if (isset($_GET['theaterName']) && isset($_GET['commissionTo'])) {
         $theaterName = mysqli_real_escape_string($conn, $_GET['theaterName'] ?? '');
-        $range = mysqli_real_escape_string($conn, $_GET['range'] ?? '');
         $commissionTo = mysqli_real_escape_string($conn, $_GET['commissionTo'] ?? '');
 
         if ($commissionTo === 'admin') {
+            $range = mysqli_real_escape_string($conn, $_GET['range'] ?? '');
             $fetchSql = "SELECT `admin_commissions` FROM `registered_theaters` WHERE `name` = '$theaterName'";
             $fetchResult = mysqli_query($conn, $fetchSql);
 
@@ -113,6 +113,7 @@ if ($requestMethod == 'GET') {
                     header("HTTP/1.0 200 OK");
                     echo json_encode($data);
                 } else if ($commissionType === 'Multiple Commissions') {
+                    $range = mysqli_real_escape_string($conn, $_GET['range'] ?? '');
                     $commissions = json_decode($existingJson, true);
                     if (!is_array($commissions)) {
                         $data = [
