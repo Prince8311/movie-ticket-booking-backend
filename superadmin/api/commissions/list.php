@@ -29,11 +29,11 @@ if ($requestMethod == 'GET') {
 
             if ($result) {
                 $commissionData = mysqli_fetch_assoc($result);
-
+                $adminCommission = $commissionData['admin_commissions'];
                 $data = [
                     'status' => 200,
                     'message' => 'Admin commisions fetched',
-                    'commission' => $commissionData
+                    'commission' => $adminCommission
                 ];
                 header("HTTP/1.0 200 OK");
                 echo json_encode($data);
@@ -51,11 +51,13 @@ if ($requestMethod == 'GET') {
 
             if ($result) {
                 $commissionData = mysqli_fetch_assoc($result);
-
+                $commissionType = $commissionData['commission_type'];
+                $theaterCommission = $commissionData['commission'];
                 $data = [
                     'status' => 200,
                     'message' => 'Theater commisions fetched',
-                    'commission' => $commissionData
+                    'commissionType' => $commissionType,
+                    'commission' => $theaterCommission
                 ];
                 header("HTTP/1.0 200 OK");
                 echo json_encode($data);
