@@ -87,7 +87,7 @@ if ($requestMethod == 'GET') {
             }
         } else if ($commissionTo === 'theater') {
             $commissionType = mysqli_real_escape_string($conn, $_GET['commissionType'] ?? '');
-            $fetchSql = "SELECT `commission` FROM `registered_theaters` WHERE `name` = '$theaterName'";
+            $fetchSql = "SELECT `commission_type`, `commission` FROM `registered_theaters` WHERE `name` = '$theaterName'";
             $fetchResult = mysqli_query($conn, $fetchSql);
 
             if ($fetchResult && mysqli_num_rows($fetchResult) > 0) {
