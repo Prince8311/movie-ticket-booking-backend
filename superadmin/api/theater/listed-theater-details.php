@@ -30,8 +30,12 @@ if ($requestMethod == 'GET') {
         if ($result && $screenResult) {
             $theaterData = mysqli_fetch_assoc($result);
             $screenData = mysqli_fetch_all($screenResult, MYSQLI_ASSOC);
+            $allBlockTypesNull = true;
             foreach ($screenData as &$screen) {
                 $screen['status'] = $screen['status'] == 1 ? true : false;
+                if (!is_null($screen['block_type']) && $screen['block_type'] !== '') {
+                    $allBlockTypesNull = false;
+                }
                 $screenId = $screen['screen_id'];
                 $sectionQuery = "SELECT * FROM `screen_sections` WHERE `screen_id`='$screenId'";
                 $sectionResult = mysqli_query($conn, $sectionQuery);
@@ -52,6 +56,8 @@ if ($requestMethod == 'GET') {
                 }
                 $theaterData['screens'] = $screenData;
             }
+
+            $theaterData['seat_block'] = $allBlockTypesNull ? false : true;
 
             $data = [
                 'status' => 200,
