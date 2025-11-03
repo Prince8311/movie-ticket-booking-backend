@@ -65,10 +65,7 @@ if ($requestMethod == 'GET') {
                     $data = [
                         'status' => 200,
                         'message' => 'Commission found',
-                        'data' => [
-                            'range' => $range,
-                            'amount' => $foundAmount
-                        ]
+                        'amount' => $foundAmount
                     ];
                     header("HTTP/1.0 200 OK");
                     echo json_encode($data);
@@ -129,10 +126,7 @@ if ($requestMethod == 'GET') {
                     $data = [
                         'status' => 200,
                         'message' => 'Commission found',
-                        'data' => [
-                            'range' => $range,
-                            'amount' => $foundAmount
-                        ]
+                        'amount' => $foundAmount
                     ];
                     header("HTTP/1.0 200 OK");
                     echo json_encode($data);
