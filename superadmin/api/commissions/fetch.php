@@ -92,7 +92,18 @@ if ($requestMethod == 'GET') {
 
             if ($fetchResult && mysqli_num_rows($fetchResult) > 0) {
                 $row = mysqli_fetch_assoc($fetchResult);
+                $existingType = $row['commission'];
                 $existingJson = $row['commission'];
+
+                if (empty($existingType) || is_null($existingType)) {
+                    $data = [
+                        'status' => 404,
+                        'message' => 'Commission type is not setted for this theater'
+                    ];
+                    header("HTTP/1.0 404 Not Found");
+                    echo json_encode($data);
+                    exit;
+                }
 
                 if (empty($existingJson) || is_null($existingJson)) {
                     $data = [
@@ -105,10 +116,16 @@ if ($requestMethod == 'GET') {
                 }
 
                 if ($commissionType === 'Single Commission') {
+                    $amount = null;
+                    if($commissionType === $existingType) {
+                        $amount = $existingJson;
+                    } else {
+                        $amount = null;
+                    }
                     $data = [
                         'status' => 200,
                         'message' => 'Commission found',
-                        'amount' => $existingJson
+                        'amount' => $amount
                     ];
                     header("HTTP/1.0 200 OK");
                     echo json_encode($data);
