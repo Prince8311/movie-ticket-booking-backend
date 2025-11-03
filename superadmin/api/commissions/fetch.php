@@ -86,6 +86,7 @@ if ($requestMethod == 'GET') {
                 echo json_encode($data);
             }
         } else if ($commissionTo === 'theater') {
+            $commissionType = mysqli_real_escape_string($conn, $_GET['commissionType'] ?? '');
             $fetchSql = "SELECT `commission` FROM `registered_theaters` WHERE `name` = '$theaterName'";
             $fetchResult = mysqli_query($conn, $fetchSql);
 
@@ -103,40 +104,50 @@ if ($requestMethod == 'GET') {
                     exit;
                 }
 
-                $commissions = json_decode($existingJson, true);
-                if (!is_array($commissions)) {
-                    $data = [
-                        'status' => 500,
-                        'message' => 'Invalid commission data format'
-                    ];
-                    header("HTTP/1.0 500 Internal Server Error");
-                    echo json_encode($data);
-                    exit;
-                }
-
-                $foundAmount = null;
-                foreach ($commissions as $commission) {
-                    if (isset($commission['range']) && $commission['range'] === $range) {
-                        $foundAmount = $commission['amount'];
-                        break;
-                    }
-                }
-
-                if (!is_null($foundAmount)) {
+                if ($commissionType === 'Single Commission') {
                     $data = [
                         'status' => 200,
                         'message' => 'Commission found',
-                        'amount' => $foundAmount
+                        'amount' => $existingJson
                     ];
                     header("HTTP/1.0 200 OK");
                     echo json_encode($data);
-                } else {
-                    $data = [
-                        'status' => 404,
-                        'message' => 'No commission found for the given range'
-                    ];
-                    header("HTTP/1.0 404 Not Found");
-                    echo json_encode($data);
+                } else if ($commissionType === 'Multiple Commissions') {
+                    $commissions = json_decode($existingJson, true);
+                    if (!is_array($commissions)) {
+                        $data = [
+                            'status' => 500,
+                            'message' => 'Invalid commission data format'
+                        ];
+                        header("HTTP/1.0 500 Internal Server Error");
+                        echo json_encode($data);
+                        exit;
+                    }
+
+                    $foundAmount = null;
+                    foreach ($commissions as $commission) {
+                        if (isset($commission['range']) && $commission['range'] === $range) {
+                            $foundAmount = $commission['amount'];
+                            break;
+                        }
+                    }
+
+                    if (!is_null($foundAmount)) {
+                        $data = [
+                            'status' => 200,
+                            'message' => 'Commission found',
+                            'amount' => $foundAmount
+                        ];
+                        header("HTTP/1.0 200 OK");
+                        echo json_encode($data);
+                    } else {
+                        $data = [
+                            'status' => 404,
+                            'message' => 'No commission found for the given range'
+                        ];
+                        header("HTTP/1.0 404 Not Found");
+                        echo json_encode($data);
+                    }
                 }
             } else {
                 $data = [
