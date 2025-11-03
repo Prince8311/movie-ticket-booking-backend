@@ -30,6 +30,13 @@ if ($requestMethod == 'GET') {
             if ($result) {
                 $commissionData = mysqli_fetch_assoc($result);
                 $adminCommission = $commissionData['admin_commissions'];
+
+                if (!empty($adminCommission) && !is_null($adminCommission)) {
+                    $adminCommission = json_decode($adminCommission, true);
+                } else {
+                    $adminCommission = null;
+                }
+
                 $data = [
                     'status' => 200,
                     'message' => 'Admin commisions fetched',
@@ -53,6 +60,13 @@ if ($requestMethod == 'GET') {
                 $commissionData = mysqli_fetch_assoc($result);
                 $commissionType = $commissionData['commission_type'];
                 $theaterCommission = $commissionData['commission'];
+                if (!empty($theaterCommission) && !is_null($theaterCommission)) {
+                    if ($commissionType === 'Multiple Commissions') {
+                        $theaterCommission = json_decode($theaterCommission, true);
+                    }
+                } else {
+                    $theaterCommission = null;
+                }
                 $data = [
                     'status' => 200,
                     'message' => 'Theater commisions fetched',
