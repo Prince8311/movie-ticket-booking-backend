@@ -19,47 +19,50 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['type'])) {
-        $type = mysqli_real_escape_string($conn, $_GET['type']);
+    if (isset($_GET['theaterName']) && isset($_GET['commissionTo'])) {
+        $theaterName = mysqli_real_escape_string($conn, $_GET['theaterName'] ?? '');
+        $commissionTo = mysqli_real_escape_string($conn, $_GET['commissionTo'] ?? '');
 
-        if ($type == "admin") {
-            $sql = "SELECT * FROM `admin_commission_slabs`";
+        if ($commissionTo === 'admin') {
+            $sql = "SELECT `admin_commissions` FROM `registered_theaters` WHERE `name`='$theaterName'";
             $result = mysqli_query($conn, $sql);
 
             if ($result) {
-                $slabs = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                $commissionData = mysqli_fetch_assoc($result);
+
                 $data = [
                     'status' => 200,
-                    'message' => 'Admin slabs fetched.',
-                    'slabs' => $slabs
+                    'message' => 'Admin commisions fetched',
+                    'commission' => $commissionData
                 ];
                 header("HTTP/1.0 200 OK");
                 echo json_encode($data);
             } else {
                 $data = [
                     'status' => 500,
-                    'message' => 'Database error: ' . $error
+                    'message' => 'Database error: ' . mysqli_error($conn)
                 ];
                 header("HTTP/1.0 500 Internal Server Error");
                 echo json_encode($data);
             }
-        } else if ($type == "theater") {
-            $sql = "SELECT * FROM `theater_commission_slabs`";
+        } else if ($commissionTo === 'theater') {
+            $sql = "SELECT `commission_type`, `commission` FROM `registered_theaters` WHERE `name`='$theaterName'";
             $result = mysqli_query($conn, $sql);
 
             if ($result) {
-                $slabs = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                $commissionData = mysqli_fetch_assoc($result);
+
                 $data = [
                     'status' => 200,
-                    'message' => 'Theater slabs fetched.',
-                    'slabs' => $slabs
+                    'message' => 'Theater commisions fetched',
+                    'commission' => $commissionData
                 ];
                 header("HTTP/1.0 200 OK");
                 echo json_encode($data);
             } else {
                 $data = [
                     'status' => 500,
-                    'message' => 'Database error: ' . $error
+                    'message' => 'Database error: ' . mysqli_error($conn)
                 ];
                 header("HTTP/1.0 500 Internal Server Error");
                 echo json_encode($data);
@@ -68,9 +71,9 @@ if ($requestMethod == 'GET') {
     } else {
         $data = [
             'status' => 400,
-            'message' => 'No parameter found',
+            'message' => 'Parameters are missing'
         ];
-        header("HTTP/1.0 400 No parameter");
+        header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);
     }
 } else {

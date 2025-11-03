@@ -22,7 +22,7 @@ if ($requestMethod == 'GET') {
     if (isset($_GET['theaterName'])) {
         $theaterName = mysqli_real_escape_string($conn, $_GET['theaterName'] ?? '');
 
-        $sql = "SELECT * FROM `registered_theaters` WHERE `name`='$theaterName'";
+        $sql = "SELECT `id`, `name`, `gst_no`, `screen_no`, `state`, `city`, `location`, `status`, `reject_reason`, `advance_payment` FROM `registered_theaters` WHERE `name`='$theaterName'";
         $result = mysqli_query($conn, $sql);
         $screenSql = "SELECT * FROM `registered_screens` WHERE `theater_name`='$theaterName'";
         $screenResult = mysqli_query($conn, $screenSql);
@@ -65,6 +65,13 @@ if ($requestMethod == 'GET') {
                 'theaterDetails' => $theaterData
             ];
             header("HTTP/1.0 200 OK");
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 500,
+                'message' => 'Database error: ' . mysqli_error($conn)
+            ];
+            header("HTTP/1.0 500 Internal Server Error");
             echo json_encode($data);
         }
     } else {
