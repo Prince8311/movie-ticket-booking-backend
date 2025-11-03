@@ -101,8 +101,8 @@ if ($requestMethod == 'POST') {
                         $data = [
                             'status' => 200,
                             'message' => $isNew
-                                ? 'Single commission added successfully'
-                                : 'Single commission updated successfully'
+                                ? 'Commission added'
+                                : 'Commission updated'
                         ];
                         header("HTTP/1.0 200 OK");
                         echo json_encode($data);
@@ -162,8 +162,8 @@ if ($requestMethod == 'POST') {
                         $data = [
                             'status' => 200,
                             'message' => $found
-                                ? 'Commission updated successfully'
-                                : 'Commission added successfully'
+                                ? 'Commission updated'
+                                : 'Commission added'
                         ];
                         header("HTTP/1.0 200 OK");
                         echo json_encode($data);
