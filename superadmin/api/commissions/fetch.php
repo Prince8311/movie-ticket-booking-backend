@@ -92,7 +92,7 @@ if ($requestMethod == 'GET') {
 
             if ($fetchResult && mysqli_num_rows($fetchResult) > 0) {
                 $row = mysqli_fetch_assoc($fetchResult);
-                $existingType = $row['commission'];
+                $existingType = $row['commission_type'];
                 $existingJson = $row['commission'];
 
                 if (empty($existingType) || is_null($existingType)) {
