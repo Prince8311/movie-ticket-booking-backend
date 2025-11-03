@@ -61,7 +61,7 @@ if ($requestMethod == 'POST') {
                 if ($updateResult) {
                     $data = [
                         'status' => 200,
-                        'message' => $found ? 'Commission updated successfully' : 'Commission added successfully'
+                        'message' => $found ? 'Commission updated' : 'Commission added'
                     ];
                     header("HTTP/1.0 200 OK");
                     echo json_encode($data);
