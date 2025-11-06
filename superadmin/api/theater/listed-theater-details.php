@@ -22,7 +22,7 @@ if ($requestMethod == 'GET') {
     if (isset($_GET['theaterName'])) {
         $theaterName = mysqli_real_escape_string($conn, $_GET['theaterName'] ?? '');
 
-        $sql = "SELECT `id`, `name`, `gst_no`, `screen_no`, `state`, `city`, `location`, `status`, `reject_reason`, `advance_payment` FROM `registered_theaters` WHERE `name`='$theaterName'";
+        $sql = "SELECT `id`, `name`, `gst_no`, `screen_no`, `state`, `city`, `location`, `reject_reason`, `advance_payment` FROM `registered_theaters` WHERE `name`='$theaterName'";
         $result = mysqli_query($conn, $sql);
         $screenSql = "SELECT * FROM `registered_screens` WHERE `theater_name`='$theaterName'";
         $screenResult = mysqli_query($conn, $screenSql);
