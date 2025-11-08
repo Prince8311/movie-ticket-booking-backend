@@ -3,8 +3,6 @@
 require "../../../utils/headers.php";
 require "../../../utils/middleware.php";
 
-require "../../../utils/middleware.php";
-
 $authResult = authenticateRequest();
 
 if (!$authResult['authenticated']) {
@@ -22,7 +20,9 @@ if ($requestMethod == 'GET') {
     global $conn;
 
     if (isset($_GET['members'])) {
-        $membersArray = explode(',', $_GET['members']);
+        $membersParam = $_GET['members'];
+        $decoded = urldecode($membersParam);
+        $membersArray = explode(',', $decoded);
         $nonExistentNames = [];
         $exists = 0;
 
