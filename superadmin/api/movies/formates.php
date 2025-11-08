@@ -19,15 +19,15 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $sql = "SELECT `name` FROM `movie_formates`";
+    $sql = "SELECT `name` FROM `movie_formats`";
     $result = mysqli_query($conn, $sql);
 
     if($result) {
-        $formates = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $formats = mysqli_fetch_all($result, MYSQLI_ASSOC);
         $data = [
             'status' => 200,
-            'message' => 'Formates fetched successfully.',
-            'formates' => $formates
+            'message' => 'Formats fetched successfully.',
+            'formats' => $formats
         ];
         header("HTTP/1.0 200 Formates");
         echo json_encode($data);
