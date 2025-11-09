@@ -3,8 +3,6 @@
 require "../../../utils/headers.php";
 require "../../../utils/middleware.php";
 
-require "../../../utils/middleware.php";
-
 $authResult = authenticateRequest();
 
 if (!$authResult['authenticated']) {
@@ -47,7 +45,7 @@ if ($requestMethod == 'POST') {
                         'status' => 500,
                         'message' => 'Database error: ' . mysqli_error($conn)
                     ];
-                    header("HTTP/1.0 500 Internal Server Errorrrrr");
+                    header("HTTP/1.0 500 Internal Server Error");
                     echo json_encode($response);
                 }
             } else {
@@ -55,7 +53,7 @@ if ($requestMethod == 'POST') {
                     'status' => 500,
                     'message' => 'Sorry, there was an error uploading your file.'
                 ];
-                header("HTTP/1.0 500 Internal Server Errorrrrr");
+                header("HTTP/1.0 500 Internal Server Error");
                 echo json_encode($response);
             }
         } else {
