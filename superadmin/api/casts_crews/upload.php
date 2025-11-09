@@ -55,7 +55,7 @@ if ($requestMethod == 'POST') {
                     'status' => 500,
                     'message' => 'Sorry, there was an error uploading your file.'
                 ];
-                header("HTTP/1.0 500 Internal Server Error");
+                header("HTTP/1.0 500 Internal Server Errorrrrr");
                 echo json_encode($response);
             }
         } else {
