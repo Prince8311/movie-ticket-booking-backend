@@ -47,7 +47,7 @@ if ($requestMethod == 'POST') {
                         'status' => 500,
                         'message' => 'Database error: ' . mysqli_error($conn)
                     ];
-                    header("HTTP/1.0 500 Internal Server Error");
+                    header("HTTP/1.0 500 Internal Server Errorrrrr");
                     echo json_encode($response);
                 }
             } else {
