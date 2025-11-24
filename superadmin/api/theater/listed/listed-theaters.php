@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 session_start();
 
@@ -33,11 +33,11 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $allowedStatuses = ['Pending', 'Confirmed', 'Processing', 'Rejected'];
+    $allowedStatuses = ['Completed', 'Published'];
     $allowedStatusesSql = "'" . implode("','", $allowedStatuses) . "'";
     $whereClause = "WHERE rt.`status` IN ($allowedStatusesSql)";
-    
-    $sql = "SELECT * FROM `registered_theaters` rt $whereClause";
+
+    $sql = "SELECT * FROM `registered_theaters` rt $whereClause ORDER BY rt.`id` DESC";
     $result = mysqli_query($conn, $sql);
     $totalTheaters = mysqli_num_rows($result);
     $limit = 10;
@@ -46,13 +46,13 @@ if ($requestMethod == 'GET') {
         : 1;
     $offset = ($page - 1) * $limit;
 
-    $limitSql = "SELECT rt.*, tu.phone FROM `registered_theaters` rt LEFT JOIN `theater_users` tu ON rt.`name` = tu.`theater_name` $whereClause LIMIT $limit OFFSET $offset";
+    $limitSql = "SELECT rt.*, tu.phone FROM `registered_theaters` rt LEFT JOIN `theater_users` tu ON rt.`name` = tu.`theater_name` $whereClause LIMIT $limit OFFSET $offset ORDER BY rt.`id` DESC";
     $limitResult = mysqli_query($conn, $limitSql);
     $theaters = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
 
     $data = [
         'status' => 200,
-        'message' => 'Registered theaters fetched.',
+        'message' => 'Registered theaters fetched',
         'totalCount' => $totalTheaters,
         'currentPage' => $page,
         'theaters' => $theaters,
@@ -67,3 +67,5 @@ if ($requestMethod == 'GET') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
+
+?>
