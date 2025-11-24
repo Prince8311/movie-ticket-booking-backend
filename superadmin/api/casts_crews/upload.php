@@ -34,35 +34,35 @@ if ($requestMethod == 'POST') {
                 $sql = "INSERT INTO `movie_casts_crews`(`name`, `profile_image`) VALUES ('$memberName','$imageName')";
                 $result = mysqli_query($conn, $sql);
                 if ($result) {
-                    $response = [
+                    $data = [
                         'status' => 200,
                         'message' => 'Image uploaded'
                     ];
                     header("HTTP/1.0 200 Uploaded");
-                    echo json_encode($response);
+                    echo json_encode($data);
                 } else {
-                    $response = [
+                    $data = [
                         'status' => 500,
                         'message' => 'Database error: ' . mysqli_error($conn)
                     ];
                     header("HTTP/1.0 500 Internal Server Error");
-                    echo json_encode($response);
+                    echo json_encode($data);
                 }
             } else {
-                $response = [
+                $data = [
                     'status' => 500,
                     'message' => 'Sorry, there was an error uploading your file.'
                 ];
                 header("HTTP/1.0 500 Internal Server Error");
-                echo json_encode($response);
+                echo json_encode($data);
             }
         } else {
-            $response = [
+            $data = [
                 'status' => 400,
                 'message' => 'File is not an image.'
             ];
             header("HTTP/1.0 400 Bad Request");
-            echo json_encode($response);
+            echo json_encode($data);
         }
     } else {
         $data = [

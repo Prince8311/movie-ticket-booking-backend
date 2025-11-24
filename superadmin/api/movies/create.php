@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 session_start();
 
@@ -37,18 +37,61 @@ if ($requestMethod == 'POST') {
         $inputData = json_decode($_POST['inputs'], true);
 
         $name = mysqli_real_escape_string($conn, $inputData['name']);
-        $languages = mysqli_real_escape_string($conn, $inputData['languages']);
         $activity = mysqli_real_escape_string($conn, $inputData['activity']);
-        $genres = mysqli_real_escape_string($conn, $inputData['genres']);
-        $formates = mysqli_real_escape_string($conn, $inputData['formates']);
-        $date = mysqli_real_escape_string($conn, $inputData['date']);
+        $formats = mysqli_real_escape_string($conn, $inputData['formats']);
+        $languages = mysqli_real_escape_string($conn, $inputData['languages']);
+        $releaseDate = mysqli_real_escape_string($conn, $inputData['releaseDate']);
         $time = mysqli_real_escape_string($conn, $inputData['time']);
+        $ageCategory = mysqli_real_escape_string($conn, $inputData['ageCategory']);
+        $genres = mysqli_real_escape_string($conn, $inputData['genres']);
         $trailer = mysqli_real_escape_string($conn, $inputData['trailer']);
         $casts = mysqli_real_escape_string($conn, $inputData['casts']);
         $crews = mysqli_real_escape_string($conn, $inputData['crews']);
         $description = mysqli_real_escape_string($conn, $inputData['description']);
 
         $imageData = $_FILES['image'];
+        $folder = "../../../posters/";
+        $timestamp = date('YmdHis');
+        $imageName = $name . $timestamp . '.png';
+        $imageDirectory = $folder . $imageName;
+        $image = getimagesize($imageData['tmp_name']);
+
+        if ($image !== false) {
+            $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
+            if ($save) {
+                $sql = "INSERT INTO `movies`(`name`, `poster_image`, `release_date`, `total_time`, `languages`, `activity`, `formats`, `age_category`, `genres`, `casts`, `crews`, `trailer`, `description`) VALUES ('$name','$imageName','$releaseDate','$time','$languages','$activity','$formats','$ageCategory','$genres','$casts','$crews','$trailer','$description')";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    $data = [
+                        'status' => 200,
+                        'message' => 'Movie uploaded successfully.'
+                    ];
+                    header("HTTP/1.0 200 Uploaded");
+                    echo json_encode($data);
+                } else {
+                    $data = [
+                        'status' => 500,
+                        'message' => 'Database error: ' . mysqli_error($conn)
+                    ];
+                    header("HTTP/1.0 500 Internal Server Error");
+                    echo json_encode($data);
+                }
+            } else {
+                $data = [
+                    'status' => 500,
+                    'message' => 'Sorry, there was an error uploading your file.'
+                ];
+                header("HTTP/1.0 500 Internal Server Error");
+                echo json_encode($data);
+            }
+        } else {
+            $data = [
+                'status' => 400,
+                'message' => 'File is not an image.'
+            ];
+            header("HTTP/1.0 400 Bad Request");
+            echo json_encode($data);
+        }
     } else {
         $data = [
             'status' => 400,
@@ -65,5 +108,3 @@ if ($requestMethod == 'POST') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-?>
