@@ -19,12 +19,23 @@ if ($requestMethod == 'POST') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $data = [
-        'status' => 200,
-        'message' => 'Movie uploaded successfully.'
-    ];
-    header("HTTP/1.0 200 Uploaded");
-    echo json_encode($data);
+    if (isset($_POST['inputs']) && isset($_FILES['image'])) {
+        $inputData = json_decode($_POST['inputs'], true);
+
+        $data = [
+            'status' => 200,
+            'message' => 'Movie uploaded successfully.'
+        ];
+        header("HTTP/1.0 200 Uploaded");
+        echo json_encode($data);
+    } else {
+        $data = [
+            'status' => 400,
+            'message' => 'Empty request data'
+        ];
+        header("HTTP/1.0 400 Bad Request");
+        echo json_encode($data);
+    }
 } else {
     $data = [
         'status' => 405,
