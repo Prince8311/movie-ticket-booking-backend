@@ -34,7 +34,8 @@ if ($requestMethod == 'POST') {
         $crews = mysqli_real_escape_string($conn, $inputData['crews']);
         $description = mysqli_real_escape_string($conn, $inputData['description']);
         $releaseDateRaw = $inputData['releaseDate'];
-        $releaseDateFormatted = date("d M, Y", strtotime($releaseDateRaw));
+        $normalizedDate = str_replace(',', '', $releaseDateRaw);
+        $releaseDateFormatted = date("d M, Y", strtotime($normalizedDate));
         $releaseDate = mysqli_real_escape_string($conn, $releaseDateFormatted);
 
         $imageData = $_FILES['image'];
