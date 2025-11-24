@@ -1,7 +1,7 @@
 <?php
 
-require "../../../utils/headers.php";
-require "../../../utils/middleware.php";
+require "../../../../utils/headers.php";
+require "../../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 
@@ -16,7 +16,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'GET') {
-    require "../../../_db-connect.php";
+    require "../../../../_db-connect.php";
     global $conn;
 
     if (isset($_GET['theaterName'])) {

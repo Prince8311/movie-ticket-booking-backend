@@ -1,24 +1,10 @@
 <?php
 
-session_start();
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-
-$requestMethod = $_SERVER["REQUEST_METHOD"];
-
-if ($requestMethod == 'OPTIONS') {
-    header('HTTP/1.1 200 OK');
-    exit();
-}
-
-require "../../../utils/middleware.php";
+require "../../../../../utils/headers.php";
+require "../../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 
@@ -33,12 +19,12 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../../_db-connect.php";
+    require "../../../../_db-connect.php";
     global $conn;
 
-    require '../../../PHPMailer/Exception.php';
-    require '../../../PHPMailer/PHPMailer.php';
-    require '../../../PHPMailer/SMTP.php';
+    require '../../../../PHPMailer/Exception.php';
+    require '../../../../PHPMailer/PHPMailer.php';
+    require '../../../../PHPMailer/SMTP.php';
 
     $inputData = json_decode(file_get_contents("php://input"), true);
 
