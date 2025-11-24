@@ -38,10 +38,10 @@ if ($requestMethod == 'GET') {
         ? (int)$_GET['page']
         : 1;
     $offset = ($page - 1) * $limit;
-    $sql = "SELECT `name`, `phone`, `email`, `city` FROM `users`";
+    $sql = "SELECT `name`, `phone`, `email`, `city` FROM `users` ORDER BY `id` DESC";
     $result = mysqli_query($conn, $sql);
     $totalUser = mysqli_num_rows($result);
-    $limitSql = "SELECT `name`, `phone`, `email`, `city` FROM `users` LIMIT $limit OFFSET $offset";
+    $limitSql = "SELECT `name`, `phone`, `email`, `city` FROM `users` ORDER BY `id` DESC LIMIT $limit OFFSET $offset";
     $limitResult = mysqli_query($conn, $limitSql);
 
     if($result) {
