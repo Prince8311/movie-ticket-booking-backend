@@ -42,13 +42,42 @@ if ($requestMethod == 'POST') {
         $imageDirectory = $folder . $imageName;
         $image = getimagesize($imageData['tmp_name']);
 
-        $data = [
-            'status' => 200,
-            'message' => 'Movie uploaded successfully.',
-            'imageName' => $imageName
-        ];
-        header("HTTP/1.0 200 Uploaded");
-        echo json_encode($data);
+        if ($image !== false) {
+            $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
+            if ($save) {
+                $sql = "INSERT INTO `movies`(`name`, `poster_image`, `release_date`, `total_time`, `languages`, `activity`, `formats`, `age_category`, `genres`, `casts`, `crews`, `trailer`, `description`) VALUES ('$name','$imageName','$releaseDate','$time','$languages','$activity','$formats','$ageCategory','$genres','$casts','$crews','$trailer','$description')";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    $data = [
+                        'status' => 200,
+                        'message' => 'Movie uploaded successfully.'
+                    ];
+                    header("HTTP/1.0 200 Uploaded");
+                    echo json_encode($data);
+                } else {
+                    $data = [
+                        'status' => 500,
+                        'message' => 'Database error: ' . mysqli_error($conn)
+                    ];
+                    header("HTTP/1.0 500 Internal Server Error");
+                    echo json_encode($data);
+                }
+            } else {
+                $data = [
+                    'status' => 500,
+                    'message' => 'Sorry, there was an error uploading your file.'
+                ];
+                header("HTTP/1.0 500 Internal Server Error");
+                echo json_encode($data);
+            }
+        } else {
+            $data = [
+                'status' => 400,
+                'message' => 'File is not an image.'
+            ];
+            header("HTTP/1.0 400 Bad Request");
+            echo json_encode($data);
+        }
     } else {
         $data = [
             'status' => 400,
