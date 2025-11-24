@@ -23,7 +23,7 @@ if ($requestMethod == 'GET') {
     $allowedStatusesSql = "'" . implode("','", $allowedStatuses) . "'";
     $whereClause = "WHERE rt.`status` IN ($allowedStatusesSql)";
 
-    $sql = "SELECT * FROM `registered_theaters` rt $whereClause ORDER BY rt.`id` DESC";
+    $sql = "SELECT * FROM `registered_theaters` rt $whereClause";
     $result = mysqli_query($conn, $sql);
     $totalTheaters = mysqli_num_rows($result);
     $limit = 10;
@@ -32,7 +32,7 @@ if ($requestMethod == 'GET') {
         : 1;
     $offset = ($page - 1) * $limit;
 
-    $limitSql = "SELECT rt.*, tu.phone FROM `registered_theaters` rt LEFT JOIN `theater_users` tu ON rt.`name` = tu.`theater_name` $whereClause LIMIT $limit OFFSET $offset ORDER BY rt.`id` DESC";
+    $limitSql = "SELECT rt.*, tu.phone FROM `registered_theaters` rt LEFT JOIN `theater_users` tu ON rt.`name` = tu.`theater_name` $whereClause LIMIT $limit OFFSET $offset";
     $limitResult = mysqli_query($conn, $limitSql);
     $theaters = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
 

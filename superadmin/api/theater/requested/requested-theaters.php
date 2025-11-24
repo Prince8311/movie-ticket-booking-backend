@@ -1,6 +1,6 @@
 <?php
 
-require "../../../../../utils/headers.php";
+require "../../../../utils/headers.php";
 require "../../../../utils/middleware.php";
 
 $authResult = authenticateRequest();

@@ -3,7 +3,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require "../../../../../utils/headers.php";
+require "../../../../utils/headers.php";
 require "../../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
