@@ -25,7 +25,7 @@ if ($requestMethod == 'GET') {
         $screenId = mysqli_real_escape_string($conn, $_GET['screenId'] ?? '');
         $section = mysqli_real_escape_string($conn, $_GET['section'] ?? '');
 
-        $sql = "SELECT `price` FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section_name`='$sectionName'";
+        $sql = "SELECT `price` FROM `screen_sections` WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId' AND `section_name`='$section'";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
