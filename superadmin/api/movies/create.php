@@ -39,7 +39,7 @@ if ($requestMethod == 'POST') {
         $releaseDate = mysqli_real_escape_string($conn, $releaseDateFormatted);
 
         $imageData = $_FILES['image'];
-        $folder = "../../../posters/";
+        $folder = "../../../posters/movies/";
         $timestamp = date('YmdHis');
         $imageName = $name . $timestamp . '.png';
         $imageDirectory = $folder . $imageName;
