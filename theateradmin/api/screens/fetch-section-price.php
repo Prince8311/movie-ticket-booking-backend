@@ -29,7 +29,7 @@ if ($requestMethod == 'GET') {
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
-            $secData = mysqli_fetch_assoc($checkResult);
+            $secData = mysqli_fetch_assoc($result);
             $secPrice = $secData['price'];
 
             $data = [
