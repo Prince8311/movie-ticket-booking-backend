@@ -59,7 +59,7 @@ if ($requestMethod == 'POST') {
             $screenStatus = 1;
             $theaterStatus = 'Published';
 
-            $theaterUpdateSql = "UPDATE `registered_theaters` SET `status`='$theaterStatu' WHERE `name`='$theaterName'";
+            $theaterUpdateSql = "UPDATE `registered_theaters` SET `status`='$theaterStatus' WHERE `name`='$theaterName'";
             $theaterUpdateResult = mysqli_query($conn, $theaterUpdateSql);
 
             $screenUpdateSql = "UPDATE `registered_screens` SET `status`='$screenStatus' WHERE `name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId'";
