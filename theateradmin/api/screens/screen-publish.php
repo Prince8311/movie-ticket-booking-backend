@@ -62,7 +62,7 @@ if ($requestMethod == 'POST') {
             $theaterUpdateSql = "UPDATE `registered_theaters` SET `status`='$theaterStatus' WHERE `name`='$theaterName'";
             $theaterUpdateResult = mysqli_query($conn, $theaterUpdateSql);
 
-            $screenUpdateSql = "UPDATE `registered_screens` SET `status`='$screenStatus' WHERE `name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId'";
+            $screenUpdateSql = "UPDATE `registered_screens` SET `status`='$screenStatus' WHERE `theater_name`='$theaterName' AND `screen`='$screen' AND `screen_id`='$screenId'";
             $screenUpdateResult = mysqli_query($conn, $screenUpdateSql);
 
             if ($theaterUpdateResult && $screenUpdateResult) {
