@@ -37,15 +37,22 @@ if ($requestMethod == 'GET') {
                 if ($sectionResult) {
                     $sections = mysqli_fetch_all($sectionResult, MYSQLI_ASSOC);
                     $screen['sections'] = $sections;
+                    $allNullPrices = true;
                     $allHavePrice = true;
+                    foreach ($sections as $section) {
+                        if (!is_null($section['price']) && $section['price'] !== '') {
+                            $allNullPrices = false;
+                            break;
+                        }
+                    }
                     foreach ($sections as $section) {
                         if (is_null($section['price']) || $section['price'] === '') {
                             $allHavePrice = false;
                             break;
                         }
                     }
-
-                    $screen['price'] = $allHavePrice;
+                    $screen['price'] = $allNullPrices ? false : true;
+                    $screen['publish_available'] = $allHavePrice;
                 } else {
                     $screen['sections'] = [];
                 }
