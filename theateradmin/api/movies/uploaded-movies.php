@@ -5,8 +5,6 @@ require "../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 
-$authResult = authenticateRequest();
-
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
