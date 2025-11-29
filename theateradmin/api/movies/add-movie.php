@@ -36,28 +36,7 @@ if ($requestMethod == 'POST') {
 
         $startDateTimeStr = $dateFormatted . " " . $time;
         $startDateTime = DateTime::createFromFormat("d M, Y h:i A", $startDateTimeStr);
-        $requestedStart = $startDateTime->format("Y-m-d H:i:s");
-
-        $overlapSql = "
-            SELECT * FROM `theater_shows`
-            WHERE `theater_name` = '$theaterName'
-              AND `screen_id` = '$screenId'
-              AND (
-                    '$requestedStart' >= CONCAT(STR_TO_DATE(start_date, '%d %M, %Y'), ' ', start_time)
-                AND '$requestedStart' <= CONCAT(STR_TO_DATE(end_date, '%d %M, %Y'), ' ', end_time)
-              )
-        ";
-        $overlapResult = mysqli_query($conn, $overlapSql);
-
-        if (mysqli_num_rows($overlapResult) > 0) {
-            $data = [
-                'status' => 409,
-                'message' => 'A show is already running at this time.'
-            ];
-            header("HTTP/1.0 409 Conflict");
-            echo json_encode($data);
-            exit;
-        }
+        $newStart = $startDateTime->format("Y-m-d H:i:s");
 
         $movieSql = "SELECT * FROM `movies` WHERE `name`='$movieName'";
         $movieResult = mysqli_query($conn, $movieSql);
@@ -75,6 +54,20 @@ if ($requestMethod == 'POST') {
 
             $endDate = $startDateTime->format("d M, Y");
             $endTime = $startDateTime->format("h:i A");
+
+            $newEnd = $startDateTime->format("Y-m-d H:i:s");
+
+            $overlapSql = "SELECT * FROM theater_shows WHERE theater_name = '$theaterName' AND screen_id = '$screenId' AND (STR_TO_DATE(CONCAT(start_date, ' ', start_time), '%d %M, %Y %h:%i %p') < '$newEnd' AND STR_TO_DATE(CONCAT(end_date, ' ', end_time), '%d %M, %Y %h:%i %p') > '$newStart')";
+
+            $overlapResult = mysqli_query($conn, $overlapSql);
+
+            if (mysqli_num_rows($overlapResult) > 0) {
+                echo json_encode([
+                    'status' => 409,
+                    'message' => 'A show is already running at this time.'
+                ]);
+                exit;
+            }
 
             $sql = "INSERT INTO `theater_shows`(`theater_name`, `screen`, `screen_id`, `movie_name`, `language`, `format`, `start_date`, `start_time`, `end_date`, `end_time`) VALUES ('$theaterName','$screen','$screenId','$movieName','$language','$format','$dateFormatted','$time','$endDate','$endTime')";
             $result = mysqli_query($conn, $sql);
