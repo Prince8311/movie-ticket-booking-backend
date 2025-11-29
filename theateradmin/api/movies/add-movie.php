@@ -27,13 +27,30 @@ if ($requestMethod == 'POST') {
         $movieName = mysqli_real_escape_string($conn, $inputData['movieName']);
         $language = mysqli_real_escape_string($conn, $inputData['language']);
         $format = mysqli_real_escape_string($conn, $inputData['format']);
+
         $dateRaw = $inputData['date'];
         $normalizedDate = str_replace(',', '', $dateRaw);
         $dateFormatted = date("d M, Y", strtotime($normalizedDate));
+
         $time = mysqli_real_escape_string($conn, $inputData['time']);
 
         $startDateTimeStr = $dateFormatted . " " . $time;
         $startDateTime = DateTime::createFromFormat("d M, Y h:i A", $startDateTimeStr);
+        $requestedStart = $startDateTime->format("Y-m-d H:i:s");
+
+        $overlapSql = "SELECT * FROM `theater_shows` WHERE `theater_name` = '$theaterName' AND `screen_id` = '$screenId' AND ('$requestedStart' >= CONCAT(STR_TO_DATE(start_date, '%d %M, %Y'), ' ', start_time) AND '$requestedStart' <= CONCAT(STR_TO_DATE(end_date, '%d %M, %Y'), ' ', end_time));
+        ";
+        $overlapResult = mysqli_query($conn, $overlapSql);
+
+        if (mysqli_num_rows($overlapResult) > 0) {
+            $data = [
+                'status' => 409,
+                'message' => 'A show is already running at this time.'
+            ];
+            header("HTTP/1.0 409 Conflict");
+            echo json_encode($data);
+            exit;
+        }
 
         $movieSql = "SELECT * FROM `movies` WHERE `name`='$movieName'";
         $movieResult = mysqli_query($conn, $movieSql);
@@ -52,13 +69,30 @@ if ($requestMethod == 'POST') {
             $endDate = $startDateTime->format("d M, Y");
             $endTime = $startDateTime->format("h:i A");
 
+            $sql = "INSERT INTO `theater_shows`(`theater_name`, `screen`, `screen_id`, `movie_name`, `language`, `format`, `start_date`, `start_time`, `end_date`, `end_time`) VALUES ('$theaterName','$screen','$screenId','$movieName','$language','$format','$dateFormatted','$time','$endDate','$endTime')";
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                $data = [
+                    'status' => 200,
+                    'message' => 'Show added successfully.'
+                ];
+                header("HTTP/1.0 200 OK");
+                echo json_encode($data);
+            } else {
+                $data = [
+                    'status' => 500,
+                    'message' => 'Database error: ' . $error
+                ];
+                header("HTTP/1.0 500 Internal Server Error");
+                echo json_encode($data);
+            }
+        } else {
             $data = [
-                'status' => 200,
-                'message' => 'Revised data',
-                'end date' => $endDate,
-                'end time' => $endTime
+                'status' => 500,
+                'message' => 'Database error: ' . $error
             ];
-            header("HTTP/1.0 200 OK");
+            header("HTTP/1.0 500 Internal Server Error");
             echo json_encode($data);
         }
     } else {
