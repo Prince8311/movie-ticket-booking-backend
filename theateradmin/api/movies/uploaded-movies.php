@@ -26,14 +26,22 @@ if ($requestMethod == 'GET') {
         ? (int)$_GET['page']
         : 1;
     $offset = ($page - 1) * $limit;
-    $sql = "SELECT * FROM `movies` ORDER BY `id` DESC";
-    $result = mysqli_query($conn, $sql);
-    $totalMovies = mysqli_num_rows($result);
-    $limitSql = "SELECT * FROM `movies` ORDER BY `id` DESC LIMIT $limit OFFSET $offset";
-    $limitResult = mysqli_query($conn, $limitSql);
+    $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+    if (!empty($search)) {
+        $where = "WHERE `name` LIKE '%$search%'";
+    } else {
+        $where = "";
+    }
+    $countSql = "SELECT COUNT(*) as total FROM `movies` $where";
+    $countResult = mysqli_query($conn, $countSql);
+    $countRow = mysqli_fetch_assoc($countResult);
+    $totalMovies = (int)$countRow['total'];
 
-    if($result) {
-        $movies = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
+    $sql = "SELECT * FROM `movies` $where ORDER BY `id` DESC LIMIT $limit OFFSET $offset";
+    $result = mysqli_query($conn, $sql);
+
+    if ($result) {
+        $movies = mysqli_fetch_all($result, MYSQLI_ASSOC);
         $data = [
             'status' => 200,
             'message' => 'Movies fetched.',
