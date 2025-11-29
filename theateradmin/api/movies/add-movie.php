@@ -28,7 +28,7 @@ if ($requestMethod == 'POST') {
         $language = mysqli_real_escape_string($conn, $inputData['language']);
         $format = mysqli_real_escape_string($conn, $inputData['format']);
         $dateRaw = $inputData['date'];
-        $normalizedDate = str_replace(',', '', $releaseDateRaw);
+        $normalizedDate = str_replace(',', '', $dateRaw);
         $dateFormatted = date("d M, Y", strtotime($normalizedDate));
         $time = mysqli_real_escape_string($conn, $inputData['time']);
 
