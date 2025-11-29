@@ -24,7 +24,6 @@ if ($requestMethod == 'POST') {
         $theaterName = mysqli_real_escape_string($conn, $inputData['theaterName']);
         $screen = mysqli_real_escape_string($conn, $inputData['screen']);
         $screenId = mysqli_real_escape_string($conn, $inputData['screenId']);
-        $screenId = mysqli_real_escape_string($conn, $inputData['screenId']);
         $movieName = mysqli_real_escape_string($conn, $inputData['movieName']);
         $language = mysqli_real_escape_string($conn, $inputData['language']);
         $format = mysqli_real_escape_string($conn, $inputData['format']);
