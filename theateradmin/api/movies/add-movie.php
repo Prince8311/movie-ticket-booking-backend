@@ -54,7 +54,9 @@ if ($requestMethod == 'POST') {
 
             $data = [
                 'status' => 200,
-                'message' => 'Revised data'
+                'message' => 'Revised data',
+                'end date' => $endDate,
+                'end time' => $endTime
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
