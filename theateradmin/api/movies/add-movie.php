@@ -38,7 +38,15 @@ if ($requestMethod == 'POST') {
         $startDateTime = DateTime::createFromFormat("d M, Y h:i A", $startDateTimeStr);
         $requestedStart = $startDateTime->format("Y-m-d H:i:s");
 
-        $overlapSql = "SELECT * FROM `theater_shows` WHERE `theater_name` = '$theaterName' AND `screen_id` = '$screenId' AND ('$requestedStart' >= CONCAT(STR_TO_DATE(start_date, '%d %M, %Y'), ' ', start_time) AND '$requestedStart' <= CONCAT(STR_TO_DATE(end_date, '%d %M, %Y'), ' ', end_time))";
+        $overlapSql = "
+            SELECT * FROM `theater_shows`
+            WHERE `theater_name` = '$theaterName'
+              AND `screen_id` = '$screenId'
+              AND (
+                    '$requestedStart' >= CONCAT(STR_TO_DATE(start_date, '%d %M, %Y'), ' ', start_time)
+                AND '$requestedStart' <= CONCAT(STR_TO_DATE(end_date, '%d %M, %Y'), ' ', end_time)
+              )
+        ";
         $overlapResult = mysqli_query($conn, $overlapSql);
 
         if (mysqli_num_rows($overlapResult) > 0) {
