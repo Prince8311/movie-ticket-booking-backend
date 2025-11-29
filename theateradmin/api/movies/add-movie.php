@@ -62,10 +62,12 @@ if ($requestMethod == 'POST') {
             $overlapResult = mysqli_query($conn, $overlapSql);
 
             if (mysqli_num_rows($overlapResult) > 0) {
-                echo json_encode([
-                    'status' => 409,
+                $data = [
+                    'status' => 201,
                     'message' => 'A show is already running at this time.'
-                ]);
+                ];
+                header("HTTP/1.0 201 Conflict");
+                echo json_encode($data);
                 exit;
             }
 
