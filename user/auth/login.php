@@ -40,7 +40,7 @@ if ($requestMethod == 'POST') {
                         $authToken = base64_encode($tokenData);
                         $expiresAt = date("Y-m-d H:i:s", time() + 86400);
 
-                        $updateSql = "UPDATE `users` SET `auth_token`='$authToken',`expires_at`='$expiresAt' WHERE `id`='$userId'";
+                        $updateSql = "UPDATE `users` SET `expires_at`='$expiresAt' WHERE `id`='$userId'";
                         $updateResult = mysqli_query($conn, $updateSql);
 
                         if ($updateResult) {
