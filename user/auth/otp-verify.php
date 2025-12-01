@@ -24,13 +24,13 @@ if ($requestMethod == 'POST') {
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
         $userName = $row['name'];
-        $savedOtp = $row['mail_otp'];
+        $savedOtp = $row['mail_token'];
 
         if ($savedOtp === null) {
             $data = [
                 'status' => 401,
                 'message' => 'Authentication error',
-                'userId' => $userEmail
+                'userId' => $userId
             ];
             header("HTTP/1.0 401 Authentication error");
             echo json_encode($data);
