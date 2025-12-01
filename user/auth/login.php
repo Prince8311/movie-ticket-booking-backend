@@ -39,7 +39,7 @@ if ($requestMethod == 'POST') {
                         $randomBytes = random_bytes(64);
                         $tokenData = $jsonPayload . '|' . bin2hex($randomBytes);
                         $authToken = base64_encode($tokenData);
-                        $expiresAt = date("Y-m-d H:i:s", time() + 86400);
+                        $expiresAt = date("Y-m-d H:i:s", time() + 21600);
 
                         $updateSql = "UPDATE `users` SET `auth_token`='$authToken',`expires_at`='$expiresAt' WHERE `id`='$userId'";
                         $updateResult = mysqli_query($conn, $updateSql);
@@ -49,7 +49,7 @@ if ($requestMethod == 'POST') {
                                 "authToken",
                                 $authToken,
                                 [
-                                    'expires'  => time() + 86400,
+                                    'expires'  => time() + 21600,
                                     'path'     => '/',
                                     'domain'   => '.ticketbay.in',
                                     'secure'   => true,
