@@ -45,6 +45,19 @@ if ($requestMethod == 'POST') {
                         $updateResult = mysqli_query($conn, $updateSql);
 
                         if ($updateResult) {
+                            setcookie(
+                                "authToken",
+                                $newToken,
+                                [
+                                    'expires'  => time() + 86400,
+                                    'path'     => '/',
+                                    'domain'   => '.ticketbay.in',
+                                    'secure'   => true,
+                                    'httponly' => true,
+                                    'samesite' => 'None'
+                                ]
+                            );
+
                             $data = [
                                 'status' => 200,
                                 'message' => 'Login Successful',
