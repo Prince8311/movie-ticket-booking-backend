@@ -26,12 +26,38 @@ if ($requestMethod == 'POST') {
                         $userEmail = $row['email'];
                         $userPhone = $row['phone'];
 
-                        $data = [
-                            'status' => 200,
-                            'message' => 'Login Successful',
-                            'userId' => $userId
+                        $payload = [
+                            'id' => $userId,
+                            'name' => $userName,
+                            'email' => $userEmail,
+                            'phone' => $userPhone,
+                            'timestamp' => time(),
                         ];
-                        echo json_encode($data);
+
+                        $jsonPayload = json_encode($payload);
+                        $randomBytes = random_bytes(128);
+                        $tokenData = $jsonPayload . '|' . bin2hex($randomBytes);
+                        $authToken = base64_encode($tokenData);
+                        $expiresAt = date("Y-m-d H:i:s", time() + 86400);
+
+                        $updateSql = "UPDATE `users` SET `auth_token`='$authToken',`expires_at`='$expiresAt' WHERE `id`='$userId'";
+                        $updateResult = mysqli_query($conn, $updateSql);
+
+                        if ($updateResult) {
+                            $data = [
+                                'status' => 200,
+                                'message' => 'Login Successful',
+                                'authToken' => $authToken
+                            ];
+                            echo json_encode($data);
+                        } else {
+                            $data = [
+                                'status' => 500,
+                                'message' => 'Database error: ' . mysqli_error($conn)
+                            ];
+                            header("HTTP/1.0 500 Internal Server Error");
+                            echo json_encode($data);
+                        }
                     } else {
                         $data = [
                             'status' => 400,
