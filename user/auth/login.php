@@ -35,7 +35,7 @@ if ($requestMethod == 'POST') {
                         ];
 
                         $jsonPayload = json_encode($payload);
-                        $randomBytes = random_bytes(128);
+                        $randomBytes = random_bytes(64);
                         $tokenData = $jsonPayload . '|' . bin2hex($randomBytes);
                         $authToken = base64_encode($tokenData);
                         $expiresAt = date("Y-m-d H:i:s", time() + 86400);
