@@ -1,5 +1,6 @@
 <?php
 
+date_default_timezone_set('Asia/Kolkata');
 require "../../utils/headers.php";
 
 if ($requestMethod == 'POST') {
