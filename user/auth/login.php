@@ -47,7 +47,7 @@ if ($requestMethod == 'POST') {
                         if ($updateResult) {
                             setcookie(
                                 "authToken",
-                                $newToken,
+                                $authToken,
                                 [
                                     'expires'  => time() + 86400,
                                     'path'     => '/',
