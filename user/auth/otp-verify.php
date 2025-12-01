@@ -40,7 +40,7 @@ if ($requestMethod == 'POST') {
         if ($savedOtp == $otp) {
             if ($isRegistration) {
                 $status = 1;
-                $updateSql = "UPDATE `users` SET `status`='$status' WHERE `email`='$userEmail'";
+                $updateSql = "UPDATE `users` SET `mail_token`= NULL, `status`='$status' WHERE `email`='$userEmail'";
                 $updateResult = mysqli_query($conn, $updateSql);
                 
                 $mail = new PHPMailer(true);
@@ -119,6 +119,8 @@ if ($requestMethod == 'POST') {
                     echo json_encode($data);
                 }
             } else {
+                $updateSql = "UPDATE `users` SET `mail_token`= NULL WHERE `email`='$userEmail'";
+                $updateResult = mysqli_query($conn, $updateSql);
                 $data = [
                     'status' => 200,
                     'message' => 'verification successful.',
