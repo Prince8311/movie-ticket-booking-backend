@@ -31,6 +31,7 @@ if ($requestMethod == 'POST') {
                             'message' => 'Login Successful',
                             'userId' => $userId
                         ];
+                        echo json_encode($data);
                     } else {
                         $data = [
                             'status' => 400,
