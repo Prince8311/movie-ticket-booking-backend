@@ -30,7 +30,7 @@ if ($requestMethod == 'POST') {
             $data = [
                 'status' => 401,
                 'message' => 'Authentication error',
-                'userId' => $userId
+                'userId' => $userEmail
             ];
             header("HTTP/1.0 401 Authentication error");
             echo json_encode($data);
