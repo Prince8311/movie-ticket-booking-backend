@@ -85,7 +85,7 @@ function authenticateRequest()
     $newToken  = base64_encode($newData);
 
     // 7. Update DB token
-    $newExpiry = date("Y-m-d H:i:s", time() + 21600);
+    $newExpiry = date("Y-m-d H:i:s", time() + 120);
     $updateSql = "UPDATE `users` SET `auth_token`='$newToken',`expires_at`='$newExpiry' WHERE `id`='$userId'";
     mysqli_query($conn, $updateSql);
 
@@ -93,7 +93,7 @@ function authenticateRequest()
         "authToken",
         $newToken,
         [
-            'expires' => time() + 21600,
+            'expires' => time() + 120,
             'path' => '/',
             'domain' => 'ticketbay.in',
             'secure' => true,
