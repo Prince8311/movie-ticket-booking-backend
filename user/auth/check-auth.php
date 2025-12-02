@@ -16,8 +16,6 @@ if (!$authResult['authenticated']) {
 
 $userID = $authResult['userId'];
 $refreshed = $authResult['refreshed'];
-$expiryTime = $authResult['expiryTime'];
-$currentTime = $authResult['currentTime'];
 
 if ($requestMethod == 'GET') {
     require "../../_db-connect.php";
@@ -32,8 +30,6 @@ if ($requestMethod == 'GET') {
                 'status' => 200,
                 'message' => 'Authenticated',
                 'user' => $user,
-                'expiryTime' => date("Y-m-d H:i:s", $expiryTime),
-                'currentTime' => date("Y-m-d H:i:s", $currentTime),
                 'tokenRefreshed' => $refreshed
             ];
             header("HTTP/1.0 200 Authenticated");
