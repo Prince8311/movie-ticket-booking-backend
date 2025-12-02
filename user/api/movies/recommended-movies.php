@@ -32,14 +32,31 @@ if ($requestMethod == 'GET') {
         }
         $theaterList = "'" . implode("','", $theaters) . "'";
 
-        $data = [
-            'status' => 200,
-            'message' => 'Recommended movies fetched.',
-            'currentDate' => $currentDate,
-            'currentTime' => $currentTime,
-        ];
-        header("HTTP/1.0 200 Recommended movies");
-        echo json_encode($data);
+        $sql = "SELECT ts.movie_name, m.poster_image FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND m.release_date <= '$currentDate' AND (ts.start_date > '$currentDate' OR (ts.start_date = '$currentDate' AND ts.start_time > '$currentTime')) GROUP BY ts.movie_name";
+        $result = mysqli_query($conn, $sql);
+
+        $movies = [];
+
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $movies[] = $row;
+            }
+
+            $data = [
+                'status' => 200,
+                'message' => 'Recommended movies fetched.',
+                'movies' => $movies
+            ];
+            header("HTTP/1.0 200 Recommended movies");
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 500,
+                'message' => 'Database error: ' . mysqli_error($conn)
+            ];
+            header("HTTP/1.0 500 Internal Server Error");
+            echo json_encode($data);
+        }
     } else {
         $data = [
             'status' => 400,
