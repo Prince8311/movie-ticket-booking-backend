@@ -32,8 +32,8 @@ if ($requestMethod == 'GET') {
                 'status' => 200,
                 'message' => 'Authenticated',
                 'user' => $user,
-                'expiryTime' => $expiryTime,
-                'currentTime' => $currentTime,
+                'expiryTime' => date("Y-m-d H:i:s", $expiryTime),
+                'currentTime' => date("Y-m-d H:i:s", $currentTime),
                 'tokenRefreshed' => $refreshed
             ];
             header("HTTP/1.0 200 Authenticated");
