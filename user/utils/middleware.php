@@ -12,12 +12,11 @@ function authenticateRequest()
 
     if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
         $frontendToken = $matches[1];
+        return [
+            'authenticated' => true,
+            'frontendToken' => $frontendToken,
+            'refreshed' => true,
+            'cookieToken' => $cookieToken
+        ];
     }
-
-    return [
-        'authenticated' => true,
-        'frontendToken' => $frontendToken,
-        'refreshed' => true,
-        'cookieToken' => $cookieToken
-    ];
 }
