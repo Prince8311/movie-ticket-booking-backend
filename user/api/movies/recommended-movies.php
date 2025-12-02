@@ -21,18 +21,49 @@ if ($requestMethod == 'GET') {
 
     if (isset($_GET['location'])) {
         $location = mysqli_real_escape_string($conn, $_GET['location']);
+
+        // Pagination
+        $limit = 10;
+        $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
+            ? (int) $_GET['page']
+            : 1;
+        $offset = ($page - 1) * $limit;
+
+        // Date & Time 
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
+        // Theater list
         $theaterSql = "SELECT `name` FROM `registered_theaters` WHERE `city`='$location'";
         $theaterResult = mysqli_query($conn, $theaterSql);
         $theaters = [];
         while ($row = mysqli_fetch_assoc($theaterResult)) {
             $theaters[] = $row['name'];
         }
+        if (empty($theaters)) {
+            echo json_encode([
+                'status' => 200,
+                'message' => 'No theaters found for this location.',
+                'totalCount' => 0,
+                'currentPage' => $page,
+                'movies' => []
+            ]);
+            exit;
+        }
         $theaterList = "'" . implode("','", $theaters) . "'";
 
-        $sql = "SELECT ts.movie_name, m.poster_image FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND m.release_date <= '$currentDate' AND (ts.start_date > '$currentDate' OR (ts.start_date = '$currentDate' AND ts.start_time > '$currentTime')) GROUP BY ts.movie_name";
+        // -----------------------
+        // COUNT QUERY
+        // -----------------------
+        $countSql  = "SELECT ts.movie_name, m.poster_image FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND m.release_date <= '$currentDate' AND (ts.start_date > '$currentDate' OR (ts.start_date = '$currentDate' AND ts.start_time > '$currentTime')) GROUP BY ts.movie_name";
+        $countResult  = mysqli_query($conn, $countSql);
+        $countRow = mysqli_fetch_assoc($countResult);
+        $totalMovies = (int) $countRow['total'];
+
+        // -----------------------
+        // DATA QUERY (with LIMIT)
+        // -----------------------
+        $sql  = "SELECT ts.movie_name, m.poster_image FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND m.release_date <= '$currentDate' AND (ts.start_date > '$currentDate' OR (ts.start_date = '$currentDate' AND ts.start_time > '$currentTime')) GROUP BY ts.movie_name ORDER BY ts.start_date ASC, ts.start_time ASC LIMIT $limit OFFSET $offset";
         $result = mysqli_query($conn, $sql);
 
         $movies = [];
@@ -45,6 +76,8 @@ if ($requestMethod == 'GET') {
             $data = [
                 'status' => 200,
                 'message' => 'Recommended movies fetched.',
+                'totalCount' => $totalMovies,
+                'currentPage' => $page,
                 'movies' => $movies
             ];
             header("HTTP/1.0 200 Recommended movies");
