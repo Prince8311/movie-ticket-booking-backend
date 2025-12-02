@@ -1,5 +1,6 @@
 <?php
 
+date_default_timezone_set('Asia/Kolkata');
 require_once __DIR__ . '/../../utils/auth-helper.php';
 require_once __DIR__ . '/../../_db-connect.php';
 
