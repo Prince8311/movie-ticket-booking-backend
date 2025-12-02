@@ -7,31 +7,46 @@ function authenticateRequest()
 {
     global $conn;
     $cookieToken = $_COOKIE['authToken'] ?? '';
+    $authHeader  = getAuthorizationHeader();
+    $frontendToken = null;
 
-    // 1. Check cookie token
-    if (empty($cookieToken)) {
-        return [
+    if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+        $frontendToken = $matches[1];
+    }
+
+    // 1. Cookie empty & Header empty → NOT authenticated
+    if (empty($cookieToken) && empty($frontendToken)) {
+        $data = [
             'authenticated' => false,
             'status' => 401,
             'message' => 'Authentication error'
         ];
+        header("HTTP/1.0 401 Authentication error");
+        echo json_encode($data);
+        exit;
     }
 
-    // 2. Validate frontend header token
-    $authHeader = getAuthorizationHeader();
-    if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-        $frontendToken = $matches[1];
+    // 2. Cookie empty & Header present → Cookie expired, but header token exists → use header token for DB lookup 
+    if (empty($cookieToken) && !empty($frontendToken)) {
+        $cookieToken = $frontendToken;
+    }
+
+    // 3. Cookie present & Header present → Must match
+    if (!empty($cookieToken) && !empty($frontendToken)) {
         if ($cookieToken !== $frontendToken) {
-            return [
+            $data = [
                 'authenticated' => false,
                 'status' => 401,
                 'message' => 'Authentication mismatch'
             ];
+            header("HTTP/1.0 401 Authentication mismatch");
+            echo json_encode($data);
+            exit;
         }
     }
 
     // ---------------------------
-    // 3. Check token in database
+    // 4. Check token in database
     // ---------------------------
     $escapedToken = mysqli_real_escape_string($conn, $cookieToken);
     $userSql = "SELECT * FROM `users` WHERE `auth_token`='$escapedToken'";
@@ -51,7 +66,7 @@ function authenticateRequest()
     $currentTime = time();
 
     // ------------------------------------------------
-    // 4. If token is still valid → return success
+    // 5. If token is still valid → return success
     // ------------------------------------------------
     if ($currentTime < $expiryTime) {
         return [
@@ -63,7 +78,7 @@ function authenticateRequest()
     }
 
     // ------------------------------------------------
-    // 5. TOKEN EXPIRED → Extract user data and refresh
+    // 6. TOKEN EXPIRED → Extract user data and refresh
     // ------------------------------------------------
 
     // Decode: base64 → "json | salt"
