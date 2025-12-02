@@ -113,6 +113,13 @@ if ($requestMethod == 'GET') {
             header("HTTP/1.0 404 Not found");
             echo json_encode($data);
         }
+    } else {
+        $data = [
+            'status' => 400,
+            'message' => 'Location and name is required'
+        ];
+        header("HTTP/1.0 400 Bad Request");
+        echo json_encode($data);
     }
 } else {
     $data = [
