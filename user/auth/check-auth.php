@@ -37,9 +37,7 @@ if ($requestMethod == 'GET') {
         } else {
             $data = [
                 'status' => 400,
-                'message' => 'No user found',
-                'frontendToken' => $authResult['frontendToken'],
-                'cookieToken' => $authResult['cookieToken'],
+                'message' => 'No user found'
             ];
             header("HTTP/1.0 400 Not found");
             echo json_encode($data);
