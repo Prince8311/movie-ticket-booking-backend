@@ -16,6 +16,7 @@ if (!$authResult['authenticated']) {
 
 $userID = $authResult['userId'];
 $refreshed = $authResult['refreshed'];
+$currentTime = $authResult['currentTime'];
 
 if ($requestMethod == 'GET') {
     require "../../_db-connect.php";
@@ -30,6 +31,7 @@ if ($requestMethod == 'GET') {
                 'status' => 200,
                 'message' => 'Authenticated',
                 'user' => $user,
+                'currentTime' => $currentTime,
                 'tokenRefreshed' => $refreshed
             ];
             header("HTTP/1.0 200 Authenticated");

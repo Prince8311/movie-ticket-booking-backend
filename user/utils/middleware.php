@@ -67,7 +67,8 @@ function authenticateRequest()
             'authenticated' => true,
             'token' => $cookieToken,
             'refreshed' => false,
-            'userId' => $userId
+            'userId' => $userId,
+            'currentTime' => $currentTime
         ];
     }
 
