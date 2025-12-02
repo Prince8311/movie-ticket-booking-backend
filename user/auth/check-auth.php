@@ -7,7 +7,9 @@ $authResult = authenticateRequest();
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
-        'message' => $authResult['message']
+        'message' => $authResult['message'],
+        'frontendToken' => $authResult['frontendToken'],
+        'cookieToken' => $authResult['cookieToken'],
     ];
     header("HTTP/1.0 " . $authResult['status']);
     echo json_encode($data);
