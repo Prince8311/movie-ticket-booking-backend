@@ -50,6 +50,33 @@ if ($requestMethod == 'GET') {
 
         if ($result && mysqli_num_rows($result) > 0) {
             $movie = mysqli_fetch_assoc($result);
+            unset($movie['languages']);
+            unset($movie['formats']);
+            unset($movie['casts']);
+            unset($movie['crews']);
+
+            $castSql = "SELECT name, profile_image FROM movie_casts_crews WHERE movie_name = '$movieName' AND type = 'cast'";
+            $castResult = mysqli_query($conn, $castSql);
+            $casts = [];
+            while ($row = mysqli_fetch_assoc($castResult)) {
+                $casts[] = [
+                    'name' => $row['name'],
+                    'profile_image' => $row['profile_image']
+                ];
+            }
+
+            $crewSql = "SELECT name, profile_image FROM movie_casts_crews WHERE movie_name = '$movieName' AND type = 'crew'";
+            $crewResult = mysqli_query($conn, $crewSql);
+            while ($row = mysqli_fetch_assoc($crewResult)) {
+                $crews[] = [
+                    'name' => $row['name'],
+                    'profile_image' => $row['profile_image']
+                ];
+            }
+
+            $movie['casts'] = $casts;
+            $movie['crews'] = $crews;
+            
             $data = [
                 'status' => 200,
                 'message' => 'Movie details fetched.',
