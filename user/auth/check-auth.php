@@ -7,9 +7,7 @@ $authResult = authenticateRequest();
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
-        'message' => $authResult['message'],
-        'frontendToken' => $authResult['frontendToken'],
-        'cookieToken' => $authResult['cookieToken'],
+        'message' => $authResult['message']
     ];
     header("HTTP/1.0 " . $authResult['status']);
     echo json_encode($data);
@@ -39,7 +37,9 @@ if ($requestMethod == 'GET') {
         } else {
             $data = [
                 'status' => 400,
-                'message' => 'No user found'
+                'message' => 'No user found',
+                'frontendToken' => $authResult['frontendToken'],
+                'cookieToken' => $authResult['cookieToken'],
             ];
             header("HTTP/1.0 400 Not found");
             echo json_encode($data);
