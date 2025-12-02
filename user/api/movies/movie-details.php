@@ -52,31 +52,52 @@ if ($requestMethod == 'GET') {
             $movie = mysqli_fetch_assoc($result);
             unset($movie['languages']);
             unset($movie['formats']);
+
+            // ============================
+            // CASTS
+            // ============================
+            $castNames = array_filter(array_map('trim', explode(',', $movie['casts'])));
+            $casts = [];
+
+            if (!empty($castNames)) {
+                $castList = "'" . implode("','", $castNames) . "'";
+                $castSql = "SELECT `name`, `profile_image` FROM `movie_casts_crews` WHERE `name` IN ($castList)";
+                $castResult = mysqli_query($conn, $castSql);
+
+                while ($row = mysqli_fetch_assoc($castResult)) {
+                    $casts[] = [
+                        'name' => $row['name'],
+                        'profile_image' => $row['profile_image']
+                    ];
+                }
+            }
+
+            // ============================
+            // CREWS
+            // ============================
+            $crewNames = array_filter(array_map('trim', explode(',', $movie['crews'])));
+            $crews = [];
+
+            if (!empty($crewNames)) {
+                $crewList = "'" . implode("','", $crewNames) . "'";
+                $crewSql = "SELECT `name`, `profile_image` FROM `movie_casts_crews` WHERE `name` IN ($crewList)";
+                $crewResult = mysqli_query($conn, $crewSql);
+
+                while ($row = mysqli_fetch_assoc($crewResult)) {
+                    $crews[] = [
+                        'name' => $row['name'],
+                        'profile_image' => $row['profile_image']
+                    ];
+                }
+            }
+
+            // Replace casts & crews with structured arrays
             unset($movie['casts']);
             unset($movie['crews']);
 
-            $castSql = "SELECT name, profile_image FROM movie_casts_crews WHERE movie_name = '$movieName' AND type = 'cast'";
-            $castResult = mysqli_query($conn, $castSql);
-            $casts = [];
-            while ($row = mysqli_fetch_assoc($castResult)) {
-                $casts[] = [
-                    'name' => $row['name'],
-                    'profile_image' => $row['profile_image']
-                ];
-            }
-
-            $crewSql = "SELECT name, profile_image FROM movie_casts_crews WHERE movie_name = '$movieName' AND type = 'crew'";
-            $crewResult = mysqli_query($conn, $crewSql);
-            while ($row = mysqli_fetch_assoc($crewResult)) {
-                $crews[] = [
-                    'name' => $row['name'],
-                    'profile_image' => $row['profile_image']
-                ];
-            }
-
             $movie['casts'] = $casts;
             $movie['crews'] = $crews;
-            
+
             $data = [
                 'status' => 200,
                 'message' => 'Movie details fetched.',
