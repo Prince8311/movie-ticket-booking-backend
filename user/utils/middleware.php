@@ -68,6 +68,7 @@ function authenticateRequest()
             'token' => $cookieToken,
             'refreshed' => false,
             'userId' => $userId,
+            'expiryTime' => $expiryTime,
             'currentTime' => $currentTime
         ];
     }

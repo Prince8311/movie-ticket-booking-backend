@@ -16,6 +16,7 @@ if (!$authResult['authenticated']) {
 
 $userID = $authResult['userId'];
 $refreshed = $authResult['refreshed'];
+$expiryTime = $authResult['expiryTime'];
 $currentTime = $authResult['currentTime'];
 
 if ($requestMethod == 'GET') {
@@ -31,6 +32,7 @@ if ($requestMethod == 'GET') {
                 'status' => 200,
                 'message' => 'Authenticated',
                 'user' => $user,
+                'expiryTime' => $expiryTime,
                 'currentTime' => $currentTime,
                 'tokenRefreshed' => $refreshed
             ];
