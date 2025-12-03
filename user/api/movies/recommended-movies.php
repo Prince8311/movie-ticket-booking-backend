@@ -55,7 +55,7 @@ if ($requestMethod == 'GET') {
         // -----------------------
         // COUNT QUERY
         // -----------------------
-        $countSql = "SELECT COUNT(DISTINCT ts.movie_name) AS total FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND m.release_date <= '$currentDate' AND (ts.start_date > '$currentDate' OR (ts.start_date = '$currentDate' AND ts.start_time > '$currentTime'))";
+        $countSql = "SELECT COUNT(DISTINCT ts.movie_name) AS total FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND STR_TO_DATE(m.release_date, '%d %b, %Y') <= '$currentDate' AND (STR_TO_DATE(ts.start_date, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(ts.start_date, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime'))";
         $countResult  = mysqli_query($conn, $countSql);
         $countRow = mysqli_fetch_assoc($countResult);
         $totalMovies = (int) $countRow['total'];
