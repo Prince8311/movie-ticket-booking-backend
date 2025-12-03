@@ -25,7 +25,7 @@ if ($requestMethod == 'GET') {
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
-        $sql = "SELECT `start_date` FROM `theater_shows` WHERE `theater_name`='$theaterName' AND (STR_TO_DATE(`start_date`, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(`start_date`, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%h:%i %p') > '$currentTime'))";
+        $sql = "SELECT DISTINCT `start_date` FROM `theater_shows` WHERE `theater_name`='$theaterName' AND (STR_TO_DATE(`start_date`, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(`start_date`, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%h:%i %p') > '$currentTime')) ORDER BY STR_TO_DATE(`start_date`, '%d %b, %Y') ASC";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
