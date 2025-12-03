@@ -34,7 +34,8 @@ if ($requestMethod == 'GET') {
                 'status' => 200,
                 'message' => 'Theater movie dates.',
                 'dates' => $dates,
-                'currentDate' => $currentDate
+                'currentDate' => $currentDate,
+                'currentTime' => $$currentTime
             ];
             header("HTTP/1.0 200 Movie dates");
             echo json_encode($data);
