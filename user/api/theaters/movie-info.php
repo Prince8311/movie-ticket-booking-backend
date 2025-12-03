@@ -19,23 +19,24 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['name'])) {
+    if (isset($_GET['name']) && isset($_GET['date'])) {
         $theaterName = mysqli_real_escape_string($conn, $_GET['name']);
+        $date = mysqli_real_escape_string($conn, $_GET['date']);
 
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
-        $sql = "SELECT DISTINCT `start_date` FROM `theater_shows` WHERE `theater_name`='$theaterName' AND (STR_TO_DATE(`start_date`, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(`start_date`, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%h:%i %p') > '$currentTime')) ORDER BY STR_TO_DATE(`start_date`, '%d %b, %Y') ASC";
+        $sql = "SELECT * FROM `theater_shows` WHERE `theater_name`='$theaterName' AND STR_TO_DATE(`start_date`, '%d %b, %Y') = STR_TO_DATE('$date', '%d %b, %Y') AND STR_TO_DATE(`start_time`, '%d %b, %Y') > $currentTime ORDER BY STR_TO_DATE(`start_time`, '%d %b, %Y') ASC";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
-            $dates = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $movies = mysqli_fetch_all($result, MYSQLI_ASSOC);
             $data = [
                 'status' => 200,
-                'message' => 'Theater movie dates.',
-                'dates' => $dates
+                'message' => 'Theater movies.',
+                'movies' => $movies
             ];
-            header("HTTP/1.0 200 Movie dates");
+            header("HTTP/1.0 200 Movie movies");
             echo json_encode($data);
         } else {
             $data = [
@@ -48,7 +49,7 @@ if ($requestMethod == 'GET') {
     } else {
         $data = [
             'status' => 400,
-            'message' => 'Theater name is required'
+            'message' => 'Theater name & date is required'
         ];
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);
