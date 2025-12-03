@@ -26,7 +26,7 @@ if ($requestMethod == 'GET') {
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
-        $sql = "SELECT * FROM `theater_shows` WHERE `theater_name`='$theaterName' AND STR_TO_DATE(`start_date`, '%d %b, %Y') = STR_TO_DATE('$date', '%d %b, %Y') AND STR_TO_DATE(`start_time`, '%d %b, %Y') > $currentTime ORDER BY STR_TO_DATE(`start_time`, '%d %b, %Y') ASC";
+        $sql = "SELECT * FROM `theater_shows` WHERE `theater_name`='$theaterName'";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
