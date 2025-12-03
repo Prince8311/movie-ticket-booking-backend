@@ -30,7 +30,32 @@ if ($requestMethod == 'GET') {
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
-            $movies = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $rawMovies = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $groupedMovies = [];
+
+            foreach ($rawMovies as $row) {
+                $movieName = $row['movie_name'];
+
+                if (!isset($groupedMovies[$movieName])) {
+                    $groupedMovies[$movieName] = [
+                        'movie_name' => $movieName,
+                        'timings' => []
+                    ];
+                }
+
+                $groupedMovies[$movieName]['timings'][] = [
+                    'screen' => $row['screen'],
+                    'screen_id' => $row['screen_id'],
+                    'language' => $row['language'],
+                    'format' => $row['format'],
+                    'start_date' => $row['start_date'],
+                    'start_time' => $row['start_time'],
+                    'end_date' => $row['end_date'],
+                    'end_time' => $row['end_time']
+                ];
+            }
+
+            $movies = array_values($groupedMovies);
             $data = [
                 'status' => 200,
                 'message' => 'Theater movies.',
