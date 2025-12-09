@@ -16,68 +16,19 @@ if ($requestMethod == 'POST') {
     $inputData = json_decode(file_get_contents("php://input"), true);
 
     if (!empty($inputData)) {
-        $name = mysqli_real_escape_string($conn, $inputData['name']);
         $email = mysqli_real_escape_string($conn, $inputData['email']);
-        $phone = mysqli_real_escape_string($conn, $inputData['phone']);
-        $password = mysqli_real_escape_string($conn, $inputData['password']);
 
         $checkSql = "SELECT * FROM `users` WHERE `name` = '$name' OR `email` = '$email' OR `phone` = '$phone'";
         $checkResult = mysqli_query($conn, $checkSql);
 
         if (mysqli_num_rows($checkResult) > 0) {
-            $data = [
-                'status' => 400,
-                'message' => 'You have already registered.'
-            ];
-            header("HTTP/1.0 400 Already exists");
-            echo json_encode($data);
-        } else {
-            $checkNameSql = "SELECT * FROM `users` WHERE `name` = '$name'";
-            $nameResult = mysqli_query($conn, $checkNameSql);
-            if (mysqli_num_rows($nameResult) > 0) {
-                $data = [
-                    'status' => 400,
-                    'message' => 'This name already exists.'
-                ];
-                header("HTTP/1.0 400 Already exists");
-                echo json_encode($data);
-                exit;
-            }
-
-            $checkEmailSql = "SELECT * FROM `users` WHERE `email` = '$email'";
-            $emailResult = mysqli_query($conn, $checkEmailSql);
-            if (mysqli_num_rows($emailResult) > 0) {
-                $data = [
-                    'status' => 400,
-                    'message' => 'This email is already registered.'
-                ];
-                header("HTTP/1.0 400 Already exists");
-                echo json_encode($data);
-                exit;
-            }
-
-            $checkPhoneSql = "SELECT * FROM `users` WHERE `phone` = '$phone'";
-            $phoneResult = mysqli_query($conn, $checkPhoneSql);
-            if (mysqli_num_rows($phoneResult) > 0) {
-                $data = [
-                    'status' => 400,
-                    'message' => 'This phone no. is already registered.'
-                ];
-                header("HTTP/1.0 400 Already exists");
-                echo json_encode($data);
-                exit;
-            }
-
-            $hashPass = password_hash($password, PASSWORD_DEFAULT);
-            $profileImage = 'profile-image.png';
             $otp = rand(100000, 999999);
             $otpPart1 = substr($otp, 0, 3);
             $otpPart2 = substr($otp, 3, 3);
-            $status = 0;
-            $sql = "INSERT INTO `users`(`name`, `image`, `phone`, `email`, `password`, `mail_otp`, `status`) VALUES ('$name','$profileImage','$phone','$email','$hashPass','$otp','$status')";
-            $result = mysqli_query($conn, $sql);
+            $updateSql = "UPDATE `users` SET `mail_otp`= '$otp' WHERE `email`='$email'";
+            $updateResult = mysqli_query($conn, $updateSql);
 
-            if ($result) {
+            if ($updateResult) {
                 $mail = new PHPMailer(true);
 
                 try {
@@ -93,7 +44,7 @@ if ($requestMethod == 'POST') {
                     $mail->isHTML(true);
                     $mail->setFrom('noreply@ticketbay.in', 'Verification OTP 📜📜📜');
                     $mail->addAddress("$email", 'User');
-                    $mail->Subject = 'OTP for Registration';
+                    $mail->Subject = 'OTP for Forgot Password';
                     $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
                                             <head>
@@ -136,8 +87,6 @@ if ($requestMethod == 'POST') {
                     header("HTTP/1.0 200 OTP Sent");
                     echo json_encode($data);
                 } catch (Exception $e) {
-                    $deleteSql = "DELETE FROM `users` WHERE `name`='$name' AND `email`='$email'";
-                    $deleteResult = mysqli_query($conn, $deleteSql);
                     $data = [
                         'status' => 500,
                         'message' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}",
@@ -153,6 +102,13 @@ if ($requestMethod == 'POST') {
                 header("HTTP/1.0 500 Internal Server Error");
                 echo json_encode($data);
             }
+        } else {
+            $data = [
+                'status' => 400,
+                'message' => 'This is not a registered email.'
+            ];
+            header("HTTP/1.0 400 Not registered");
+            echo json_encode($data);
         }
     } else {
         $data = [
