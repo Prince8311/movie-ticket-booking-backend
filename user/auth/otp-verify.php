@@ -24,7 +24,7 @@ if ($requestMethod == 'POST') {
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
         $userName = $row['name'];
-        $savedOtp = $row['mail_token'];
+        $savedOtp = $row['mail_otp'];
 
         if ($savedOtp === null) {
             $data = [
