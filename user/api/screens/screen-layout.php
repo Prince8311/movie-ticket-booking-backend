@@ -55,11 +55,11 @@ if ($requestMethod == 'GET') {
 
         foreach ($sections as $section) {
             $sectionIndex = $section['section'];
-            $seatSql = "SELECT * FROM `screen_rows` WHERE `screen_id` = '$screenId' AND `section` = '$sectionIndex'";
+            $seatSql = "SELECT `id`, `row`, `seats`, `starting`, `gap_seats`, `gap_amounts` FROM `screen_rows` WHERE `screen_id` = '$screenId' AND `section` = '$sectionIndex'";
             $seatResult = mysqli_query($conn, $seatSql);
             $seats = mysqli_fetch_all($seatResult, MYSQLI_ASSOC);
 
-            $section['seats'] = $seats;
+            $section['seat_layout'] = $seats;
             $seatData[] = $section;
         }
 
