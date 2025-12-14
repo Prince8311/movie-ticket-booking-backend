@@ -59,7 +59,7 @@ if ($requestMethod == 'GET') {
             $seatResult = mysqli_query($conn, $seatSql);
             $seats = mysqli_fetch_all($seatResult, MYSQLI_ASSOC);
 
-            $section['rows'] = $rows;
+            $section['seats'] = $seats;
             $seatData[] = $section;
         }
 
