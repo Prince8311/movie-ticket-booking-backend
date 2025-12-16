@@ -1,5 +1,6 @@
 <?php
 
+date_default_timezone_set('Asia/Kolkata');
 require "../../utils/headers.php";
 
 if ($requestMethod == 'POST') {
@@ -45,7 +46,7 @@ if ($requestMethod == 'POST') {
                 $randomBytes = random_bytes(64);
                 $tokenData = $jsonPayload . '|' . bin2hex($randomBytes);
                 $authToken = base64_encode($tokenData);
-                $expiresAt = date("Y-m-d H:i:s", time() + 86400);
+                $expiresAt = date("Y-m-d H:i:s", time() + 120);
 
                 $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL, `auth_token`='$authToken', `expires_at`='$expiresAt' WHERE `id` = '$userId'";
                 mysqli_query($conn, $updateUserSql);
@@ -55,7 +56,7 @@ if ($requestMethod == 'POST') {
                         "authToken",
                         $authToken,
                         [
-                            'expires' => time() + 86400,
+                            'expires' => time() + 120,
                             'path' => '/',
                             'domain' => '.ticketbay.in',
                             'secure' => true,
