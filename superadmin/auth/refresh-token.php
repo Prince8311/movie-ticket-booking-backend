@@ -14,15 +14,12 @@ if (!$authResult['authenticated']) {
     exit;
 }
 
-$refreshed = $authResult['refreshed'];
 $newToken = $authResult['token'];
 
 $response = [
     'status' => 200,
-    'message' => $refreshed 
-        ? 'Token refreshed successfully.' 
-        : 'Token still valid.',
-    'refreshed' => $refreshed,
+    'message' => 'Token refreshed successfully.',
+    'refreshed' => true,
     'newToken' => $newToken
 ];
 
