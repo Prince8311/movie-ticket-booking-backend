@@ -1,36 +1,32 @@
-<?php
+<?php 
+
 require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
 $authResult = superAdminAuthenticateRequest();
-
-/**
- * CASE 1: Token expired AND refresh failed
- */
-if (!$authResult['authenticated'] && !$authResult['refreshed']) {
-    header("HTTP/1.0 401 Unauthorized");
-    echo json_encode([
-        'status' => 401,
-        'message' => 'Authentication failed'
-    ]);
+if (!$authResult['authenticated']) {
+    $data = [
+        'status' => $authResult['status'],
+        'message' => $authResult['message']
+    ];
+    header("HTTP/1.0 " . $authResult['status']);
+    echo json_encode($data);
     exit;
 }
 
-/**
- * CASE 2: Token valid OR refreshed successfully
- */
-header("HTTP/1.0 200 OK");
+$refreshed = $authResult['refreshed'];
+$newToken = $authResult['token'];
 
-header("X-Token-Refreshed: " . ($authResult['refreshed'] ? 'true' : 'false'));
-
-if ($authResult['refreshed']) {
-    header("X-New-Token: " . $authResult['token']);
-}
-
-echo json_encode([
+$response = [
     'status' => 200,
-    'refreshed' => $authResult['refreshed'],
-    'message' => $authResult['refreshed']
-        ? 'Token refreshed'
-        : 'Token still valid'
-]);
+    'message' => $refreshed 
+        ? 'Token refreshed successfully.' 
+        : 'Token still valid.',
+    'refreshed' => $refreshed,
+    'newToken' => $newToken
+];
+
+header("HTTP/1.0 200 OK");
+echo json_encode($response);
+
+?>
