@@ -1,9 +1,9 @@
 <?php 
 
 require "../../utils/headers.php";
-require "../utils/middleware.php";
+require "../../utils/middleware.php";
 
-$authResult = authenticateRequest();
+$authResult = userAuthenticateRequest();
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
