@@ -17,6 +17,9 @@ if ($requestMethod == 'POST') {
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
         $savedOtp = $row['mail_otp'];
+        $userName = $row['name'];
+        $userEmail = $row['email'];
+        $userPhone = $row['phone'];
 
         if ($savedOtp === null) {
             $data = [
@@ -31,29 +34,49 @@ if ($requestMethod == 'POST') {
 
         if ($savedOtp == $otp) {
             if ($authentication) {
-                $authToken = bin2hex(random_bytes(64));
-                setcookie(
-                    "authToken",
-                    $authToken,
-                    [
-                        'expires' => time() + 86400,
-                        'path' => '/',
-                        'domain' => '.ticketbay.in',
-                        'secure' => true, 
-                        'httponly' => true,
-                        'samesite' => 'None'    
-                    ]
-                );
+                $payload = [
+                    'id' => $userId,
+                    'name' => $userName,
+                    'email' => $userEmail,
+                    'phone' => $userPhone,
+                    'timestamp' => time(),
+                ];
+                $jsonPayload = json_encode($payload);
+                $randomBytes = random_bytes(64);
+                $tokenData = $jsonPayload . '|' . bin2hex($randomBytes);
+                $authToken = base64_encode($tokenData);
+                $expiresAt = date("Y-m-d H:i:s", time() + 86400);
 
-                $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL, `token`='$authToken' WHERE `id` = '$userId'";
+                $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL, `auth_token`='$authToken', `expires_at`='$expiresAt' WHERE `id` = '$userId'";
                 mysqli_query($conn, $updateUserSql);
 
-                $data = [
-                    'status' => 200,
-                    'message' => 'Authentication Successful',
-                    'userId' => $userId,
-                    'authToken' => $authToken
-                ];
+                if ($updateUserSql) {
+                    setcookie(
+                        "authToken",
+                        $authToken,
+                        [
+                            'expires' => time() + 86400,
+                            'path' => '/',
+                            'domain' => '.ticketbay.in',
+                            'secure' => true,
+                            'httponly' => true,
+                            'samesite' => 'None'
+                        ]
+                    );
+
+                    $data = [
+                        'status' => 200,
+                        'message' => 'Authentication Successful',
+                        'authToken' => $authToken
+                    ];
+                } else {
+                    $data = [
+                        'status' => 500,
+                        'message' => 'Database error: ' . mysqli_error($conn)
+                    ];
+                    header("HTTP/1.0 500 Internal Server Error");
+                    echo json_encode($data);
+                }
             } else {
                 $updateUserSql = "UPDATE `admin_users` SET `mail_otp` = NULL WHERE `id` = '$userId'";
                 mysqli_query($conn, $updateUserSql);

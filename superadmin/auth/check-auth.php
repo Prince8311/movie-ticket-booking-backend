@@ -3,7 +3,7 @@
 require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
-$authResult = authenticateRequest();
+$authResult = superAdminAuthenticateRequest();
 
 if (!$authResult['authenticated']) {
     $data = [
@@ -15,6 +15,9 @@ if (!$authResult['authenticated']) {
     exit;
 }
 
+$userID = $authResult['userId'];
+$refreshed = $authResult['refreshed'];
+
 if ($requestMethod == 'GET') {
     require "../../_db-connect.php";
     global $conn;
@@ -22,9 +25,7 @@ if ($requestMethod == 'GET') {
     $authToken = $authResult['token'];
 
     // Fetch user
-    $sql = "SELECT `name`, `image`, `email`, `phone`, `status`, `user_type`, `user_role`
-            FROM `admin_users` 
-            WHERE `token` = '$authToken'";
+    $sql = "SELECT `name`, `image`, `email`, `phone`, `status`, `user_type`, `user_role` FROM `admin_users` WHERE `id` = '$userID'";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {
@@ -98,7 +99,8 @@ if ($requestMethod == 'GET') {
             'status' => 200,
             'message' => 'Authenticated',
             'user' => $user,
-            'permissions' => $permissionsFormatted
+            'permissions' => $permissionsFormatted,
+            'tokenRefreshed' => $refreshed
         ];
 
         header("HTTP/1.0 200 Authenticated");
