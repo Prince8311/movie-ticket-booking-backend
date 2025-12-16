@@ -1,10 +1,11 @@
-<?php 
+<?php
 
 date_default_timezone_set('Asia/Kolkata');
 require_once __DIR__ . '/auth-helper.php';
 require_once __DIR__ . '/../_db-connect.php';
 
-function authenticateRequest() {
+function authenticateRequest()
+{
     $cookieToken = $_COOKIE['authToken'] ?? '';
 
     if (empty($cookieToken)) {
@@ -148,6 +149,3 @@ function superAdminAuthenticateRequest()
         'userId' => $userId
     ];
 }
-
-
-?>
