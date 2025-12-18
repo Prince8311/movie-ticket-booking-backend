@@ -1,5 +1,6 @@
 <?php
 
+date_default_timezone_set('Asia/Kolkata');
 require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
@@ -26,11 +27,47 @@ if ($requestMethod == 'GET') {
     $userResult = mysqli_query($conn, $userSql);
 
     $tokenRow = mysqli_fetch_assoc($userResult);
+    $userId = $tokenRow['id'];
+    $currentTime = time();
+
+    if (mysqli_num_rows($userResult) === 0) {
+        return [
+            'authenticated' => false,
+            'status' => 401,
+            'message' => 'Invalid token'
+        ];
+    }
+
+    // ------------------------------------------------
+    // TOKEN EXPIRED → Extract user data and refresh
+    // ------------------------------------------------
+
+    // Decode: base64 → "json | salt"
+    $decoded = base64_decode($cookieToken);
+    list($jsonPayload, $salt) = explode('|', $decoded, 2);
+
+    $payload = json_decode($jsonPayload, true);
+
+    if (!$payload || !isset($payload['id'])) {
+        return [
+            'authenticated' => false,
+            'status' => 401,
+            'message' => 'Expired token corrupted'
+        ];
+    }
+
+    $newRandom = bin2hex(random_bytes(64));
+    $newData   = json_encode($payload) . "|" . $newRandom;
+    $newToken  = base64_encode($newData);
+
+    // Update DB token
+    $newExpiry = date("Y-m-d H:i:s", time() + 86400);
 
     $data = [
         'status' => 200,
         'message' => 'Token refreshed successfully.',
-        'data' => $tokenRow
+        'newToken' => $newToken,
+        'newExpiry' => $newExpiry
     ];
 
     header("HTTP/1.0 200 OK");
