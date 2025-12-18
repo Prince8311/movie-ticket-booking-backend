@@ -22,11 +22,15 @@ if ($requestMethod == 'GET') {
     $currentToken = $authResult['current_token'];
 
     $escapedToken = mysqli_real_escape_string($conn, $currentToken);
+    $userSql = "SELECT * FROM `admin_users` WHERE `auth_token`='$escapedToken'";
+    $userResult = mysqli_query($conn, $userSql);
+
+    $tokenRow = mysqli_fetch_assoc($userResult);
 
     $data = [
         'status' => 200,
-        'message' => 'Token.',
-        'newToken' => $escapedToken
+        'message' => 'Token refreshed successfully.',
+        'data' => $tokenRow
     ];
 
     header("HTTP/1.0 200 OK");
