@@ -36,7 +36,6 @@ function authenticateRequest()
 
 function superAdminAuthenticateRequest()
 {
-    global $conn;
     $cookieToken = $_COOKIE['authToken'] ?? '';
     $authHeader  = getAuthorizationHeader();
     $frontendToken = null;
