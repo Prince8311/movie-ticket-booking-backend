@@ -86,8 +86,7 @@ if ($requestMethod == 'POST') {
                                 $_SESSION['userId'] = $userId;
                                 $data = [
                                     'status' => 200,
-                                    'message' => 'OTP has been sent',
-                                    'authMail' => $userEmail
+                                    'message' => 'OTP has been sent'
                                 ];
                                 header("HTTP/1.0 200 OTP Sent");
                                 echo json_encode($data);
