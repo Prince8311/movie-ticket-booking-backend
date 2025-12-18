@@ -1,38 +1,4 @@
-<?php
-
-date_default_timezone_set('Asia/Kolkata');
-require_once __DIR__ . '/auth-helper.php';
-require_once __DIR__ . '/../_db-connect.php';
-
-function authenticateRequest()
-{
-    $cookieToken = $_COOKIE['authToken'] ?? '';
-
-    if (empty($cookieToken)) {
-        return [
-            'authenticated' => false,
-            'status' => 401,
-            'message' => 'Authentication error'
-        ];
-    }
-
-    $authHeader = getAuthorizationHeader();
-    if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-        $frontendToken = $matches[1];
-        if ($cookieToken !== $frontendToken) {
-            return [
-                'authenticated' => false,
-                'status' => 401,
-                'message' => 'Authentication mismatch'
-            ];
-        }
-    }
-
-    return [
-        'authenticated' => true,
-        'token' => $cookieToken
-    ];
-}
+<?php 
 
 function superAdminAuthenticateRequest()
 {
@@ -50,7 +16,7 @@ function superAdminAuthenticateRequest()
         return [
             'authenticated' => false,
             'status' => 401,
-            'message' => 'Authentication error',
+            'message' => 'Authentication error'
         ];
     }
 
@@ -65,58 +31,17 @@ function superAdminAuthenticateRequest()
         }
     }
 
+
     // 3. Token expired 
     if (empty($cookieToken) && !empty($frontendToken)) {
-        return [
-            'authenticated' => false,
-            'status' => 401,
-            'message' => 'Token expired',
-            'current_token' => $frontendToken
-        ];
-    }
-}
-
-function userAuthenticateRequest()
-{
-    global $conn;
-    $cookieToken = $_COOKIE['authToken'] ?? '';
-    $authHeader  = getAuthorizationHeader();
-    $frontendToken = null;
-
-    if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-        $frontendToken = $matches[1];
-    }
-
-    // 1. Cookie empty & Header empty → NOT authenticated
-    if (empty($cookieToken) && empty($frontendToken)) {
-        return [
-            'authenticated' => false,
-            'status' => 401,
-            'message' => 'Authentication error'
-        ];
-    }
-
-    // 2. Cookie empty & Header present → Cookie expired, but header token exists → use header token for DB lookup 
-    if (empty($cookieToken) && !empty($frontendToken)) {
         $cookieToken = $frontendToken;
-    }
-
-    // 3. Cookie present & Header present → Must match
-    if (!empty($cookieToken) && !empty($frontendToken)) {
-        if ($cookieToken !== $frontendToken) {
-            return [
-                'authenticated' => false,
-                'status' => 401,
-                'message' => 'Authentication mismatch'
-            ];
-        }
     }
 
     // ---------------------------
     // 4. Check token in database
     // ---------------------------
     $escapedToken = mysqli_real_escape_string($conn, $cookieToken);
-    $userSql = "SELECT * FROM `users` WHERE `auth_token`='$escapedToken'";
+    $userSql = "SELECT * FROM `admin_users` WHERE `auth_token`='$escapedToken'";
     $userResult = mysqli_query($conn, $userSql);
 
     if (mysqli_num_rows($userResult) === 0) {
@@ -168,7 +93,7 @@ function userAuthenticateRequest()
 
     // 7. Update DB token
     $newExpiry = date("Y-m-d H:i:s", time() + 86400);
-    $updateSql = "UPDATE `users` SET `auth_token`='$newToken',`expires_at`='$newExpiry' WHERE `id`='$userId'";
+    $updateSql = "UPDATE `admin_users` SET `auth_token`='$newToken',`expires_at`='$newExpiry' WHERE `id`='$userId'";
     mysqli_query($conn, $updateSql);
 
     setcookie(
@@ -191,3 +116,5 @@ function userAuthenticateRequest()
         'userId' => $userId
     ];
 }
+
+?>
