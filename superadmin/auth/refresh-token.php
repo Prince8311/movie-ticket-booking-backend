@@ -48,26 +48,10 @@ if ($requestMethod == 'GET') {
 
     $payload = json_decode($jsonPayload, true);
 
-    if (!$payload || !isset($payload['id'])) {
-        return [
-            'authenticated' => false,
-            'status' => 401,
-            'message' => 'Expired token corrupted'
-        ];
-    }
-
-    $newRandom = bin2hex(random_bytes(64));
-    $newData   = json_encode($payload) . "|" . $newRandom;
-    $newToken  = base64_encode($newData);
-
-    // Update DB token
-    $newExpiry = date("Y-m-d H:i:s", time() + 86400);
-
     $data = [
         'status' => 200,
         'message' => 'Token refreshed successfully.',
-        'newToken' => $newToken,
-        'newExpiry' => $newExpiry
+        'payload' => $payload
     ];
 
     header("HTTP/1.0 200 OK");
