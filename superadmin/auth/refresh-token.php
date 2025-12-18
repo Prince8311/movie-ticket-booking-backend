@@ -85,7 +85,7 @@ if ($requestMethod == 'GET') {
     ];
 
     header("HTTP/1.0 200 OK");
-    echo json_encode($response);
+    echo json_encode($data);
 } else {
     $data = [
         'status' => 405,
