@@ -50,6 +50,8 @@ function superAdminAuthenticateRequest()
             'authenticated' => false,
             'status' => 401,
             'message' => 'Authentication error',
+            'cookieToken' => $cookieToken,
+            'frontendToken' => $frontendToken
         ];
     }
 

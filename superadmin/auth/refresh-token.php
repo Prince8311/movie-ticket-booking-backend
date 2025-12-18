@@ -8,7 +8,9 @@ $authResult = superAdminAuthenticateRequest();
 if (!$authResult['current_token']) {
     $data = [
         'status' => $authResult['status'],
-        'message' => $authResult['message']
+        'message' => $authResult['message'],
+        'cookieToken' => $authResult['cookieToken'],
+        'frontendToken' => $authResult['frontendToken'],
     ];
     header("HTTP/1.0 " . $authResult['status']);
     echo json_encode($data);
