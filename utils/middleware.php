@@ -74,6 +74,11 @@ function superAdminAuthenticateRequest()
             'current_token' => $frontendToken
         ];
     }
+
+    return [
+        'authenticated' => true,
+        'token' => $cookieToken
+    ];
 }
 
 function userAuthenticateRequest()
