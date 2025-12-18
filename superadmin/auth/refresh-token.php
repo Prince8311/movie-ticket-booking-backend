@@ -4,7 +4,7 @@ require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
 $authResult = superAdminAuthenticateRequest();
-if (!$authResult['authenticated']) {
+if (!$authResult['current_token']) {
     $data = [
         'status' => $authResult['status'],
         'message' => $authResult['message']
@@ -14,13 +14,12 @@ if (!$authResult['authenticated']) {
     exit;
 }
 
-$newToken = $authResult['token'];
+$currentToken = $authResult['current_token'];
 
 $response = [
     'status' => 200,
-    'message' => 'Token refreshed successfully.',
-    'refreshed' => true,
-    'newToken' => $newToken
+    'message' => 'Token invalid.',
+    'currentToken' => $currentToken
 ];
 
 header("HTTP/1.0 200 OK");
