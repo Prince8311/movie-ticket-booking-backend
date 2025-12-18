@@ -59,7 +59,9 @@ function superAdminAuthenticateRequest()
             return [
                 'authenticated' => false,
                 'status' => 401,
-                'message' => 'Authentication mismatch'
+                'message' => 'Authentication mismatch',
+                'cookieToken' => $cookieToken,
+                'frontendToken' => $frontendToken
             ];
         }
     }
