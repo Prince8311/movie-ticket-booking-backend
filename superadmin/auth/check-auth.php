@@ -15,9 +15,6 @@ if (!$authResult['authenticated']) {
     exit;
 }
 
-$userID = $authResult['userId'];
-$refreshed = $authResult['refreshed'];
-
 if ($requestMethod == 'GET') {
     require "../../_db-connect.php";
     global $conn;
@@ -25,7 +22,7 @@ if ($requestMethod == 'GET') {
     $authToken = $authResult['token'];
 
     // Fetch user
-    $sql = "SELECT `name`, `image`, `email`, `phone`, `status`, `user_type`, `user_role` FROM `admin_users` WHERE `id` = '$userID'";
+    $sql = "SELECT `name`, `image`, `email`, `phone`, `status`, `user_type`, `user_role` FROM `admin_users` WHERE `auth_token` = '$authToken'";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {
@@ -99,8 +96,7 @@ if ($requestMethod == 'GET') {
             'status' => 200,
             'message' => 'Authenticated',
             'user' => $user,
-            'permissions' => $permissionsFormatted,
-            'tokenRefreshed' => $refreshed
+            'permissions' => $permissionsFormatted
         ];
 
         header("HTTP/1.0 200 Authenticated");
