@@ -48,10 +48,40 @@ if ($requestMethod == 'GET') {
 
     $payload = json_decode($jsonPayload, true);
 
+    if (!$payload || !isset($payload['id'])) {
+        return [
+            'authenticated' => false,
+            'status' => 401,
+            'message' => 'Expired token corrupted'
+        ];
+    }
+
+    $newRandom = bin2hex(random_bytes(64));
+    $newData   = json_encode($payload) . "|" . $newRandom;
+    $newToken  = base64_encode($newData);
+
+    // Update DB token
+    $newExpiry = date("Y-m-d H:i:s", time() + 86400);
+    $updateSql = "UPDATE `admin_users` SET `auth_token`='$newToken',`expires_at`='$newExpiry' WHERE `id`='$userId'";
+    mysqli_query($conn, $updateSql);
+
+    setcookie(
+        "authToken",
+        $newToken,
+        [
+            'expires' => time() + 86400,
+            'path' => '/',
+            'domain' => 'ticketbay.in',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None'
+        ]
+    );
+
     $data = [
         'status' => 200,
         'message' => 'Token refreshed successfully.',
-        'payload' => $payload
+        'newToken' => $newToken
     ];
 
     header("HTTP/1.0 200 OK");
