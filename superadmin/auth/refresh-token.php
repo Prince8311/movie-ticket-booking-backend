@@ -43,7 +43,7 @@ if ($requestMethod == 'GET') {
     // ------------------------------------------------
 
     // Decode: base64 → "json | salt"
-    $decoded = base64_decode($cookieToken);
+    $decoded = base64_decode($currentToken);
     list($jsonPayload, $salt) = explode('|', $decoded, 2);
 
     $payload = json_decode($jsonPayload, true);
