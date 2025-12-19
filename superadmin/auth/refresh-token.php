@@ -4,13 +4,11 @@ date_default_timezone_set('Asia/Kolkata');
 require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
-$authResult = superAdminAuthenticateRequest();
+$authResult = authenticateRequest();
 if (!$authResult['current_token']) {
     $data = [
         'status' => $authResult['status'],
-        'message' => $authResult['message'],
-        'cookieToken' => $authResult['cookieToken'],
-        'frontendToken' => $authResult['frontendToken'],
+        'message' => $authResult['message']
     ];
     header("HTTP/1.0 " . $authResult['status']);
     echo json_encode($data);

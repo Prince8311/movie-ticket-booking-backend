@@ -7,8 +7,15 @@ require_once __DIR__ . '/../_db-connect.php';
 function authenticateRequest()
 {
     $cookieToken = $_COOKIE['authToken'] ?? '';
+    $authHeader  = getAuthorizationHeader();
+    $frontendToken = null;
 
-    if (empty($cookieToken)) {
+    if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+        $frontendToken = $matches[1];
+    }
+
+    // 1. Cookie empty & Header empty → NOT authenticated
+    if (empty($cookieToken) && empty($frontendToken)) {
         return [
             'authenticated' => false,
             'status' => 401,
@@ -16,9 +23,8 @@ function authenticateRequest()
         ];
     }
 
-    $authHeader = getAuthorizationHeader();
-    if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-        $frontendToken = $matches[1];
+    // 2. Cookie present & Header present → Must match
+    if (!empty($cookieToken) && !empty($frontendToken)) {
         if ($cookieToken !== $frontendToken) {
             return [
                 'authenticated' => false,
@@ -26,6 +32,16 @@ function authenticateRequest()
                 'message' => 'Authentication mismatch'
             ];
         }
+    }
+
+    // 3. Token expired 
+    if (empty($cookieToken) && !empty($frontendToken)) {
+        return [
+            'authenticated' => false,
+            'status' => 401,
+            'message' => 'Token expired',
+            'current_token' => $frontendToken
+        ];
     }
 
     return [
