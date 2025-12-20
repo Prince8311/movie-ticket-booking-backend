@@ -3,7 +3,7 @@
 require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
-$authResult = userAuthenticateRequest();
+$authResult = authenticateRequest();
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
@@ -21,7 +21,9 @@ if ($requestMethod == 'GET') {
     require "../../_db-connect.php";
     global $conn;
 
-    $sql = "SELECT `id`, `name`, `image`, `phone`, `email`, `status`, `ticket_booked` FROM `users` WHERE `id`='$userID'";
+    $authToken = $authResult['token'];
+
+    $sql = "SELECT `id`, `name`, `image`, `phone`, `email`, `status`, `ticket_booked` FROM `users` WHERE `auth_token`='$authToken'";
     $result = mysqli_query($conn, $sql);
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
@@ -30,7 +32,6 @@ if ($requestMethod == 'GET') {
                 'status' => 200,
                 'message' => 'Authenticated',
                 'user' => $user,
-                'tokenRefreshed' => $refreshed
             ];
             header("HTTP/1.0 200 Authenticated");
             echo json_encode($data);

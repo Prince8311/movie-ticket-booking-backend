@@ -4,7 +4,7 @@ date_default_timezone_set('Asia/Kolkata');
 require "../../../utils/headers.php";
 require "../../../utils/middleware.php";
 
-$authResult = userAuthenticateRequest();
+$authResult = authenticateRequest();
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
