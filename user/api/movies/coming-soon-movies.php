@@ -56,7 +56,7 @@ if ($requestMethod == 'GET') {
         // -----------------------
         // COUNT QUERY
         // -----------------------
-        $countSql = "SELECT COUNT(DISTINCT ts.movie_name) AS total FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND STR_TO_DATE(m.release_date, '%d %b, %Y') <= '$currentDate' AND (STR_TO_DATE(ts.start_date, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(ts.start_date, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime'))";
+        $countSql = "SELECT COUNT(DISTINCT ts.movie_name) AS total FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND STR_TO_DATE(m.release_date, '%d %b, %Y') >= '$currentDate' AND (STR_TO_DATE(ts.start_date, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(ts.start_date, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime'))";
         $countResult  = mysqli_query($conn, $countSql);
         $countRow = mysqli_fetch_assoc($countResult);
         $totalMovies = (int) $countRow['total'];
@@ -64,7 +64,7 @@ if ($requestMethod == 'GET') {
         // -----------------------
         // DATA QUERY (with LIMIT)
         // -----------------------
-        $sql = "SELECT ts.movie_name, m.poster_image FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND STR_TO_DATE(m.release_date, '%d %b, %Y') <= '$currentDate' AND (STR_TO_DATE(ts.start_date, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(ts.start_date, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime')) GROUP BY ts.movie_name ORDER BY ts.start_date ASC, ts.start_time ASC LIMIT $limit OFFSET $offset";
+        $sql = "SELECT ts.movie_name, m.poster_image FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND STR_TO_DATE(m.release_date, '%d %b, %Y') >= '$currentDate' AND (STR_TO_DATE(ts.start_date, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(ts.start_date, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime')) GROUP BY ts.movie_name ORDER BY ts.start_date ASC, ts.start_time ASC LIMIT $limit OFFSET $offset";
         $result = mysqli_query($conn, $sql);
 
         $movies = [];
@@ -76,12 +76,12 @@ if ($requestMethod == 'GET') {
 
             $data = [
                 'status' => 200,
-                'message' => 'Recommended movies fetched.',
+                'message' => 'Coming soon movies fetched.',
                 'totalCount' => $totalMovies,
                 'currentPage' => $page,
                 'movies' => $movies
             ];
-            header("HTTP/1.0 200 Recommended movies");
+            header("HTTP/1.0 200 Coming soon movies");
             echo json_encode($data);
         } else {
             $data = [
