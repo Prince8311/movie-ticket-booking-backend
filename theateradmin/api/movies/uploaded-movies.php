@@ -19,17 +19,18 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
+    // Date & Time 
+    $currentDate = date("Y-m-d");
+    $oneMonthAfterDate = date('Y-m-d', strtotime('+1 month'));
+
     $limit = 10;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
         ? (int)$_GET['page']
         : 1;
     $offset = ($page - 1) * $limit;
     $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
-    if (!empty($search)) {
-        $where = "WHERE `name` LIKE '%$search%'";
-    } else {
-        $where = "";
-    }
+    $searchWhere = !empty($search) ? "AND `name` LIKE '%$search%'" : '';
+    $where = "WHERE `release_date` IS NOT NULL AND TRIM(release_date) != '' AND (STR_TO_DATE(release_date, '%d %b, %Y') < '$currentDate' OR STR_TO_DATE(release_date, '%d %b, %Y') BETWEEN '$currentDate' AND '$oneMonthAfterDate') $searchWhere";
     $countSql = "SELECT COUNT(*) as total FROM `movies` $where";
     $countResult = mysqli_query($conn, $countSql);
     $countRow = mysqli_fetch_assoc($countResult);
@@ -45,6 +46,8 @@ if ($requestMethod == 'GET') {
             'message' => 'Movies fetched.',
             'totalCount' => $totalMovies,
             'currentPage' => $page,
+            'currentDate' => $currentDate,
+            'oneMonthAfterDate' => $oneMonthAfterDate,
             'movies' => $movies
         ];
         header("HTTP/1.0 200 Movie list");
