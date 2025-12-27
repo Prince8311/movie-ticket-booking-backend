@@ -19,8 +19,8 @@ if ($requestMethod == 'POST') {
     require "../../_db-connect.php";
     global $conn;
 
-    $token = $authResult['token'];
-    $sql = "UPDATE `admin_users` SET `token`= NULL WHERE `token`='$token'";
+    $authToken = $authResult['token'];
+    $sql = "UPDATE `admin_users` SET `auth_token`= NULL WHERE `auth_token`='$authToken'";
     $result = mysqli_query($conn, $sql);
     session_destroy();
     setcookie(
