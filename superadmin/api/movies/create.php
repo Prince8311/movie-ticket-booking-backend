@@ -23,7 +23,6 @@ if ($requestMethod == 'POST') {
         $inputData = json_decode($_POST['inputs'], true);
 
         $name = mysqli_real_escape_string($conn, $inputData['name'] ?? '');
-        $activity = mysqli_real_escape_string($conn, $inputData['activity'] ?? '');
         $formats = mysqli_real_escape_string($conn, $inputData['formats'] ?? '');
         $languages = mysqli_real_escape_string($conn, $inputData['languages'] ?? '');
         $time = mysqli_real_escape_string($conn, $inputData['time'] ?? '');
@@ -53,7 +52,7 @@ if ($requestMethod == 'POST') {
         if ($image !== false) {
             $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
             if ($save) {
-                $sql = "INSERT INTO `movies`(`name`, `poster_image`, `release_date`, `total_time`, `languages`, `activity`, `formats`, `age_category`, `genres`, `casts`, `crews`, `trailer`, `description`) VALUES ('$name','$imageName','$releaseDate','$time','$languages','$activity','$formats','$ageCategory','$genres','$casts','$crews','$trailer','$description')";
+                $sql = "INSERT INTO `movies`(`name`, `poster_image`, `release_date`, `total_time`, `languages`, `formats`, `age_category`, `genres`, `casts`, `crews`, `trailer`, `description`) VALUES ('$name','$imageName','$releaseDate','$time','$languages','$formats','$ageCategory','$genres','$casts','$crews','$trailer','$description')";
                 $result = mysqli_query($conn, $sql);
                 if ($result) {
                     $data = [
