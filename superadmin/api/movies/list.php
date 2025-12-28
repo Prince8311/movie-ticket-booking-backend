@@ -24,10 +24,12 @@ if ($requestMethod == 'GET') {
         ? (int)$_GET['page']
         : 1;
     $offset = ($page - 1) * $limit;
-    $sql = "SELECT * FROM `movies` ORDER BY `id` DESC";
+    $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+    $searchWhere = !empty($search) ? "WHERE `name` LIKE '%$search%'" : '';
+    $sql = "SELECT * FROM `movies` $searchWhere ORDER BY `id` DESC";
     $result = mysqli_query($conn, $sql);
     $totalMovies = mysqli_num_rows($result);
-    $limitSql = "SELECT * FROM `movies` ORDER BY `id` DESC LIMIT $limit OFFSET $offset";
+    $limitSql = "SELECT * FROM `movies` $searchWhere ORDER BY `id` DESC LIMIT $limit OFFSET $offset";
     $limitResult = mysqli_query($conn, $limitSql);
 
     if($result) {
