@@ -33,6 +33,7 @@ if ($requestMethod == 'POST') {
         $casts = mysqli_real_escape_string($conn, $inputData['casts'] ?? '');
         $crews = mysqli_real_escape_string($conn, $inputData['crews'] ?? '');
         $description = mysqli_real_escape_string($conn, $inputData['description'] ?? '');
+        $releaseYear = mysqli_real_escape_string($conn, $inputData['releaseYear'] ?? '');
         $releaseDateRaw = trim($inputData['releaseDate'] ?? '');
         if ($releaseDateRaw === '') {
             $releaseDate = '';
