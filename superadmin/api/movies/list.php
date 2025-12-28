@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require "../../../utils/headers.php";
 require "../../../utils/middleware.php";
@@ -32,7 +32,7 @@ if ($requestMethod == 'GET') {
     $limitSql = "SELECT * FROM `movies` $searchWhere ORDER BY `id` DESC LIMIT $limit OFFSET $offset";
     $limitResult = mysqli_query($conn, $limitSql);
 
-    if($result) {
+    if ($result) {
         $movies = mysqli_fetch_all($limitResult, MYSQLI_ASSOC);
         $data = [
             'status' => 200,
@@ -59,5 +59,3 @@ if ($requestMethod == 'GET') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-?>
