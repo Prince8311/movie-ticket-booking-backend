@@ -38,7 +38,7 @@ if ($requestMethod == 'POST') {
         if ($image !== false) {
             $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
             if ($save) {
-                $sql = "INSERT INTO `banners`(`image`, `title`, `description`) VALUES ('$imageName', $titleSql, $descriptionSql)";
+                $sql = "INSERT INTO `banners`(`image`, `title`, `description`) VALUES ('$imageName', $titleValue, $descriptionValue)";
                 $result = mysqli_query($conn, $sql);
                 if ($result) {
                     $data = [
