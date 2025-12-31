@@ -12,7 +12,7 @@ if ($requestMethod == 'GET') {
         $status = 'Published';
 
         // Pagination
-        $limit = 10;
+        $limit = 12;
         $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
             ? (int) $_GET['page']
             : 1;
