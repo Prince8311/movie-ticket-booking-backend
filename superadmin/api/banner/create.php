@@ -25,8 +25,8 @@ if ($requestMethod == 'POST') {
         $title = isset($inputData['title']) ? mysqli_real_escape_string($conn, $inputData['title']) : null;
         $description = isset($inputData['description']) ? mysqli_real_escape_string($conn, $inputData['description']) : null;
 
-        $titleValue = $title === null ? NULL : "'$title'";
-        $descriptionValue = $description === null ? NULL : "'$description'";
+        $titleValue = $title === null ? "NULL" : "'$title'";
+        $descriptionValue = $description === null ? "NULL" : "'$description'";
 
         $imageData = $_FILES['image'];
         $folder = "../../../posters/banners/";
