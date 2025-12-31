@@ -15,7 +15,7 @@ if (!$authResult['authenticated']) {
     exit;
 }
 
-if ($requestMethod == 'POST') {
+if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
