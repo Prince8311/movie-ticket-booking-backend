@@ -38,7 +38,8 @@ if ($requestMethod == 'GET') {
             "requested_theaters",
             "registered_theaters",
             "role_permission",
-            "banners_slabs",
+            "commission_slabs",
+            "banners",
             "movies",
             "state_city"
         ];
