@@ -34,7 +34,7 @@ if ($requestMethod == 'GET') {
         }
         $theaterList = "'" . implode("','", $theaters) . "'";
 
-        $sql = "SELECT m.*, GROUP_CONCAT(DISTINCT ts.language) AS available_languages, GROUP_CONCAT(DISTINCT ts.format) AS available_formats FROM movies m LEFT JOIN theater_shows ts ON ts.movie_name = m.name AND ts.theater_name IN ($theaterList) AND (ts.start_date > '$currentDate' OR (ts.start_date = '$currentDate' AND ts.start_time > '$currentTime')) WHERE m.name = '$movieName' GROUP BY m.id";
+        $sql = "SELECT m.*, GROUP_CONCAT(DISTINCT ts.language) AS available_languages, GROUP_CONCAT(DISTINCT ts.format) AS available_formats FROM movies m LEFT JOIN theater_shows ts ON ts.movie_name = m.name AND ts.theater_name IN ($theaterList) AND (STR_TO_DATE(ts.start_date, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(ts.start_date, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime')) WHERE m.name = '$movieName' GROUP BY m.id";
         $result = mysqli_query($conn, $sql);
 
         if ($result && mysqli_num_rows($result) > 0) {
