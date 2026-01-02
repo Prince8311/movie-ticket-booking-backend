@@ -90,8 +90,7 @@ if ($requestMethod == 'GET') {
             $data = [
                 'status' => 200,
                 'message' => 'Movie details fetched.',
-                'movie' => $movie,
-                'currentDate' => $currentDate
+                'movie' => $movie
             ];
             header("HTTP/1.0 200 Details fetched");
             echo json_encode($data);
