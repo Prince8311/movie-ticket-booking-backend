@@ -21,7 +21,7 @@ if ($requestMethod == 'POST') {
             if ($updateResult) {
                 $data = [
                     'status' => 200,
-                    'message' => 'Password updated successfully.'
+                    'message' => 'Password updated.'
                 ];
                 header("HTTP/1.0 200 Ok");
                 echo json_encode($data);
