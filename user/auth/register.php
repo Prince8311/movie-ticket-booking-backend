@@ -131,7 +131,7 @@ if ($requestMethod == 'POST') {
                     $_SESSION['userEmail'] = $email;
                     $data = [
                         'status' => 200,
-                        'message' => 'OTP has been sent',
+                        'message' => 'Registration successful. Please verify OTP.',
                     ];
                     header("HTTP/1.0 200 OTP Sent");
                     echo json_encode($data);
