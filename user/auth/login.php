@@ -31,8 +31,7 @@ if ($requestMethod == 'POST') {
                             'id' => $userId,
                             'name' => $userName,
                             'email' => $userEmail,
-                            'phone' => $userPhone,
-                            'timestamp' => time(),
+                            'phone' => $userPhone
                         ];
 
                         $jsonPayload = json_encode($payload);
