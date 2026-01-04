@@ -17,7 +17,7 @@ if ($requestMethod == 'GET') {
         $movieSql = "SELECT `release_date` FROM `movies` WHERE `name` = '$movieName'";
         $movieResult = mysqli_query($conn, $movieSql);
 
-        $sql = "SELECT * FROM `theater_shows` WHERE `movie_name`='$movieName' AND `start_date`='$date' AND (STR_TO_DATE('$date', '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE('$date', '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%d %b, %Y') > '$currentTime')) ORDER BY STR_TO_DATE(`start_time`, '%d %b, %Y') ASC";
+        $sql = "SELECT ts.*, rt.location FROM `theater_shows` ts LEFT JOIN `registered_theaters` rt ON rt.name = ts.theater_name WHERE ts.movie_name='$movieName' AND ts.start_date='$date' AND (STR_TO_DATE('$date', '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE('$date', '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%d %b, %Y') > '$currentTime')) ORDER BY STR_TO_DATE(ts.start_time, '%d %b, %Y') ASC";
         $result = mysqli_query($conn, $sql);
 
         if ($result && $movieResult) {
@@ -32,6 +32,7 @@ if ($requestMethod == 'GET') {
                 if (!isset($groupedTheaters[$theaterName])) {
                     $groupedTheaters[$theaterName] = [
                         'theater_name' => $theaterName,
+                        'location' => $row['location'],
                         'timings' => []
                     ];
                 }
