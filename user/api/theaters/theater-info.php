@@ -14,12 +14,17 @@ if ($requestMethod == 'GET') {
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
+        $theaterSql = "SELECT `location` FROM `registered_theaters` WHERE `name` = '$theaterName'";
+        $theaterResult = mysqli_query($conn, $theaterSql);
+
         $sql = "SELECT * FROM `theater_shows` WHERE `theater_name`='$theaterName' AND `start_date`='$date' AND (STR_TO_DATE('$date', '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE('$date', '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%d %b, %Y') > '$currentTime')) ORDER BY STR_TO_DATE(`start_time`, '%d %b, %Y') ASC";
         $result = mysqli_query($conn, $sql);
 
-        if ($result) {
+        if ($result && $theaterResult) {
             $rawMovies = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $theaterData = mysqli_fetch_assoc($theaterResult);
             $groupedMovies = [];
+            $theaterLocation = $theaterData['location'];
 
             foreach ($rawMovies as $row) {
                 $movieName = $row['movie_name'];
@@ -47,6 +52,7 @@ if ($requestMethod == 'GET') {
             $data = [
                 'status' => 200,
                 'message' => 'Theater movies.',
+                'location' => $theaterLocation,
                 'movies' => $movies
             ];
             header("HTTP/1.0 200 Movie movies");

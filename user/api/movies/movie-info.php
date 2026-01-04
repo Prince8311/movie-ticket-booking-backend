@@ -52,7 +52,6 @@ if ($requestMethod == 'GET') {
             $data = [
                 'status' => 200,
                 'message' => 'Theater timings.',
-                'movieName' => $movieName,
                 'releaseDate' => $releaseDate,
                 'theaters' => $theaters
             ];
