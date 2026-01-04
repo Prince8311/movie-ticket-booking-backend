@@ -14,12 +14,17 @@ if ($requestMethod == 'GET') {
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
+        $movieSql = "SELECT `release_date` FROM `movies` WHERE `name` = '$movieName'";
+        $movieResult = mysqli_query($conn, $movieSql);
+
         $sql = "SELECT * FROM `theater_shows` WHERE `movie_name`='$movieName' AND `start_date`='$date' AND (STR_TO_DATE('$date', '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE('$date', '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%d %b, %Y') > '$currentTime')) ORDER BY STR_TO_DATE(`start_time`, '%d %b, %Y') ASC";
         $result = mysqli_query($conn, $sql);
 
-        if ($result) {
+        if ($result && $movieResult) {
             $rawTheaters = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $movieData = mysqli_fetch_assoc($movieResult);
             $groupedTheaters = [];
+            $releaseDate = $movieData['release_date'];
 
             foreach ($rawTheaters as $row) {
                 $theaterName = $row['theater_name'];
@@ -47,6 +52,8 @@ if ($requestMethod == 'GET') {
             $data = [
                 'status' => 200,
                 'message' => 'Theater timings.',
+                'movieName' => $movieName,
+                'releaseDate' => $releaseDate,
                 'theaters' => $theaters
             ];
             header("HTTP/1.0 200 Theater timings");
