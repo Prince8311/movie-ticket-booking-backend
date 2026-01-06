@@ -21,7 +21,7 @@ if ($requestMethod == 'GET') {
                 'message' => 'Screen sections fetched.',
                 'sections' => $sections
             ];
-            header("HTTP/1.0 Screen sections");
+            header("HTTP/1.0 200 Screen sections");
             echo json_encode($data);
         } else {
             $data = [
