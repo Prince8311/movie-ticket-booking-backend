@@ -6,11 +6,12 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['screenId']) && isset($_GET['sectionName'])) {
+    if (isset($_GET['screenId']) && isset($_GET['sectionName']) && isset($_GET['theaterName'])) {
         $screenId = mysqli_real_escape_string($conn, $_GET['screenId']);
         $sectionName = mysqli_real_escape_string($conn, $_GET['sectionName']);
+        $theaterName = mysqli_real_escape_string($conn, $_GET['theaterName']);
 
-        $findScreen = "SELECT * FROM `registered_screens` WHERE `screen_id` = '$screenId'";
+        $findScreen = "SELECT * FROM `registered_screens` WHERE `screen_id` = '$screenId' AND `theater_name` = '$theaterName'";
         $findResult = mysqli_query($conn, $findScreen);
         $screenNo = mysqli_num_rows($findResult);
 
@@ -24,7 +25,7 @@ if ($requestMethod == 'GET') {
             exit;
         }
 
-        $findSection = "SELECT * FROM `screen_sections` WHERE `screen_id` = '$screenId' AND `section_name` = '$sectionName' AND `price` IS NOT NULL";
+        $findSection = "SELECT * FROM `screen_sections` WHERE `screen_id` = '$screenId' AND `section_name` = '$sectionName' AND `theater_name` = '$theaterName' AND `price` IS NOT NULL";
         $sectionResult = mysqli_query($conn, $findSection);
         $sectionNo = mysqli_num_rows($sectionResult);
 
@@ -43,7 +44,7 @@ if ($requestMethod == 'GET') {
 
         foreach ($sections as $section) {
             $sectionIndex = $section['section'];
-            $seatSql = "SELECT `id`, `row`, `seats`, `starting`, `gap_seats`, `gap_amounts` FROM `screen_rows` WHERE `screen_id` = '$screenId' AND `section` = '$sectionIndex'";
+            $seatSql = "SELECT `id`, `row`, `seats`, `starting`, `gap_seats`, `gap_amounts` FROM `screen_rows` WHERE `screen_id` = '$screenId' AND `section` = '$sectionIndex' AND `theater_name` = '$theaterName'";
             $seatResult = mysqli_query($conn, $seatSql);
             $seats = mysqli_fetch_all($seatResult, MYSQLI_ASSOC);
 
