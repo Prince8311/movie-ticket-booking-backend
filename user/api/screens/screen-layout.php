@@ -46,7 +46,7 @@ if ($requestMethod == 'GET') {
             $sectionIndex = $section['section'];
             $seatSql = "SELECT `id`, `row`, `seats`, `starting`, `gap_seats`, `gap_amounts` FROM `screen_rows` WHERE `screen_id` = '$screenId' AND `section` = '$sectionIndex' AND `theater_name` = '$theaterName'";
             $seatResult = mysqli_query($conn, $seatSql);
-            $seats = mysqli_fetch_all($seatResult, MYSQLI_ASSOC);
+            $seats = mysqli_fetch_assoc($seatResult);
 
             $section['seat_layout'] = $seats;
             $seatData[] = $section;
