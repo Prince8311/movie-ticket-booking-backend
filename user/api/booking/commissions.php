@@ -1,9 +1,9 @@
 <?php
 
-require "../../../../utils/headers.php";
+require "../../../utils/headers.php";
 
 if ($requestMethod == 'GET') {
-    require "../../../../_db-connect.php";
+    require "../../../_db-connect.php";
     global $conn;
 
     if (isset($_GET['theaterName'])) {
