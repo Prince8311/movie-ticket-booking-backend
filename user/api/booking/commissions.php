@@ -54,7 +54,7 @@ if ($requestMethod == 'GET') {
                 'message' => 'Commissions fetched.',
                 'theaterCommissionType' => $theaterCommissionType,
                 'theaterCommission' => $theaterCommission,
-                'adminCommissions' => $adminCommission
+                'adminCommission' => $adminCommission
             ];
             header("HTTP/1.0 200 Commissions");
             echo json_encode($data);
