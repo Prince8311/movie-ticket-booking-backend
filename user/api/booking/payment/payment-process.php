@@ -22,21 +22,21 @@ if ($requestMethod == 'POST') {
     $currentDateTime = new DateTime();
     $currentDateTime->add(new DateInterval('PT30M'));
     $expiryDateTime = $currentDateTime->format('Y-m-d H:i:s');
-    $env = getenv('APP_ENV');
-    $isProd = getenv('APP_ENV') === 'prod';
+    $production = false;
 
     // Payment Credentials
-    $merchantId = $isProd ? getenv('PHONEPE_PROD_MERCHANT_ID') : getenv('PHONEPE_UAT_MERCHANT_ID');
-    $apiKey = $isProd ? getenv('PHONEPE_PROD_API_KEY') : getenv('PHONEPE_UAT_API_KEY');
-    $paymentURL = $isProd ? getenv('PHONEPE_PROD_URL') : getenv('PHONEPE_UAT_URL');
+    $apiKey = $production ? 'dd3ac85a-750a-42d8-bca2-08b7afabee0c' : 'aa2fbb7d-de50-4e3e-b628-c5ee22468e47';
+    $merchantId = $production ? 'M22EJS7CELBPU' : 'TICKETBAYUAT';
+    $paymentURL = $production ? 'https://api.phonepe.com/apis/hermes/pg/v1/pay' : 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay';
 
     $data = [
         'status' => 200,
-        'message' => 'Payment data',
-        'env' => $env,
+        'message' => 'Payment',
+        'production' => $production,
         'merchantId' => $merchantId,
         'apiKey' => $apiKey,
-        'paymentURL' => $paymentURL
+        'paymentURL' => $paymentURL,
+        'expiryDateTime' => $expiryDateTime,
     ];
     header("HTTP/1.0 200 Payment");
     echo json_encode($data);
