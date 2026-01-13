@@ -38,6 +38,8 @@ if ($requestMethod == 'POST') {
         'apiKey' => $apiKey,
         'paymentURL' => $paymentURL
     ];
+    header("HTTP/1.0 200 Payment");
+    echo json_encode($data);
 } else {
     $data = [
         'status' => 405,
