@@ -19,18 +19,25 @@ if ($requestMethod == 'POST') {
     require "../../../../_db-connect.php";
     global $conn;
 
-    $inputData = json_decode(file_get_contents("php://input"), true);
+    $currentDateTime = new DateTime();
+    $currentDateTime->add(new DateInterval('PT30M'));
+    $expiryDateTime = $currentDateTime->format('Y-m-d H:i:s');
+    $env = getenv('APP_ENV');
+    $isProd = getenv('APP_ENV') === 'prod';
 
-    if (!empty($inputData)) {
-        $userName = mysqli_real_escape_string($conn, $inputData['userName']);
-    } else {
-        $data = [
-            'status' => 400,
-            'message' => 'Empty request data'
-        ];
-        header("HTTP/1.0 400 Bad Request");
-        echo json_encode($data);
-    }
+    // Payment Credentials
+    $merchantId = $isProd ? getenv('PHONEPE_PROD_MERCHANT_ID') : getenv('PHONEPE_UAT_MERCHANT_ID');
+    $apiKey = $isProd ? getenv('PHONEPE_PROD_API_KEY') : getenv('PHONEPE_UAT_API_KEY');
+    $paymentURL = $isProd ? getenv('PHONEPE_PROD_URL') : getenv('PHONEPE_UAT_URL');
+
+    $data = [
+        'status' => 200,
+        'message' => 'Payment data',
+        'env' => $env,
+        'merchantId' => $merchantId,
+        'apiKey' => $apiKey,
+        'paymentURL' => $paymentURL
+    ];
 } else {
     $data = [
         'status' => 405,
