@@ -22,7 +22,7 @@ if ($requestMethod == 'POST') {
     $currentDateTime = new DateTime();
     $currentDateTime->add(new DateInterval('PT30M'));
     $expiryDateTime = $currentDateTime->format('Y-m-d H:i:s');
-    $production = false;
+    $production = true;
 
     // Payment Credentials
     $apiKey = $production ? 'dd3ac85a-750a-42d8-bca2-08b7afabee0c' : 'aa2fbb7d-de50-4e3e-b628-c5ee22468e47';
