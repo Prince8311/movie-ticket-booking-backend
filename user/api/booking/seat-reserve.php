@@ -23,8 +23,6 @@ if ($requestMethod == 'POST') {
 
     if (!empty($inputData)) {
         $userName = mysqli_real_escape_string($conn, $inputData['userName']);
-        $userEmail = mysqli_real_escape_string($conn, $inputData['userEmail']);
-        $userPhone = mysqli_real_escape_string($conn, $inputData['userPhone']);
         $theaterName = mysqli_real_escape_string($conn, $inputData['theaterName']);
         $movieName = mysqli_real_escape_string($conn, $inputData['movieName']);
         $language = mysqli_real_escape_string($conn, $inputData['language']);
