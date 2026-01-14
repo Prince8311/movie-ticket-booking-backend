@@ -4,7 +4,7 @@ require "../../utils/headers.php";
 require "../../utils/middleware.php";
 
 $authResult = authenticateRequest();
-if (!$authResult['authenticated']) {
+if (!$authResult['current_token']) {
     $data = [
         'status' => $authResult['status'],
         'message' => $authResult['message']
