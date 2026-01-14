@@ -98,7 +98,7 @@ if ($requestMethod == 'POST') {
             if (isset($res->success) && $res->success === true) {
                 $payURL = $res->data->instrumentResponse->redirectInfo->url;
                 $sql = "UPDATE `online_bookings` SET `ticket_price`='$ticketPrice',`base_convenience`='$baseConvenience',`gst`='$gst',`theater_commission`='$theaterCommission',`merchant_transaction_id`='$merchantTransactionId' WHERE `booking_id`='$bookingId' AND `username`='$userName' AND `theater_name`='$theaterName' AND `movie_name`='$movieName'";
-                $result = mysqli_query($conn, $result);
+                $result = mysqli_query($conn, $sql);
 
                 if ($result) {
                     $data = [
