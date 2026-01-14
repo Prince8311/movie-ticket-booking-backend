@@ -28,10 +28,12 @@ if ($requestMethod == 'POST') {
         $userPhone = mysqli_real_escape_string($conn, $inputData['userPhone']);
         $theaterName = mysqli_real_escape_string($conn, $inputData['theaterName']);
         $movieName = mysqli_real_escape_string($conn, $inputData['movieName']);
-        $ticketPrice = mysqli_real_escape_string($conn, $inputData['ticketPrice']);
-        $baseConvenience = mysqli_real_escape_string($conn, $inputData['baseConvenience']);
-        $gst = mysqli_real_escape_string($conn, $inputData['gst']);
+        $ticketPrice = (float) $inputData['ticketPrice'];
+        $baseConvenience = (float) $inputData['baseConvenience'];
+        $gst = (float) $inputData['gst'];
         $theaterCommission = mysqli_real_escape_string($conn, $inputData['theaterCommission']);
+
+        $amount = $ticketPrice + $baseConvenience + $gst;
         $production = false;
 
         // Payment Credentials
