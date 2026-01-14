@@ -73,7 +73,7 @@ if ($requestMethod == 'POST') {
         $expiryDateTime = $currentDateTime->format('Y-m-d H:i:s');
 
         $sql = "INSERT INTO `online_bookings`(`booking_id`, `username`, `theater_name`, `movie_name`, `language`, `format`, `day`, `start_date`, `start_time`, `valid_date`, `valid_time`, `screen`, `screen_id`, `section`, `seats`, `expires_at`) VALUES ('$bookingId','$userName','$theaterName','$movieName','$language','$format','$day','$startDate','$startTime','$validDate','$validTime','$screen','$screenId','$section','$seats','$expiryDateTime')";
-        $result = mysqli_query($conn, $result);
+        $result = mysqli_query($conn, $sql);
 
         if ($result) {
             $data = [
