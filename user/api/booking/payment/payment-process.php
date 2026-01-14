@@ -22,60 +22,16 @@ if ($requestMethod == 'POST') {
     $inputData = json_decode(file_get_contents("php://input"), true);
 
     if (!empty($inputData)) {
+        $bookingId = mysqli_real_escape_string($conn, $inputData['bookingId']);
         $userName = mysqli_real_escape_string($conn, $inputData['userName']);
         $userEmail = mysqli_real_escape_string($conn, $inputData['userEmail']);
         $userPhone = mysqli_real_escape_string($conn, $inputData['userPhone']);
         $theaterName = mysqli_real_escape_string($conn, $inputData['theaterName']);
         $movieName = mysqli_real_escape_string($conn, $inputData['movieName']);
-        $language = mysqli_real_escape_string($conn, $inputData['language']);
-        $format = mysqli_real_escape_string($conn, $inputData['format']);
-        $day = mysqli_real_escape_string($conn, $inputData['day']);
-        $startTime = mysqli_real_escape_string($conn, $inputData['startTime']);
-        $startDate = mysqli_real_escape_string($conn, $inputData['startDate']);
-        $screen = mysqli_real_escape_string($conn, $inputData['screen']);
-        $screenId = mysqli_real_escape_string($conn, $inputData['screenId']);
-        $section = mysqli_real_escape_string($conn, $inputData['section']);
-        $seats = mysqli_real_escape_string($conn, $inputData['seats']);
         $ticketPrice = mysqli_real_escape_string($conn, $inputData['ticketPrice']);
         $baseConvenience = mysqli_real_escape_string($conn, $inputData['baseConvenience']);
         $gst = mysqli_real_escape_string($conn, $inputData['gst']);
         $theaterCommission = mysqli_real_escape_string($conn, $inputData['theaterCommission']);
-        $cleanUserName  = preg_replace('/\s+/', '', $userName);
-        $cleanMovieName = preg_replace('/\s+/', '', $movieName);
-
-        $userChar  = isset($cleanUserName[1])  ? strtoupper($cleanUserName[1])  : 'x';
-        $movieChar = isset($cleanMovieName[1]) ? strtoupper($cleanMovieName[1]) : 'x';
-
-        $randomThree = random_int(100, 999); 
-        $randomOne   = random_int(0, 9);
-
-        $bookingId = 'TKB' . $randomThree . $userChar . $movieChar . $randomOne;
-
-        $validTime = '';
-        $validDate = '';
-
-        $movieSql = "SELECT * FROM `theater_shows` WHERE `theater_name` = '$theaterName' AND `screen` = '$screen' AND `screen_id` = '$screenId' AND `movie_name` = '$movieName' AND `start_date` = '$startDate' AND `start_time` = '$startTime'";
-        $movieResult = mysqli_query($conn, $movieSql);
-
-        if ($movieResult && mysqli_num_rows($movieResult) === 1) {
-            $movieData = mysqli_fetch_assoc($movieResult);
-            $validDate = $movieData['end_date'];
-            $validTime = $movieData['end_time'];
-        } else {
-            $validTime = '';
-            $validDate = '';
-            $data = [
-                'status' => 500,
-                'message' => 'Database error: ' . $error
-            ];
-            header("HTTP/1.0 500 Internal Server Error");
-            echo json_encode($data);
-            exit;
-        }
-
-        $currentDateTime = new DateTime();
-        $currentDateTime->add(new DateInterval('PT30M'));
-        $expiryDateTime = $currentDateTime->format('Y-m-d H:i:s');
         $production = false;
 
         // Payment Credentials
@@ -139,7 +95,7 @@ if ($requestMethod == 'POST') {
             $res = json_decode($response);
             if (isset($res->success) && $res->success === true) {
                 $payURL = $res->data->instrumentResponse->redirectInfo->url;
-                $sql = "INSERT INTO `online_bookings`(`booking_id`, `username`, `theater_name`, `movie_name`, `language`, `format`, `day`, `start_date`,  `start_time`, `valid_date`, `valid_time`, `screen`, `screen_id`, `section`, `seats`, `ticket_price`, `base_convenience`, `gst`, `theater_commission`, `merchant_transaction_id`, `expires_at`) VALUES ('$bookingId','$userName','$theaterName','$movieName','$language','$format','$day','$startDate','$startTime','$validDate','$validTime','$screen','$screenId','$section','$seats','$ticketPrice','$baseConvenience','$gst','$theaterCommission','$merchantTransactionId','$expiryDateTime')";
+                $sql = "UPDATE `online_bookings` SET `ticket_price`='$ticketPrice',`base_convenience`='$baseConvenience',`gst`='$gst',`theater_commission`='$theaterCommission',`merchant_transaction_id`='$merchantTransactionId' WHERE `booking_id`='$bookingId' AND `username`='$userName' AND `theater_name`='$theaterName' AND `movie_name`='$movieName'";
                 $result = mysqli_query($conn, $result);
 
                 if ($result) {
