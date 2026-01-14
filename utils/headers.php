@@ -1,5 +1,6 @@
 <?php
-
+require_once __DIR__ . '/env.php';
+loadEnv(__DIR__ . '/../.env');
 ini_set('session.cookie_samesite', 'None');
 ini_set('session.cookie_secure', 'true');
 session_set_cookie_params([
@@ -11,7 +12,6 @@ session_set_cookie_params([
     'samesite' => 'None'
 ]);
 session_start();
-
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');

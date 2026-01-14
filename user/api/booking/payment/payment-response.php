@@ -63,9 +63,19 @@ if ($requestMethod == 'POST') {
 
             $bookingSql = "UPDATE `online_bookings` SET `status`='$status',`expires_at`=NULL WHERE `merchant_transaction_id`='$merchantTransactionId'";
             $bookingResult = mysqli_query($conn, $bookingSql);
+
+            if ($bookingResult) {
+                header("Location: http://localhost:3000/booking-success");
+                exit;
+            }
         } else {
             $deleteSql = "DELETE FROM `online_bookings` WHERE `merchant_transaction_id` = '$merchantTransactionId'";
             $deleteResult = mysqli_query($conn, $deleteSql);
+
+            if ($deleteResult) {
+                header("Location: http://localhost:3000/booking-fail");
+                exit;
+            }
         }
     } else {
         echo "Failed to decode the response.";
