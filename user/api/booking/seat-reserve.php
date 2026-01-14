@@ -67,6 +67,30 @@ if ($requestMethod == 'POST') {
             echo json_encode($data);
             exit;
         }
+
+        $currentDateTime = new DateTime();
+        $currentDateTime->add(new DateInterval('PT30M'));
+        $expiryDateTime = $currentDateTime->format('Y-m-d H:i:s');
+
+        $sql = "INSERT INTO `online_bookings`(`booking_id`, `username`, `theater_name`, `movie_name`, `language`, `format`, `day`, `start_date`, `start_time`, `valid_date`, `valid_time`, `screen`, `screen_id`, `section`, `seats`, `expires_at`) VALUES ('$bookingId','$userName','$theaterName','$movieName','$language','$format','$day','$startDate','$startTime','$validDate','$validTime','$screen','$screenId','$section','$seats','$expiryDateTime')";
+        $result = mysqli_query($conn, $result);
+
+        if ($result) {
+            $data = [
+                'status' => 200,
+                'message' => 'Seats are reserved. Please proceed your payment.',
+                'bookingId' => $bookingId
+            ];
+            header("HTTP/1.0 200 Ok");
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 500,
+                'message' => 'Database error: ' . mysqli_error($conn)
+            ];
+            header("HTTP/1.0 500 Internal Server Error");
+            echo json_encode($data);
+        }
     } else {
         $data = [
             'status' => 400,
