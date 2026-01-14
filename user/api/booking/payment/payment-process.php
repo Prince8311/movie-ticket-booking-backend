@@ -102,7 +102,7 @@ if ($requestMethod == 'POST') {
                     $data = [
                         'status' => 200,
                         'success' => true,
-                        'paymentUrl' => $payURL
+                        'payURL' => $payURL
                     ];
                     header("HTTP/1.0 200 OK");
                     echo json_encode($data);
