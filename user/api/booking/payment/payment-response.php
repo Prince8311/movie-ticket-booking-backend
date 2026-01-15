@@ -19,12 +19,13 @@ if ($requestMethod == 'POST') {
     require "../../../../_db-connect.php";
     global $conn;
 
-    $production = false;
+    $appEnv = getenv('APP_ENV');
+    $frontendBaseUrl = rtrim(getenv('FRONTEND_BASE_URL'), '/');
     $response = $_POST;
 
     // Payment Credentials
-    $apiKey = $production ? 'dd3ac85a-750a-42d8-bca2-08b7afabee0c' : 'aa2fbb7d-de50-4e3e-b628-c5ee22468e47';
-    $statusURL = $production ? 'https://api.phonepe.com/apis/hermes/pg/v1/status/' : 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/';
+    $apiKey = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_API_KEY') : getenv('PHONEPE_PROD_API_KEY');
+    $statusURL = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_STATUS_URL') : getenv('PHONEPE_PROD_STATUS_URL');
     $keyIndex = 1;
 
     $string = '/pg/v1/status/' . $response['merchantId'] . '/' . $response['transactionId'] . $apiKey;
@@ -65,7 +66,7 @@ if ($requestMethod == 'POST') {
             $bookingResult = mysqli_query($conn, $bookingSql);
 
             if ($bookingResult) {
-                header("Location: http://localhost:3000/booking-success");
+                header("Location: {$frontendBaseUrl}/booking-success");
                 exit;
             }
         } else {
@@ -73,7 +74,7 @@ if ($requestMethod == 'POST') {
             $deleteResult = mysqli_query($conn, $deleteSql);
 
             if ($deleteResult) {
-                header("Location: http://localhost:3000/booking-fail");
+                header("Location: {$frontendBaseUrl}/booking-fail");
                 exit;
             }
         }
