@@ -18,6 +18,7 @@ if ($requestMethod == 'POST') {
     $data = [
         'status' => 200,
         'success' => true,
+        'appEnv' => $appEnv,
         'apiKey' => $apiKey,
         'merchantId' => $merchantId,
         'paymentURL' => $paymentURL,
