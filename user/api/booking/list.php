@@ -67,9 +67,9 @@ if ($requestMethod == 'GET') {
 
             $data = [
                 'status' => 200,
-                'page' => $page,
-                'limit' => $limit,
-                'total' => (int) $totalRecords,
+                'message' => 'Booking list fetched.',
+                'totalCount' => (int) $totalRecords,
+                'currentPage' => $page,
                 'list' => $list
             ];
             header("HTTP/1.0 200 Booking list");
