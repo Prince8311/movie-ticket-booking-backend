@@ -68,7 +68,7 @@ if ($requestMethod == 'GET') {
                 'page' => $page,
                 'limit' => $limit,
                 'total' => (int) $totalRecords,
-                'list' => $data
+                'list' => $list
             ];
             header("HTTP/1.0 200 Booking list");
             echo json_encode($data);
