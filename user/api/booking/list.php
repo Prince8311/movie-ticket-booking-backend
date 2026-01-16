@@ -58,7 +58,7 @@ if ($requestMethod == 'GET') {
         $dataResult = mysqli_query($conn, $dataSql);
         $list = [];
 
-        if ($result) {
+        if ($dataResult) {
             while ($row = mysqli_fetch_assoc($dataResult)) {
                 $list[] = $row;
             }
