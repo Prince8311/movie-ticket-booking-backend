@@ -23,7 +23,7 @@ if ($requestMethod == 'GET') {
         $userName = mysqli_real_escape_string($conn, $_GET['name']);
         $bookingId = mysqli_real_escape_string($conn, $_GET['bookingId']);
 
-        $sql = "SELECT ob.*, m.poster_image, m.total_time, rt.location FROM online_bookings ob LEFT JOIN movies m ON m.name = ob.movie_name LEFT JOIN registered_theaters rt ON rt.name = ob.theater_name WHERE ob.username = '$userName' AND ob.booking_id = '$bookingId'";
+        $sql = "SELECT ob.*, m.poster_image, m.total_time, m.age_category, rt.location FROM online_bookings ob LEFT JOIN movies m ON m.name = ob.movie_name LEFT JOIN registered_theaters rt ON rt.name = ob.theater_name WHERE ob.username = '$userName' AND ob.booking_id = '$bookingId'";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
