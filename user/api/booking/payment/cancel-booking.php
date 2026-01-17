@@ -40,12 +40,15 @@ if ($requestMethod == 'POST') {
             }
 
             $bookingData = mysqli_fetch_assoc($bookingResult);
+            $showTime = $bookingData['start_time'];
+            $showData = $bookingData['start_date'];
+            $amount = $bookingData['ticket_price'];
 
             $data = [
                 'status' => 200,
                 'message' => 'Booking data',
                 'bookingId' => $bookingId,
-                'bookingData' => $bookingData
+                'amount' => $amount,
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
