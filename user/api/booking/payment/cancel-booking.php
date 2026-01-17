@@ -38,6 +38,18 @@ if ($requestMethod == 'POST') {
                 echo json_encode($data);
                 exit;
             }
+
+            $bookingData = mysqli_fetch_assoc($bookingResult);
+            $showTime = $bookingData['start_time'];
+            $showData = $bookingData['start_date'];
+            $amount = $bookingData['ticket_price'];
+
+            $showDateTimeStr = $showDate . ' ' . $showTime;
+            $showDateTime = DateTime::createFromFormat('d M, Y h:i A', $showDateTimeStr);
+            $currentDateTime = new DateTime('now');
+            $interval = $currentDateTime->diff($showDateTime);
+            $totalHours = ($interval->days * 24) + $interval->h + ($interval->i / 60);
+
             $data = [
                 'status' => 200,
                 'message' => 'Booking data',
