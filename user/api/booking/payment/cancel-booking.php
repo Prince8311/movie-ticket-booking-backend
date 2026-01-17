@@ -40,8 +40,8 @@ if ($requestMethod == 'POST') {
             }
 
             $bookingData = mysqli_fetch_assoc($bookingResult);
-            $showTime = '02:20 PM';
-            $showDate = '15 Jan, 2026';
+            $showTime = $bookingData['start_time'];
+            $showDate = $bookingData['start_date'];
             $amount = $bookingData['ticket_price'];
             $refundAmount = 0;
 
@@ -51,11 +51,29 @@ if ($requestMethod == 'POST') {
             $interval = $currentDateTime->diff($showDateTime);
             $totalHours = ($interval->days * 24) + $interval->h + ($interval->i / 60);
 
+            if ($showDateTime < $currentDateTime) {
+                $data = [
+                    'status' => 400,
+                    'message' => "This booking can't be cancelled.",
+                ];
+                header("HTTP/1.0 400 Not available");
+                echo json_encode($data);
+                exit;
+            }
+
+            if ($totalHours >= 6) {
+                $refundAmount = (float) $amount;
+            } else if ($totalHours <= 6 && $totalHours >= 3) {
+                $refundAmount = ((float) $amount) / 2;
+            } else if ($totalHours <= 3) {
+                $refundAmount = 0;
+            }
+
             $data = [
                 'status' => 200,
                 'message' => 'Booking data',
                 'bookingId' => $bookingId,
-                'amount' => $amount,
+                'refundAmount' => $refundAmount,
                 'timeLeft' => $totalHours,
             ];
             header("HTTP/1.0 200 OK");
