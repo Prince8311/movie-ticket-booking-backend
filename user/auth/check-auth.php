@@ -23,7 +23,7 @@ if ($requestMethod == 'GET') {
 
     $authToken = $authResult['token'];
 
-    $sql = "SELECT `id`, `name`, `image`, `phone`, `email`, `status`, `ticket_booked` FROM `users` WHERE `auth_token`='$authToken'";
+    $sql = "SELECT `id`, `name`, `image`, `phone`, `email`, `status` FROM `users` WHERE `auth_token`='$authToken'";
     $result = mysqli_query($conn, $sql);
     if ($result) {
         if (mysqli_num_rows($result) > 0) {

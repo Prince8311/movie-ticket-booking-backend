@@ -53,7 +53,10 @@ if ($requestMethod == 'POST') {
             $bookingSql = "UPDATE `online_bookings` SET `status`='$status',`expires_at`=NULL WHERE `merchant_transaction_id`='$merchantTransactionId'";
             $bookingResult = mysqli_query($conn, $bookingSql);
 
-            if ($bookingResult) {
+            $paymentSql = "INSERT INTO `payment_history`(`transaction_id`, `merchant_transaction_id`, `payment_type`, `amount`) VALUES ('$transactionId','$merchantTransactionId','$paymentType','$amount')";
+            $paymentResult = mysqli_query($conn, $paymentSql);
+
+            if ($bookingResult && $paymentResult) {
                 header("Location: {$frontendBaseUrl}/booking-success");
                 exit;
             }

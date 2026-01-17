@@ -40,8 +40,8 @@ if ($requestMethod == 'POST') {
             }
 
             $bookingData = mysqli_fetch_assoc($bookingResult);
-            $showTime = '06:20 AM';
-            $showDate = '18 Jan, 2026';
+            $showTime = $bookingData['start_time'];
+            $showDate = $bookingData['start_date'];
             $amount = $bookingData['ticket_price'];
             $refundAmount = 0;
 
@@ -73,8 +73,7 @@ if ($requestMethod == 'POST') {
                 'status' => 200,
                 'message' => 'Booking data',
                 'bookingId' => $bookingId,
-                'refundAmount' => $refundAmount,
-                'timeLeft' => $totalHours,
+                'refundAmount' => $refundAmount
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
