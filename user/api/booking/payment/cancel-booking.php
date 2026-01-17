@@ -40,16 +40,16 @@ if ($requestMethod == 'POST') {
             }
 
             $bookingData = mysqli_fetch_assoc($bookingResult);
-            $showTime = $bookingData['start_time'];
-            $showDate = $bookingData['start_date'];
+            $showTime = '02:20 PM';
+            $showDate = '15 Jan, 2026';
             $amount = $bookingData['ticket_price'];
+            $refundAmount = 0;
 
             $showDateTimeStr = $showDate . ' ' . $showTime;
             $showDateTime = DateTime::createFromFormat('d M, Y h:i A', $showDateTimeStr);
             $currentDateTime = new DateTime('now');
             $interval = $currentDateTime->diff($showDateTime);
             $totalHours = ($interval->days * 24) + $interval->h + ($interval->i / 60);
-            $totalHours = round($totalHours, 2);
 
             $data = [
                 'status' => 200,
