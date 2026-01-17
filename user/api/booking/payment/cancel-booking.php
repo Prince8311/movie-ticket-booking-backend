@@ -25,7 +25,7 @@ if ($requestMethod == 'POST') {
         $bookingId = mysqli_real_escape_string($conn, $inputData['bookingId']);
         $userName = mysqli_real_escape_string($conn, $inputData['userName']);
 
-        $bookingSql = "SELECT * FROM `online_bookings` WHERE `booking_id`='$bookingId' AND `username`='$userName'";
+        $bookingSql = "SELECT * FROM `online_bookings` WHERE `booking_id`='$bookingId";
         $bookingResult = mysqli_query($conn, $bookingSql);
 
         if (!$bookingResult) {
