@@ -49,6 +49,7 @@ if ($requestMethod == 'POST') {
             $currentDateTime = new DateTime('now');
             $interval = $currentDateTime->diff($showDateTime);
             $totalHours = ($interval->days * 24) + $interval->h + ($interval->i / 60);
+            $totalHours = round($totalHours, 2);
 
             $data = [
                 'status' => 200,
