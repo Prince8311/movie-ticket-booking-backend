@@ -29,10 +29,21 @@ if ($requestMethod == 'POST') {
         $bookingResult = mysqli_query($conn, $bookingSql);
 
         if ($bookingResult) {
+            if (mysqli_num_rows($bookingResult) === 0) {
+                $data = [
+                    'status' => 404,
+                    'message' => 'No booking found with this id'
+                ];
+                header("HTTP/1.0 404 Not found");
+                echo json_encode($data);
+                exit;
+            }
             $data = [
                 'status' => 200,
                 'message' => 'Booking data',
                 'bookingId' => $bookingId,
+                'amount' => $amount,
+                'timeLeft' => $totalHours,
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
