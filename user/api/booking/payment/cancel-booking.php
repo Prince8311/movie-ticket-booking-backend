@@ -40,8 +40,8 @@ if ($requestMethod == 'POST') {
             }
 
             $bookingData = mysqli_fetch_assoc($bookingResult);
-            $showTime = '02:20 PM';
-            $showDate = '15 Jan, 2026';
+            $showTime = '02:20 AM';
+            $showDate = '18 Jan, 2026';
             $amount = $bookingData['ticket_price'];
             $refundAmount = 0;
 
