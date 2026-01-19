@@ -37,6 +37,7 @@ if ($requestMethod == 'POST') {
         $appEnv = getenv('APP_ENV');
 
         // Payment Credentials
+        $merchantUserId = 'MUIDSHETTY';
         $apiKey = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_API_KEY') : getenv('PHONEPE_PROD_API_KEY');
         $merchantId = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_MERCHANT_ID') : getenv('PHONEPE_PROD_MERCHANT_ID');
         $paymentURL = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_URL') : getenv('PHONEPE_PROD_URL');
@@ -48,7 +49,7 @@ if ($requestMethod == 'POST') {
         $paymentData = array(
             'merchantId' => $merchantId,
             'merchantTransactionId' => $merchantTransactionId,
-            'merchantUserId' => "MUIDSHETTY",
+            'merchantUserId' => $merchantUserId,
             'amount' => $amount * 100,
             'redirectUrl' => $callbackURL,
             'redirectMode' => "POST",
