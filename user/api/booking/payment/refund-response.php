@@ -51,3 +51,39 @@ if (
     http_response_code(400);
     exit("Invalid payload");
 }
+
+$merchantTxnId = mysqli_real_escape_string($conn, $payload['merchantTransactionId']);
+$code = $payload['code']; // PAYMENT_SUCCESS / PAYMENT_FAILED / PAYMENT_PENDING
+$transactionId = $payload['transactionId'] ?? null;
+$amount = isset($payload['amount']) ? ($payload['amount'] / 100) : null;
+
+$refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
+$refundResult = mysqli_query($conn, $refundSql);
+
+if (!$refundResult || mysqli_num_rows($refundResult) === 0) {
+    http_response_code(200);
+    exit("Refund record not found");
+}
+
+$refund = mysqli_fetch_assoc($refundResult);
+
+if ($refund['status'] !== 'PENDING') {
+    http_response_code(200);
+    exit("Already processed");
+}
+
+$status = strtoupper(str_replace('PAYMENT_', '', $code));
+$allowedStatuses = ['SUCCESS', 'FAILED', 'PENDING'];
+
+if (!in_array($status, $allowedStatuses, true)) {
+    http_response_code(400);
+    exit("Unknown payment status");
+}
+
+$refundUpdateSql = "UPDATE `refund_history` SET `transaction_id`='$transactionId',`status`='$status' WHERE `merchant_transaction_id`='$merchantTxnId'";
+$updateResult = mysqli_query($conn, $refundUpdateSql);
+
+if ($updateResult) {
+    http_response_code(200);
+    echo "OK";
+}

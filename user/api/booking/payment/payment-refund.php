@@ -87,7 +87,7 @@ if ($requestMethod == 'POST') {
             $bookingCancelSql = "UPDATE `online_bookings` SET `status`='Cancelled' WHERE `booking_id`='$bookingId' AND `username`='$userName' AND `merchant_transaction_id`='$bookingMerchantTransactionId'";
             $bookingResult = mysqli_query($conn, $bookingCancelSql);
 
-            $refundSql = "INSERT INTO `refund_history`(`booking_id`, `merchant_transaction_id`, `total_amount`, `refund_amount`, `status`) VALUES ('$bookingId','$merchantTransactionId','$totalAmount','$refundAmount','Pending')";
+            $refundSql = "INSERT INTO `refund_history`(`booking_id`, `merchant_transaction_id`, `total_amount`, `refund_amount`, `status`) VALUES ('$bookingId','$merchantTransactionId','$totalAmount','$refundAmount','PENDING')";
             $refundResult = mysqli_query($conn, $refundSql);
 
             if ($bookingResult && $refundResult) {
