@@ -58,7 +58,7 @@ if ($requestMethod == 'POST') {
             ];
 
             $encoded = base64_encode(json_encode($payload));
-            $final_x_header = hash('sha256', $encode . '/pg/v1/refund' . $apiKey) . '###' . $keyIndex;
+            $final_x_header = hash('sha256', $encoded . '/pg/v1/refund' . $apiKey) . '###' . $keyIndex;
 
             $ch = curl_init($refundURL);
             curl_setopt_array($ch, [
@@ -74,6 +74,16 @@ if ($requestMethod == 'POST') {
             $response = curl_exec($ch);
             $result = json_decode($response, true);
 
+            if (!$result || empty($result['success']) || $result['success'] !== true) {
+                http_response_code(400);
+                echo json_encode([
+                    'status' => 400,
+                    'message' => 'Refund initiation failed',
+                    'phonepe_response' => $result
+                ]);
+                exit;
+            }
+
             $bookingCancelSql = "UPDATE `online_bookings` SET `status`='Cancelled' WHERE `booking_id`='$bookingId' AND `username`='$userName' AND `merchant_transaction_id`='$bookingMerchantTransactionId'";
             $bookingResult = mysqli_query($conn, $bookingCancelSql);
 
@@ -83,7 +93,8 @@ if ($requestMethod == 'POST') {
             if ($bookingResult && $refundResult) {
                 $data = [
                     'status' => 200,
-                    'message' => 'Refund initiated. Amount will be credited shortly.'
+                    'message' => 'Refund initiated. Amount will be credited shortly.',
+                    'result' => $result
                 ];
                 header("HTTP/1.0 200 OK");
                 echo json_encode($data);
