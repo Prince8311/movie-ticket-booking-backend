@@ -44,6 +44,7 @@ if ($requestMethod == 'POST') {
             $showDate = $bookingData['start_date'];
             $amount = $bookingData['ticket_price'];
             $refundAmount = 0;
+            $deduction = 0;
 
             $showDateTimeStr = $showDate . ' ' . $showTime;
             $showDateTime = DateTime::createFromFormat('d M, Y h:i A', $showDateTimeStr);
@@ -53,7 +54,7 @@ if ($requestMethod == 'POST') {
 
             if ($showDateTime < $currentDateTime) {
                 $data = [
-                    'status' => 400,
+                    'status' => 201,
                     'message' => "This booking can't be cancelled.",
                 ];
                 header("HTTP/1.0 400 Not available");
@@ -63,17 +64,21 @@ if ($requestMethod == 'POST') {
 
             if ($totalHours >= 6) {
                 $refundAmount = (float) $amount;
+                $deduction = 0;
             } else if ($totalHours <= 6 && $totalHours >= 3) {
                 $refundAmount = ((float) $amount) / 2;
+                $deduction = 50;
             } else if ($totalHours <= 3) {
                 $refundAmount = 0;
+                $deduction = 100;
             }
 
             $data = [
                 'status' => 200,
                 'message' => 'Booking data',
                 'bookingId' => $bookingId,
-                'refundAmount' => $refundAmount
+                'refundAmount' => $refundAmount,
+                'deduction' => $deduction
             ];
             header("HTTP/1.0 200 OK");
             echo json_encode($data);
