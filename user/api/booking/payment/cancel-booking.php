@@ -54,7 +54,7 @@ if ($requestMethod == 'POST') {
 
             if ($showDateTime < $currentDateTime) {
                 $data = [
-                    'status' => 201,
+                    'status' => 400,
                     'message' => "This booking can't be cancelled.",
                 ];
                 header("HTTP/1.0 400 Not available");
