@@ -43,19 +43,25 @@ if ($receivedChecksum !== $calculatedChecksum) {
     exit("Invalid signature");
 }
 
-if (
-    empty($payload) ||
-    !isset($payload['merchantTransactionId']) ||
-    !isset($payload['code'])
-) {
+if (!isset($payload['response'])) {
     http_response_code(400);
-    exit("Invalid payload");
+    exit("Missing response");
 }
 
-$merchantTxnId = mysqli_real_escape_string($conn, $payload['merchantTransactionId']);
-$code = $payload['code']; // PAYMENT_SUCCESS / PAYMENT_FAILED / PAYMENT_PENDING
-$transactionId = $payload['transactionId'] ?? null;
-$amount = isset($payload['amount']) ? ($payload['amount'] / 100) : null;
+$decodedResponse = base64_decode($payload['response']);
+$responseData = json_decode($decodedResponse, true);
+
+if (!$responseData || !isset($responseData['data'])) {
+    http_response_code(400);
+    exit("Invalid decoded payload");
+}
+
+$merchantTxnId = mysqli_real_escape_string($conn, $responseData['data']['merchantTransactionId']);
+$code = $responseData['code'];
+$transactionId = $responseData['data']['transactionId'] ?? null;
+$amount = isset($responseData['data']['amount'])
+    ? $responseData['data']['amount'] / 100
+    : null;
 
 $refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
 $refundResult = mysqli_query($conn, $refundSql);
