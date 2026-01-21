@@ -13,6 +13,23 @@ $logFile = __DIR__ . '/refund_callback.log';
 $rawBody = file_get_contents("php://input");
 $payload = json_decode($rawBody, true);
 
+$logData = [
+    'time' => date('Y-m-d H:i:s'),
+    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+    'headers' => [
+        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
+        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
+    ],
+    'raw_body' => $rawBody,
+    'payload' => $payload
+];
+
+file_put_contents(
+    $logFile,
+    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+    FILE_APPEND | LOCK_EX
+);
+
 if (!isset($_SERVER['HTTP_X_VERIFY'])) {
     http_response_code(400);
     exit("Missing X-VERIFY header");
@@ -30,23 +47,6 @@ if (!isset($payload['response'])) {
     http_response_code(400);
     exit("Missing response");
 }
-
-$logData = [
-    'time' => date('Y-m-d H:i:s'),
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
-    'headers' => [
-        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
-        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
-    ],
-    'raw_body' => $rawBody,
-    'payload' => $payload
-];
-
-file_put_contents(
-    $logFile,
-    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
-    FILE_APPEND | LOCK_EX
-);
 
 $decodedResponse = base64_decode($payload['response']);
 $responseData = json_decode($decodedResponse, true);
