@@ -18,14 +18,6 @@ if (!isset($_SERVER['HTTP_X_VERIFY'])) {
     exit("Missing X-VERIFY header");
 }
 
-$receivedChecksum = $_SERVER['HTTP_X_VERIFY'];
-$calculatedChecksum = hash('sha256', $rawBody . $apiKey) . "###" . $keyIndex;
-
-if ($receivedChecksum !== $calculatedChecksum) {
-    http_response_code(401);
-    exit("Invalid signature");
-}
-
 $logData = [
     'time' => date('Y-m-d H:i:s'),
     'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
@@ -43,6 +35,14 @@ file_put_contents(
     json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
     FILE_APPEND | LOCK_EX
 );
+
+$receivedChecksum = $_SERVER['HTTP_X_VERIFY'];
+$calculatedChecksum = hash('sha256', $rawBody . $apiKey) . "###" . $keyIndex;
+
+if ($receivedChecksum !== $calculatedChecksum) {
+    http_response_code(401);
+    exit("Invalid signature");
+}
 
 if (!isset($payload['response'])) {
     http_response_code(400);
