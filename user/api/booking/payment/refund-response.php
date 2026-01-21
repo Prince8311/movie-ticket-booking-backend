@@ -46,6 +46,18 @@ $amount = isset($responseData['data']['amount'])
     ? $responseData['data']['amount'] / 100
     : null;
 
+$logData = [
+    'time' => date('Y-m-d H:i:s'),
+    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+    'headers' => [
+        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
+        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
+    ],
+    'raw_body' => $rawBody,
+    'payload' => $payload,
+    'status' => $code
+];
+
 $refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
 $refundResult = mysqli_query($conn, $refundSql);
 
@@ -63,18 +75,6 @@ if ($refund['status'] !== 'PENDING') {
 
 $refundUpdateSql = "UPDATE `refund_history` SET `transaction_id`='$transactionId',`status`='$code' WHERE `merchant_transaction_id`='$merchantTxnId'";
 $updateResult = mysqli_query($conn, $refundUpdateSql);
-
-$logData = [
-    'time' => date('Y-m-d H:i:s'),
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
-    'headers' => [
-        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
-        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
-    ],
-    'raw_body' => $rawBody,
-    'payload' => $payload,
-    'status' => $code
-];
 
 file_put_contents(
     $logFile,
