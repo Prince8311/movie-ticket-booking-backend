@@ -58,6 +58,12 @@ $logData = [
     'status' => $code
 ];
 
+file_put_contents(
+    $logFile,
+    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+    FILE_APPEND | LOCK_EX
+);
+
 $refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
 $refundResult = mysqli_query($conn, $refundSql);
 
@@ -75,12 +81,6 @@ if ($refund['status'] !== 'PENDING') {
 
 $refundUpdateSql = "UPDATE `refund_history` SET `transaction_id`='$transactionId',`status`='$code' WHERE `merchant_transaction_id`='$merchantTxnId'";
 $updateResult = mysqli_query($conn, $refundUpdateSql);
-
-file_put_contents(
-    $logFile,
-    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
-    FILE_APPEND | LOCK_EX
-);
 
 if ($updateResult) {
     http_response_code(200);
