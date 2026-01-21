@@ -31,6 +31,23 @@ if (!isset($payload['response'])) {
     exit("Missing response");
 }
 
+$logData = [
+    'time' => date('Y-m-d H:i:s'),
+    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+    'headers' => [
+        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
+        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
+    ],
+    'raw_body' => $rawBody,
+    'payload' => $payload
+];
+
+file_put_contents(
+    $logFile,
+    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+    FILE_APPEND | LOCK_EX
+);
+
 $decodedResponse = base64_decode($payload['response']);
 $responseData = json_decode($decodedResponse, true);
 
@@ -45,24 +62,6 @@ $transactionId = $responseData['data']['transactionId'] ?? null;
 $amount = isset($responseData['data']['amount'])
     ? $responseData['data']['amount'] / 100
     : null;
-
-$logData = [
-    'time' => date('Y-m-d H:i:s'),
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
-    'headers' => [
-        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
-        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
-    ],
-    'raw_body' => $rawBody,
-    'payload' => $payload,
-    'status' => $code
-];
-
-file_put_contents(
-    $logFile,
-    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
-    FILE_APPEND | LOCK_EX
-);
 
 $refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
 $refundResult = mysqli_query($conn, $refundSql);
