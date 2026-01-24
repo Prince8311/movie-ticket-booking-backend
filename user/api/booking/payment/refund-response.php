@@ -41,6 +41,7 @@ if (!$responseData || !isset($responseData['data'])) {
 
 $merchantTxnId = mysqli_real_escape_string($conn, $responseData['data']['merchantTransactionId']);
 $code = $responseData['code']; // PAYMENT_SUCCESS
+$status  = str_replace('PAYMENT_', '', $code);
 $transactionId = $responseData['data']['transactionId'] ?? null;
 $amount = isset($responseData['data']['amount'])
     ? $responseData['data']['amount'] / 100
@@ -59,6 +60,19 @@ $refund = mysqli_fetch_assoc($refundResult);
 if ($refund['status'] !== 'PENDING') {
     http_response_code(200);
     exit("Already processed");
+}
+
+$refundUpdateSql = "UPDATE `refund_history` SET `transaction_id`='$transactionId',`status`='$status' WHERE `merchant_transaction_id`='$merchantTxnId'";
+$updateResult = mysqli_query($conn, $refundUpdateSql);
+
+if (!$updateResult) {
+    file_put_contents(
+        $logFile,
+        'SQL ERROR: ' . mysqli_error($conn) . PHP_EOL,
+        FILE_APPEND
+    );
+    http_response_code(500);
+    exit("DB update failed");
 }
 
 $logData = [
@@ -80,19 +94,6 @@ file_put_contents(
     json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
     FILE_APPEND | LOCK_EX
 );
-
-$refundUpdateSql = "UPDATE `refund_history` SET `transaction_id`='$transactionId',`status`='$code' WHERE `merchant_transaction_id`='$merchantTxnId'";
-$updateResult = mysqli_query($conn, $refundUpdateSql);
-
-if (!$updateResult) {
-    file_put_contents(
-        $logFile,
-        'SQL ERROR: ' . mysqli_error($conn) . PHP_EOL,
-        FILE_APPEND
-    );
-    http_response_code(500);
-    exit("DB update failed");
-}
 
 http_response_code(200);
 echo "OK";
