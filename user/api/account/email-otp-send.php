@@ -1,17 +1,30 @@
 <?php
 
-require "../../utils/headers.php";
+require "../../../utils/headers.php";
+require "../../../utils/middleware.php";
+
+$authResult = authenticateRequest();
+
+if (!$authResult['authenticated']) {
+    $data = [
+        'status' => $authResult['status'],
+        'message' => $authResult['message']
+    ];
+    header("HTTP/1.0 " . $authResult['status']);
+    echo json_encode($data);
+    exit;
+}
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 if ($requestMethod == 'POST') {
-    require "../../_db-connect.php";
+    require "../../../_db-connect.php";
     global $conn;
 
-    require '../../PHPMailer/Exception.php';
-    require '../../PHPMailer/PHPMailer.php';
-    require '../../PHPMailer/SMTP.php';
+    require "../../../PHPMailer/Exception.php";
+    require "../../../PHPMailer/PHPMailer.php";
+    require "../../../PHPMailer/SMTP.php";
 
     $inputData = json_decode(file_get_contents("php://input"), true);
 
@@ -46,7 +59,7 @@ if ($requestMethod == 'POST') {
                     $mail->isHTML(true);
                     $mail->setFrom('noreply@ticketbay.in', 'Verification OTP 📜📜📜');
                     $mail->addAddress("$email", 'User');
-                    $mail->Subject = 'OTP for Forgot Password';
+                    $mail->Subject = 'OTP for Email Verification';
                     $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
                                             <head>
@@ -65,7 +78,7 @@ if ($requestMethod == 'POST') {
                                                         </div>
                                                         <div class="body_message" style="position: relative; margin-top: 15px;">
                                                             <p style="position: relative; text-align: center;">
-                                                                <span style="position: relative; text-align: center; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your OTP for registration verification is,</span>
+                                                                <span style="position: relative; text-align: center; font-family: sans-serif; color: #444; font-size: 15px; line-height: 1.4;">Your OTP for email verification is,</span>
                                                             </p>
                                                         </div>
                                                         <div class="body_message" style="position: relative; margin-top: 5px;">
