@@ -29,6 +29,17 @@ if ($requestMethod == 'GET') {
         if ($result) {
             if (mysqli_num_rows($result) === 1) {
                 $res = mysqli_fetch_assoc($result);
+                $res['refund_status'] = null;
+                if ($res['status'] === 'Cancelled') {
+                    $refundSql = "SELECT `status` FROM `refund_history` WHERE `booking_id`='$bookingId'";
+                    $refundResult = mysqli_query($conn, $refundSql);
+                    if ($refundResult && mysqli_num_rows($refundResult) === 1) {
+                        $refundRow = mysqli_fetch_assoc($refundResult);
+                        $res['refund_status'] = $refundRow['status'];
+                    } else {
+                        $res['refund_status'] = null;
+                    }
+                }
                 $data = [
                     'status' => 200,
                     'message' => 'Booking details fetched.',
