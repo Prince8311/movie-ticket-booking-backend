@@ -75,25 +75,25 @@ if (!$updateResult) {
     exit("DB update failed");
 }
 
-$logData = [
-    'time' => date('Y-m-d H:i:s'),
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
-    'headers' => [
-        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
-        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
-    ],
-    'raw_body' => $rawBody,
-    'payload' => $payload,
-    'code' => $code,
-    'merchant_transaction_id' => $merchantTxnId,
-    'status' => $refund['status']
-];
+// $logData = [
+//     'time' => date('Y-m-d H:i:s'),
+//     'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+//     'headers' => [
+//         'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
+//         'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
+//     ],
+//     'raw_body' => $rawBody,
+//     'payload' => $payload,
+//     'code' => $code,
+//     'merchant_transaction_id' => $merchantTxnId,
+//     'status' => $refund['status']
+// ];
 
-file_put_contents(
-    $logFile,
-    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
-    FILE_APPEND | LOCK_EX
-);
+// file_put_contents(
+//     $logFile,
+//     json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+//     FILE_APPEND | LOCK_EX
+// );
 
 http_response_code(200);
 echo "OK";
