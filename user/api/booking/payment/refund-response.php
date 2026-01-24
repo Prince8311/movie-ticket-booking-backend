@@ -37,7 +37,7 @@ file_put_contents(
 );
 
 $receivedChecksum = $_SERVER['HTTP_X_VERIFY'];
-$calculatedChecksum = hash('sha256', $rawBody . $apiKey) . "###" . $keyIndex;
+$calculatedChecksum = hash('sha256', $payload['response'] . $apiKey) . "###" . $keyIndex;
 
 if ($receivedChecksum !== $calculatedChecksum) {
     http_response_code(401);
