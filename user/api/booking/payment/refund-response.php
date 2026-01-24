@@ -84,7 +84,15 @@ file_put_contents(
 $refundUpdateSql = "UPDATE `refund_history` SET `transaction_id`='$transactionId',`status`='$code' WHERE `merchant_transaction_id`='$merchantTxnId'";
 $updateResult = mysqli_query($conn, $refundUpdateSql);
 
-if ($updateResult) {
-    http_response_code(200);
-    echo "OK";
+if (!$updateResult) {
+    file_put_contents(
+        $logFile,
+        'SQL ERROR: ' . mysqli_error($conn) . PHP_EOL,
+        FILE_APPEND
+    );
+    http_response_code(500);
+    exit("DB update failed");
 }
+
+http_response_code(200);
+echo "OK";
