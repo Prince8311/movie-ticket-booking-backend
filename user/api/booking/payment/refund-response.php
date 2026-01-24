@@ -49,26 +49,6 @@ $amount = isset($responseData['data']['amount'])
 $refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
 $refundResult = mysqli_query($conn, $refundSql);
 
-$logData = [
-    'time' => date('Y-m-d H:i:s'),
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
-    'headers' => [
-        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
-        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
-    ],
-    'raw_body' => $rawBody,
-    'payload' => $payload,
-    'code' => $code,
-    'merchant_transaction_id' => $merchantTxnId,
-    'row' => mysqli_num_rows($refundResult)
-];
-
-file_put_contents(
-    $logFile,
-    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
-    FILE_APPEND | LOCK_EX
-);
-
 if (!$refundResult || mysqli_num_rows($refundResult) === 0) {
     http_response_code(200);
     exit("Refund record not found");
@@ -80,6 +60,26 @@ if ($refund['status'] !== 'PENDING') {
     http_response_code(200);
     exit("Already processed");
 }
+
+$logData = [
+    'time' => date('Y-m-d H:i:s'),
+    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+    'headers' => [
+        'X-VERIFY' => $_SERVER['HTTP_X_VERIFY'] ?? null,
+        'X-MERCHANT-ID' => $_SERVER['HTTP_X_MERCHANT_ID'] ?? null,
+    ],
+    'raw_body' => $rawBody,
+    'payload' => $payload,
+    'code' => $code,
+    'merchant_transaction_id' => $merchantTxnId,
+    'status' => $refund['status']
+];
+
+file_put_contents(
+    $logFile,
+    json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+    FILE_APPEND | LOCK_EX
+);
 
 $refundUpdateSql = "UPDATE `refund_history` SET `transaction_id`='$transactionId',`status`='$code' WHERE `merchant_transaction_id`='$merchantTxnId'";
 $updateResult = mysqli_query($conn, $refundUpdateSql);
