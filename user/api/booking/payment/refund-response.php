@@ -46,7 +46,6 @@ $amount = isset($responseData['data']['amount'])
     ? $responseData['data']['amount'] / 100
     : null;
 
-
 $logData = [
     'time' => date('Y-m-d H:i:s'),
     'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
@@ -64,3 +63,26 @@ file_put_contents(
     json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
     FILE_APPEND | LOCK_EX
 );
+
+$refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
+$refundResult = mysqli_query($conn, $refundSql);
+
+if (!$refundResult || mysqli_num_rows($refundResult) === 0) {
+    http_response_code(200);
+    exit("Refund record not found");
+}
+
+$refund = mysqli_fetch_assoc($refundResult);
+
+if ($refund['status'] !== 'PENDING') {
+    http_response_code(200);
+    exit("Already processed");
+}
+
+$refundUpdateSql = "UPDATE `refund_history` SET `transaction_id`='$transactionId',`status`='$code' WHERE `merchant_transaction_id`='$merchantTxnId'";
+$updateResult = mysqli_query($conn, $refundUpdateSql);
+
+if ($updateResult) {
+    http_response_code(200);
+    echo "OK";
+}
