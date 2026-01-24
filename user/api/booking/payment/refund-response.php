@@ -55,7 +55,8 @@ $logData = [
     ],
     'raw_body' => $rawBody,
     'payload' => $payload,
-    'code' => $code
+    'code' => $code,
+    'merchant_transaction_id' => $merchantTxnId
 ];
 
 file_put_contents(
