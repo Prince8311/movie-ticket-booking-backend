@@ -46,6 +46,9 @@ $amount = isset($responseData['data']['amount'])
     ? $responseData['data']['amount'] / 100
     : null;
 
+$refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
+$refundResult = mysqli_query($conn, $refundSql);
+
 $logData = [
     'time' => date('Y-m-d H:i:s'),
     'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
@@ -56,7 +59,8 @@ $logData = [
     'raw_body' => $rawBody,
     'payload' => $payload,
     'code' => $code,
-    'merchant_transaction_id' => $merchantTxnId
+    'merchant_transaction_id' => $merchantTxnId,
+    'row' => mysqli_num_rows($refundResult)
 ];
 
 file_put_contents(
@@ -64,9 +68,6 @@ file_put_contents(
     json_encode($logData, JSON_UNESCAPED_SLASHES) . PHP_EOL,
     FILE_APPEND | LOCK_EX
 );
-
-$refundSql = "SELECT * FROM `refund_history` WHERE `merchant_transaction_id`='$merchantTxnId'";
-$refundResult = mysqli_query($conn, $refundSql);
 
 if (!$refundResult || mysqli_num_rows($refundResult) === 0) {
     http_response_code(200);
