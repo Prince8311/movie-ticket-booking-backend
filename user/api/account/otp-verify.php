@@ -66,7 +66,7 @@ if ($requestMethod == 'POST') {
 
                     $mail->isHTML(true);
                     $mail->setFrom('noreply@ticketbay.in', 'Verification Successful 📌📌📌');
-                    $mail->addAddress("$email", 'User');
+                    $mail->addAddress("$userEmail", 'User');
                     $mail->Subject = 'Email Verified';
                     $mail->Body    = '<!DOCTYPE html>
                                         <html lang="en">
