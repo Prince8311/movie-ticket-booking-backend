@@ -19,9 +19,8 @@ if ($requestMethod == 'POST') {
     require "../../../_db-connect.php";
     global $conn;
 
-    $inputData = json_decode(file_get_contents("php://input"), true);
-
-    if (!empty($inputData)) {
+    if (isset($_POST['inputs'])) {
+        $inputData = json_decode($_POST['inputs'], true);
         $name = mysqli_real_escape_string($conn, $inputData['name']);
         $phone = mysqli_real_escape_string($conn, $inputData['phone']);
         $email = mysqli_real_escape_string($conn, $inputData['email']);
