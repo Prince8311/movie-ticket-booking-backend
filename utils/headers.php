@@ -6,13 +6,20 @@ ini_set('session.cookie_secure', 'true');
 session_set_cookie_params([
     'lifetime' => 86400,
     'path' => '/',
-    'domain' => '.ticketbay.in', 
-    'secure' => true,           
+    'domain' => '.ticketbay.in',
+    'secure' => true,
     'httponly' => true,
     'samesite' => 'None'
 ]);
 session_start();
-header('Access-Control-Allow-Origin: http://localhost:3000');
+$allowedOrigins = [
+    'http://localhost:3000',
+    'https://superadmin.ticketbay.in'
+];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowedOrigins, true)) {
+    header("Access-Control-Allow-Origin: $origin");
+}
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Content-Type: application/json');
