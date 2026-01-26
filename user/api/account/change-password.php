@@ -51,7 +51,7 @@ if ($requestMethod == 'POST') {
                 echo json_encode($data);
             }
             $hashPass = password_hash($newPassword, PASSWORD_DEFAULT);
-            $updateSql = "UPDATE `users` SET `password`='$newPassword' WHERE `id`='$userId'";
+            $updateSql = "UPDATE `users` SET `password`='$hashPass' WHERE `id`='$userId'";
             $updateResult = mysqli_query($conn, $updateSql);
             if ($updateResult) {
                 $data = [
