@@ -30,7 +30,7 @@ if ($requestMethod == 'POST') {
 
     function sqlValue($value)
     {
-        return $value === null ? NULL : "'$value'";
+        return $value === null ? "NULL" : "'$value'";
     }
 
     if (isset($_POST['inputs']) && isset($_FILES['image'])) {
