@@ -57,12 +57,8 @@ if ($requestMethod == 'GET') {
         $sql = "SELECT ts.movie_name, m.poster_image FROM theater_shows ts JOIN movies m ON ts.movie_name = m.name WHERE ts.theater_name IN ($theaterList) AND STR_TO_DATE(m.release_date, '%d %b, %Y') <= '$currentDate' AND (STR_TO_DATE(ts.start_date, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(ts.start_date, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime')) GROUP BY ts.movie_name ORDER BY ts.start_date ASC, ts.start_time ASC LIMIT $limit OFFSET $offset";
         $result = mysqli_query($conn, $sql);
 
-        $movies = [];
-
         if ($result) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $movies[] = $row;
-            }
+            $movies = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
             $data = [
                 'status' => 200,
