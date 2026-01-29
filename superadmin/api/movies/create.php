@@ -59,7 +59,8 @@ if ($requestMethod == 'POST') {
         $imageData = $_FILES['image'];
         $folder = "../../../posters/movies/";
         $timestamp = date('YmdHis');
-        $imageName = $name . $timestamp . '.png';
+        $safeName = $name ?? 'movie';
+        $imageName = $safeName . $timestamp . '.png';
         $imageDirectory = $folder . $imageName;
         $image = getimagesize($imageData['tmp_name']);
 
