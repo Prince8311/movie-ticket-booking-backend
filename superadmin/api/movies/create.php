@@ -20,23 +20,36 @@ if ($requestMethod == 'POST') {
     require "../../../_db-connect.php";
     global $conn;
 
+    function escapeOrNull($conn, $value)
+    {
+        if (!isset($value) || $value === '') {
+            return null;
+        }
+        return mysqli_real_escape_string($conn, $value);
+    }
+
+    function sqlValue($value)
+    {
+        return $value === null ? NULL : "'$value'";
+    }
+
     if (isset($_POST['inputs']) && isset($_FILES['image'])) {
         $inputData = json_decode($_POST['inputs'], true);
 
-        $name = mysqli_real_escape_string($conn, $inputData['name'] ?? '');
-        $formats = mysqli_real_escape_string($conn, $inputData['formats'] ?? '');
-        $languages = mysqli_real_escape_string($conn, $inputData['languages'] ?? '');
-        $time = mysqli_real_escape_string($conn, $inputData['time'] ?? '');
-        $ageCategory = mysqli_real_escape_string($conn, $inputData['ageCategory'] ?? '');
-        $genres = mysqli_real_escape_string($conn, $inputData['genres'] ?? '');
-        $trailer = mysqli_real_escape_string($conn, $inputData['trailer'] ?? '');
-        $casts = mysqli_real_escape_string($conn, $inputData['casts'] ?? '');
-        $crews = mysqli_real_escape_string($conn, $inputData['crews'] ?? '');
-        $description = mysqli_real_escape_string($conn, $inputData['description'] ?? '');
-        $releaseYear = mysqli_real_escape_string($conn, $inputData['releaseYear'] ?? '');
+        $name = escapeOrNull($conn, $inputData['name'] ?? null);
+        $formats = escapeOrNull($conn, $inputData['formats'] ?? null);
+        $languages = escapeOrNull($conn, $inputData['languages'] ?? null);
+        $time = escapeOrNull($conn, $inputData['time'] ?? null);
+        $ageCategory = escapeOrNull($conn, $inputData['ageCategory'] ?? null);
+        $genres = escapeOrNull($conn, $inputData['genres'] ?? null);
+        $trailer = escapeOrNull($conn, $inputData['trailer'] ?? null);
+        $casts = escapeOrNull($conn, $inputData['casts'] ?? null);
+        $crews = escapeOrNull($conn, $inputData['crews'] ?? null);
+        $description = escapeOrNull($conn, $inputData['description'] ?? null);
+        $releaseYear = escapeOrNull($conn, $inputData['releaseYear'] ?? null);
         $releaseDateRaw = trim($inputData['releaseDate'] ?? '');
         if ($releaseDateRaw === '') {
-            $releaseDate = '';
+            $releaseDate = null;
         } else {
             $normalizedDate = str_replace(',', '', $releaseDateRaw);
             $releaseDateFormatted = date("d M, Y", strtotime($normalizedDate));
@@ -53,7 +66,7 @@ if ($requestMethod == 'POST') {
         if ($image !== false) {
             $save = move_uploaded_file($imageData['tmp_name'], $imageDirectory);
             if ($save) {
-                $sql = "INSERT INTO `movies`(`name`, `poster_image`, `release_date`, `total_time`, `languages`, `formats`, `age_category`, `genres`, `casts`, `crews`, `trailer`, `description`) VALUES ('$name','$imageName','$releaseDate','$time','$languages','$formats','$ageCategory','$genres','$casts','$crews','$trailer','$description')";
+                $sql = "INSERT INTO `movies`(`name`, `poster_image`, `release_date`, `release_year`, `total_time`, `languages`, `formats`, `age_category`, `genres`, `casts`, `crews`, `trailer`, `description`) VALUES (" . sqlValue($name) . ",'$imageName'," . sqlValue($releaseDate) . "," . sqlValue($releaseYear) . "," . sqlValue($time) . "," . sqlValue($languages) . "," . sqlValue($formats) . "," . sqlValue($ageCategory) . "," . sqlValue($genres) . "," . sqlValue($casts) . "," . sqlValue($crews) . "," . sqlValue($trailer) . "," . sqlValue($description) . ")";
                 $result = mysqli_query($conn, $sql);
                 if ($result) {
                     $data = [
