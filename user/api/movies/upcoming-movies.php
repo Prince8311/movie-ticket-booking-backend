@@ -34,7 +34,7 @@ if ($requestMethod == 'GET') {
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
-        $movies = mysqli_fetch_assoc($result);
+        $movies = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         $data = [
             'status' => 200,
