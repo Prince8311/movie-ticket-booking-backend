@@ -36,7 +36,8 @@ if ($requestMethod == 'POST') {
     if (isset($_POST['inputs']) && isset($_FILES['image'])) {
         $inputData = json_decode($_POST['inputs'], true);
 
-        $name = escapeOrNull($conn, $inputData['name'] ?? null);
+        $nameRaw = $inputData['name'] ?? 'movie'; // raw name for file
+        $name = escapeOrNull($conn, $nameRaw);
         $formats = escapeOrNull($conn, $inputData['formats'] ?? null);
         $languages = escapeOrNull($conn, $inputData['languages'] ?? null);
         $time = escapeOrNull($conn, $inputData['time'] ?? null);
@@ -59,8 +60,8 @@ if ($requestMethod == 'POST') {
         $imageData = $_FILES['image'];
         $folder = "../../../posters/movies/";
         $timestamp = date('YmdHis');
-        $safeName = $name ?? 'movie';
-        $imageName = $safeName . $timestamp . '.png';
+        $safeNameForFile = preg_replace("/[^a-zA-Z0-9_\-]/", "_", $nameRaw);
+        $imageName = $safeNameForFile . $timestamp . '.png';
         $imageDirectory = $folder . $imageName;
         $image = getimagesize($imageData['tmp_name']);
 
