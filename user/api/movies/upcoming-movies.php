@@ -30,7 +30,7 @@ if ($requestMethod == 'GET') {
     // -----------------------
     // DATA QUERY (with LIMIT)
     // -----------------------
-    $sql = "SELECT `name`, `poster_image` FROM `movies` WHERE `release_date` IS NULL OR TRIM(release_date) = '' OR STR_TO_DATE(`release_date`, '%d %b, %Y') > '$currentDate' ORDER BY `id` DESC LIMIT $limit OFFSET $offset";
+    $sql = "SELECT `name` AS `movie_name`, `poster_image` FROM `movies` WHERE `release_date` IS NULL OR TRIM(release_date) = '' OR STR_TO_DATE(`release_date`, '%d %b, %Y') > '$currentDate' ORDER BY `id` DESC LIMIT $limit OFFSET $offset";
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
