@@ -10,6 +10,25 @@ if ($requestMethod == 'GET') {
         $location = mysqli_real_escape_string($conn, $_GET['location']);
         $status = 'Published';
 
+        $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] > 0
+            ? (int) $_GET['limit']
+            : 12;
+        $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
+            ? (int) $_GET['page']
+            : 1;
+        $offset = ($page - 1) * $limit;
+
+        // -----------------------
+        // COUNT QUERY
+        // -----------------------
+        $countSql = "SELECT COUNT(*) AS total FROM `registered_theaters` WHERE `city`='$location' AND `status`='$status'";
+        $countResult = mysqli_query($conn, $countSql);
+        $countRow = mysqli_fetch_assoc($countResult);
+        $totalTheaters = (int) $countRow['total'];
+
+        // -----------------------
+        // DATA QUERY (with LIMIT)
+        // -----------------------
         $sql = "SELECT `id`, `name`, `state`, `city`, `location`, `status` FROM `registered_theaters` WHERE `city`='$location' AND `status`='$status'";
         $result = mysqli_query($conn, $sql);
 
@@ -19,6 +38,8 @@ if ($requestMethod == 'GET') {
             $data = [
                 'status' => 200,
                 'message' => 'Theaters fetched.',
+                'totalCount' => $totalTheaters,
+                'currentPage' => $page,
                 'theaters' => $theaters
             ];
             header("HTTP/1.0 200 Theaters");
