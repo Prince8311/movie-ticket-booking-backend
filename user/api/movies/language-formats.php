@@ -15,7 +15,7 @@ if ($requestMethod == 'GET') {
         $currentTime = date("H:i:s");
 
         // Theater list
-        $theaterSql = "SELECT `name` FROM `registered_theaters` WHERE `city`='$location' AND `status`='$status'";
+        $theaterSql = "SELECT `name` FROM `registered_theaters` WHERE `city`='$location'";
         $theaterResult = mysqli_query($conn, $theaterSql);
         $theaters = [];
         while ($row = mysqli_fetch_assoc($theaterResult)) {
