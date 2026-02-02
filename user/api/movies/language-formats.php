@@ -7,13 +7,33 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['name'])) {
+    if (isset($_GET['name']) && isset($_GET['location'])) {
         $movieName = mysqli_real_escape_string($conn, $_GET['name']);
+        $location = mysqli_real_escape_string($conn, $_GET['location']);
 
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
-        $sql = "SELECT DISTINCT `language`, `format` FROM `theater_shows` WHERE `movie_name`='$movieName' AND (STR_TO_DATE(`start_date`, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(`start_date`, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%h:%i %p') = '$currentTime'))";
+        // Theater list
+        $theaterSql = "SELECT `name` FROM `registered_theaters` WHERE `city`='$location' AND `status`='$status'";
+        $theaterResult = mysqli_query($conn, $theaterSql);
+        $theaters = [];
+        while ($row = mysqli_fetch_assoc($theaterResult)) {
+            $theaters[] = $row['name'];
+        }
+        if (empty($theaters)) {
+            echo json_encode([
+                'status' => 200,
+                'message' => 'No theaters found for this location.',
+                'totalCount' => 0,
+                'currentPage' => $page,
+                'movies' => []
+            ]);
+            exit;
+        }
+        $theaterList = "'" . implode("','", $theaters) . "'";
+
+        $sql = "SELECT DISTINCT `language`, `format` FROM `theater_shows` WHERE `theater_name` IN ($theaterList) AND `movie_name`='$movieName' AND (STR_TO_DATE(`start_date`, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(`start_date`, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%h:%i %p') = '$currentTime'))";
         $result = mysqli_query($conn, $sql);
         $grouped = [];
 
