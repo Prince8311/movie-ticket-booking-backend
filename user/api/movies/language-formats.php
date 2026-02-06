@@ -33,7 +33,7 @@ if ($requestMethod == 'GET') {
         }
         $theaterList = "'" . implode("','", $theaters) . "'";
 
-        $sql = "SELECT DISTINCT `language`, `format` FROM `theater_shows` WHERE `theater_name` IN ($theaterList) AND `movie_name`='$movieName' AND (STR_TO_DATE(`start_date`, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(`start_date`, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%h:%i %p') = '$currentTime'))";
+        $sql = "SELECT DISTINCT `language`, `format` FROM `theater_shows` WHERE `theater_name` IN ($theaterList) AND `movie_name`='$movieName' AND (STR_TO_DATE(`start_date`, '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE(`start_date`, '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(`start_time`, '%h:%i %p') > '$currentTime'))";
         $result = mysqli_query($conn, $sql);
         $grouped = [];
 
