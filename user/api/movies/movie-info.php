@@ -7,24 +7,26 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['name']) && isset($_GET['date'])) {
+    if (isset($_GET['name']) && isset($_GET['date']) && isset($_GET['language']) && isset($_GET['format'])) {
         $movieName = mysqli_real_escape_string($conn, $_GET['name']);
         $date = mysqli_real_escape_string($conn, $_GET['date']);
+        $language = mysqli_real_escape_string($conn, $_GET['language']);
+        $format = mysqli_real_escape_string($conn, $_GET['format']);
 
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
-        $movieSql = "SELECT `release_date` FROM `movies` WHERE `name` = '$movieName'";
+        $movieSql = "SELECT `total_time` FROM `movies` WHERE `name` = '$movieName'";
         $movieResult = mysqli_query($conn, $movieSql);
 
-        $sql = "SELECT ts.*, rt.location FROM `theater_shows` ts LEFT JOIN `registered_theaters` rt ON rt.name = ts.theater_name WHERE ts.movie_name='$movieName' AND ts.start_date='$date' AND (STR_TO_DATE('$date', '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE('$date', '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime')) ORDER BY STR_TO_DATE(ts.start_time, '%h:%i %p') ASC";
+        $sql = "SELECT ts.*, rt.location FROM `theater_shows` ts LEFT JOIN `registered_theaters` rt ON rt.name = ts.theater_name WHERE ts.movie_name='$movieName' AND ts.language='$language' AND ts.format='$format' AND ts.start_date='$date' AND (STR_TO_DATE('$date', '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE('$date', '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime')) ORDER BY STR_TO_DATE(ts.start_time, '%h:%i %p') ASC";
         $result = mysqli_query($conn, $sql);
 
         if ($result && $movieResult) {
             $rawTheaters = mysqli_fetch_all($result, MYSQLI_ASSOC);
             $movieData = mysqli_fetch_assoc($movieResult);
             $groupedTheaters = [];
-            $releaseDate = $movieData['release_date'];
+            $totalTime = $movieData['total_time'];
 
             foreach ($rawTheaters as $row) {
                 $theaterName = $row['theater_name'];
@@ -53,7 +55,7 @@ if ($requestMethod == 'GET') {
             $data = [
                 'status' => 200,
                 'message' => 'Theater timings.',
-                'releaseDate' => $releaseDate,
+                'totalTime' => $totalTime,
                 'theaters' => $theaters
             ];
             header("HTTP/1.0 200 Theater timings");
@@ -69,7 +71,7 @@ if ($requestMethod == 'GET') {
     } else {
         $data = [
             'status' => 400,
-            'message' => 'Movie name & date is required'
+            'message' => 'Parameters are missing.'
         ];
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);

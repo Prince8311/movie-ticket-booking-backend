@@ -25,9 +25,6 @@ if ($requestMethod == 'GET') {
             echo json_encode([
                 'status' => 200,
                 'message' => 'No theaters found for this location.',
-                'totalCount' => 0,
-                'currentPage' => $page,
-                'movies' => []
             ]);
             exit;
         }
