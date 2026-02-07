@@ -7,7 +7,7 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['name'])) {
+    if (isset($_GET['name']) && isset($_GET['location']) && isset($_GET['language']) && isset($_GET['format'])) {
         $movieName = mysqli_real_escape_string($conn, $_GET['name']);
         $location = mysqli_real_escape_string($conn, $_GET['location']);
         $language = mysqli_real_escape_string($conn, $_GET['language']);
@@ -55,7 +55,7 @@ if ($requestMethod == 'GET') {
     } else {
         $data = [
             'status' => 400,
-            'message' => 'Movie name is required'
+            'message' => 'Parameters are missing.'
         ];
         header("HTTP/1.0 400 Bad Request");
         echo json_encode($data);

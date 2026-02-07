@@ -7,8 +7,9 @@ if ($requestMethod == 'GET') {
     require "../../../_db-connect.php";
     global $conn;
 
-    if (isset($_GET['name']) && isset($_GET['date']) && isset($_GET['language']) && isset($_GET['format'])) {
+    if (isset($_GET['name']) && isset($_GET['location']) && isset($_GET['date']) && isset($_GET['language']) && isset($_GET['format'])) {
         $movieName = mysqli_real_escape_string($conn, $_GET['name']);
+        $location = mysqli_real_escape_string($conn, $_GET['location']);
         $date = mysqli_real_escape_string($conn, $_GET['date']);
         $language = mysqli_real_escape_string($conn, $_GET['language']);
         $format = mysqli_real_escape_string($conn, $_GET['format']);
@@ -19,7 +20,23 @@ if ($requestMethod == 'GET') {
         $movieSql = "SELECT `total_time` FROM `movies` WHERE `name` = '$movieName'";
         $movieResult = mysqli_query($conn, $movieSql);
 
-        $sql = "SELECT ts.*, rt.location FROM `theater_shows` ts LEFT JOIN `registered_theaters` rt ON rt.name = ts.theater_name WHERE ts.movie_name='$movieName' AND ts.language='$language' AND ts.format='$format' AND ts.start_date='$date' AND (STR_TO_DATE('$date', '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE('$date', '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime')) ORDER BY STR_TO_DATE(ts.start_time, '%h:%i %p') ASC";
+        // Theater list
+        $theaterSql = "SELECT `name` FROM `registered_theaters` WHERE `city`='$location'";
+        $theaterResult = mysqli_query($conn, $theaterSql);
+        $theaters = [];
+        while ($row = mysqli_fetch_assoc($theaterResult)) {
+            $theaters[] = $row['name'];
+        }
+        if (empty($theaters)) {
+            echo json_encode([
+                'status' => 200,
+                'message' => 'No theaters found for this location.',
+            ]);
+            exit;
+        }
+        $theaterList = "'" . implode("','", $theaters) . "'";
+
+        $sql = "SELECT ts.*, rt.location FROM `theater_shows` ts LEFT JOIN `registered_theaters` rt ON rt.name = ts.theater_name WHERE ts.theater_name IN ($theaterList) AND ts.movie_name='$movieName' AND ts.language='$language' AND ts.format='$format' AND ts.start_date='$date' AND (STR_TO_DATE('$date', '%d %b, %Y') > '$currentDate' OR (STR_TO_DATE('$date', '%d %b, %Y') = '$currentDate' AND STR_TO_DATE(ts.start_time, '%h:%i %p') > '$currentTime')) ORDER BY STR_TO_DATE(ts.start_time, '%h:%i %p') ASC";
         $result = mysqli_query($conn, $sql);
 
         if ($result && $movieResult) {
