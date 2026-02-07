@@ -9,7 +9,6 @@ if ($requestMethod == 'GET') {
 
     if (isset($_GET['name'])) {
         $movieName = mysqli_real_escape_string($conn, $_GET['name']);
-        $date = mysqli_real_escape_string($conn, $_GET['date']);
         $language = mysqli_real_escape_string($conn, $_GET['language']);
         $format = mysqli_real_escape_string($conn, $_GET['format']);
 
