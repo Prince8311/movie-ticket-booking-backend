@@ -46,7 +46,7 @@ if ($requestMethod == 'POST') {
             $refundURL = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_REFUND_URL') : getenv('PHONEPE_PROD_REFUND_URL');
             $keyIndex = 1;
             $merchantTransactionId = "MT" . time() . rand(1000, 9999);
-            $callbackURL = 'https://api.ticketbay.in/user/api/booking/payment/refund-response.php';
+            $callbackURL = 'https://api.ticketbay.in/user/api/booking/payment/web/refund-response.php';
 
             $payload = [
                 "merchantId" => $merchantId,

@@ -44,7 +44,7 @@ if ($requestMethod == 'POST') {
 
         $keyIndex = 1;
         $merchantTransactionId = "MT" . time() . rand(1000, 9999);
-        $callbackURL = 'https://api.ticketbay.in/user/api/booking/payment/payment-response.php';
+        $callbackURL = 'https://api.ticketbay.in/user/api/booking/payment/web/payment-response.php';
 
         $paymentData = array(
             'merchantId' => $merchantId,
