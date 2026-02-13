@@ -8,7 +8,6 @@ if ($requestMethod == 'POST') {
     global $conn;
 
     $appEnv = getenv('APP_ENV');
-    $frontendBaseUrl = rtrim(getenv('FRONTEND_BASE_URL'), '/');
     $response = $_POST;
 
     // Payment Credentials
@@ -44,7 +43,7 @@ if ($requestMethod == 'POST') {
         $data = $final['data'];
         $merchantTransactionId = $data['merchantTransactionId'];
 
-        if ($success) {
+        if ($success && isset($data['state']) && $data['state'] === 'COMPLETED') {
             $transactionId = $data['transactionId'];
             $amount = $data['amount'] / 100;
             $paymentInstrument = $data['paymentInstrument'];
@@ -58,7 +57,13 @@ if ($requestMethod == 'POST') {
             $paymentResult = mysqli_query($conn, $paymentSql);
 
             if ($bookingResult && $paymentResult) {
-                header("Location: {$frontendBaseUrl}/booking-success");
+                $data = [
+                    'status' => 200,
+                    'merchantTransactionId' => $merchantTransactionId,
+                    'transactionId' => $transactionId
+                ];
+                header("HTTP/1.0 200 OK");
+                echo json_encode($data);
                 exit;
             }
         } else {
@@ -66,7 +71,12 @@ if ($requestMethod == 'POST') {
             $deleteResult = mysqli_query($conn, $deleteSql);
 
             if ($deleteResult) {
-                header("Location: {$frontendBaseUrl}/booking-fail");
+                $data = [
+                    'status' => 400,
+                    'merchantTransactionId' => $merchantTransactionId
+                ];
+                header("HTTP/1.0 400 Failed");
+                echo json_encode($data);
                 exit;
             }
         }
