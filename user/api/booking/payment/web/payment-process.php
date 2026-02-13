@@ -1,8 +1,8 @@
 <?php
 
 date_default_timezone_set('Asia/Kolkata');
-require "../../../../utils/headers.php";
-require "../../../../utils/middleware.php";
+require "../../../../../utils/headers.php";
+require "../../../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 if (!$authResult['authenticated']) {
@@ -16,7 +16,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../../../_db-connect.php";
+    require "../../../../../_db-connect.php";
     global $conn;
 
     $inputData = json_decode(file_get_contents("php://input"), true);

@@ -1,10 +1,10 @@
 <?php
 
 date_default_timezone_set('Asia/Kolkata');
-require "../../../../utils/headers.php";
+require "../../../../../utils/headers.php";
 
 if ($requestMethod == 'POST') {
-    require "../../../../_db-connect.php";
+    require "../../../../../_db-connect.php";
     global $conn;
 
     $appEnv = getenv('APP_ENV');
