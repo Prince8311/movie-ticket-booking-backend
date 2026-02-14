@@ -40,7 +40,8 @@ function authenticateRequest()
             'authenticated' => false,
             'status' => 401,
             'message' => 'Token expired',
-            'current_token' => $frontendToken
+            'current_token' => $frontendToken,
+            'backend_token' => $cookieToken
         ];
     }
 
