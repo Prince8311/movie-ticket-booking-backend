@@ -98,17 +98,30 @@ if ($requestMethod == 'POST') {
         $sha256 = hash('sha256', $checksumString);
         $checksum = $sha256 . "###" . $keyIndex;
 
-        $data = [
-            'status' => 200,
-            'body' => $base64Payload,
-            'checksum' => $checksum,
-            'merchantTransactionId' => $merchantTransactionId,
-            'callbackUrl' => $callbackURL,
-            'apiEndPoint' => $apiEndPoint,
-            'environment' => $environment
-        ];
-        header("HTTP/1.0 200 OK");
-        echo json_encode($data);
+        $sql = "UPDATE `online_bookings` SET `ticket_price`='$ticketPrice',`base_convenience`='$baseConvenience',`gst`='$gst',`theater_commission`='$theaterCommission',`merchant_transaction_id`='$merchantTransactionId' WHERE `booking_id`='$bookingId' AND `username`='$userName' AND `theater_name`='$theaterName' AND `movie_name`='$movieName'";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $data = [
+                'status' => 200,
+                'body' => $base64Payload,
+                'checksum' => $checksum,
+                'merchantTransactionId' => $merchantTransactionId,
+                'callbackUrl' => $callbackURL,
+                'apiEndPoint' => $apiEndPoint,
+                'environment' => $environment
+            ];
+            header("HTTP/1.0 200 OK");
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 500,
+                'success' => false,
+                'message' => 'Database error: ' . $error
+            ];
+            header("HTTP/1.0 500 Internal Server Error");
+            echo json_encode($data);
+        }
     } else {
         $data = [
             'status' => 400,
