@@ -32,8 +32,35 @@ if ($requestMethod == 'POST') {
         $baseConvenience = (float) $inputData['baseConvenience'];
         $gst = (float) $inputData['gst'];
         $theaterCommission = mysqli_real_escape_string($conn, $inputData['theaterCommission']);
-
         $amount = $ticketPrice + $baseConvenience + $gst;
+
+        $bookingQuery = "SELECT * FROM `online_bookings` WHERE `booking_id` = '$bookingId' AND `username` = '$userName' AND `theater_name`='$theaterName' AND `movie_name`='$movieName'";
+        $bookingResult = mysqli_query($conn, $bookingQuery);
+
+        if (!$bookingResult || mysqli_num_rows($bookingResult) === 0) {
+            header("HTTP/1.0 404 Not Found");
+            echo json_encode([
+                'status' => 404,
+                'message' => 'Booking not found'
+            ]);
+            exit;
+        }
+        
+        $bookingData = mysqli_fetch_assoc($bookingResult);
+        $expiryTime = $bookingData['expires_at'];
+
+        $currentDateTime = new DateTime();
+        $expiryDateTime = new DateTime($expiryTime);
+
+        if ($currentDateTime > $expiryDateTime) {
+            header("HTTP/1.0 410 Gone");
+            echo json_encode([
+                'status' => 410,
+                'message' => 'Booking session expired.'
+            ]);
+            exit;
+        }
+
         $appEnv = getenv('APP_ENV');
 
         // Payment Credentials

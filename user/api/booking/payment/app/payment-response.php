@@ -37,6 +37,15 @@ if ($requestMethod == 'POST') {
     $response = curl_exec($ch);
     $final = json_decode($response, true);
 
+    if (!$final || !isset($final['success'])) {
+        header("HTTP/1.0 500 Internal Server Error");
+        echo json_encode([
+            'status' => 500,
+            'message' => 'Unable to verify payment'
+        ]);
+        exit;
+    }
+
     if ($final) {
         $success = $final['success'];
         $message = $final['message'];
@@ -59,6 +68,7 @@ if ($requestMethod == 'POST') {
             if ($bookingResult && $paymentResult) {
                 $data = [
                     'status' => 200,
+                    'message' => 'Payment successful',
                     'merchantTransactionId' => $merchantTransactionId,
                     'transactionId' => $transactionId
                 ];
@@ -73,6 +83,7 @@ if ($requestMethod == 'POST') {
             if ($deleteResult) {
                 $data = [
                     'status' => 400,
+                    'message' => 'Payment not completed',
                     'merchantTransactionId' => $merchantTransactionId
                 ];
                 header("HTTP/1.0 400 Failed");
