@@ -103,7 +103,7 @@ if ($requestMethod == 'POST') {
             'body' => $base64Payload,
             'checksum' => $checksum,
             'merchantTransactionId' => $merchantTransactionId,
-            'callbackUrl' => $callbackUrl,
+            'callbackUrl' => $callbackURL,
             'apiEndPoint' => $apiEndPoint,
             'environment' => $environment
         ];
