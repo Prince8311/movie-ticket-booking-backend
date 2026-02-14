@@ -69,7 +69,7 @@ if ($requestMethod == 'POST') {
         }
 
         $currentDateTime = new DateTime();
-        $currentDateTime->add(new DateInterval('PT15M'));
+        $currentDateTime->add(new DateInterval('PT10M'));
         $expiryDateTime = $currentDateTime->format('Y-m-d H:i:s');
 
         $sql = "INSERT INTO `online_bookings`(`booking_id`, `username`, `theater_name`, `movie_name`, `language`, `format`, `day`, `start_date`, `start_time`, `valid_date`, `valid_time`, `screen`, `screen_id`, `section`, `seats`, `expires_at`) VALUES ('$bookingId','$userName','$theaterName','$movieName','$language','$format','$day','$startDate','$startTime','$validDate','$validTime','$screen','$screenId','$section','$seats','$expiryDateTime')";

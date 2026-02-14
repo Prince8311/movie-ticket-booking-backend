@@ -53,6 +53,8 @@ if ($requestMethod == 'POST') {
         $expiryDateTime = new DateTime($expiryTime);
 
         if ($currentDateTime > $expiryDateTime) {
+            $deleteBooking = "DELETE FROM `online_bookings` WHERE `booking_id` = '$bookingId' AND `username` = '$userName' AND `theater_name`='$theaterName' AND `movie_name`='$movieName'";
+            $deleteResult = mysqli_query($conn, $deleteBooking);
             header("HTTP/1.0 410 Gone");
             echo json_encode([
                 'status' => 410,
