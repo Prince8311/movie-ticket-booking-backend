@@ -65,7 +65,7 @@ if ($requestMethod == 'POST') {
 
         $appEnv = getenv('APP_ENV');
         $merchantUserId = 'MUIDSHETTY';
-        $environment = ($appEnv === 'uat') ? 'SANDBOX' : 'PRODUCTION';
+        $environment = ($appEnv === 'uat') ? 'UAT' : 'PRODUCTION';
         $apiKey = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_API_KEY') : getenv('PHONEPE_PROD_API_KEY');
         $merchantId = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_MERCHANT_ID') : getenv('PHONEPE_PROD_MERCHANT_ID');
 
@@ -104,6 +104,7 @@ if ($requestMethod == 'POST') {
         if ($result) {
             $data = [
                 'status' => 200,
+                'message' => 'Payment credentials fetched.',
                 'body' => $base64Payload,
                 'checksum' => $checksum,
                 'merchantTransactionId' => $merchantTransactionId,
@@ -116,7 +117,6 @@ if ($requestMethod == 'POST') {
         } else {
             $data = [
                 'status' => 500,
-                'success' => false,
                 'message' => 'Database error: ' . $error
             ];
             header("HTTP/1.0 500 Internal Server Error");
