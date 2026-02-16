@@ -6,7 +6,7 @@ require "../../../utils/middleware.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-$authResult = authenticateRequest();
+$authResult = superAdminAuthenticateRequest();
 
 if (!$authResult['authenticated']) {
     $data = [

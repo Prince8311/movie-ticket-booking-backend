@@ -3,7 +3,7 @@
 require "../../../../utils/headers.php";
 require "../../../../utils/middleware.php";
 
-$authResult = authenticateRequest();
+$authResult = superAdminAuthenticateRequest();
 
 if (!$authResult['authenticated']) {
     $data = [
