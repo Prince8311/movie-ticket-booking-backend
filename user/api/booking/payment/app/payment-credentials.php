@@ -107,6 +107,7 @@ if ($requestMethod == 'POST') {
                 'message' => 'Payment credentials fetched.',
                 'body' => $base64Payload,
                 'checksum' => $checksum,
+                'merchantId' => $merchantId,
                 'merchantTransactionId' => $merchantTransactionId,
                 'callbackUrl' => $callbackURL,
                 'apiEndPoint' => $apiEndPoint,
