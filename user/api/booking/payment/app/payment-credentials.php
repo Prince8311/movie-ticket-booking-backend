@@ -65,7 +65,7 @@ if ($requestMethod == 'POST') {
 
         $appEnv = getenv('APP_ENV');
         $merchantUserId = 'MUIDSHETTY';
-        $environment = ($appEnv === 'uat') ? 'UAT' : 'PRODUCTION';
+        $environment = ($appEnv === 'uat') ? 'SANDBOX' : 'PRODUCTION';
         $apiKey = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_API_KEY') : getenv('PHONEPE_PROD_API_KEY');
         $merchantId = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_MERCHANT_ID') : getenv('PHONEPE_PROD_MERCHANT_ID');
 
