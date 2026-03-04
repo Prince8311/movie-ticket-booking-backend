@@ -14,7 +14,7 @@ session_set_cookie_params([
 session_start();
 $allowedOrigins = [
     'http://localhost:3000',
-    'https://ticketbay.in/',
+    'https://ticketbay.in',
     'https://superadmin.ticketbay.in'
 ];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
