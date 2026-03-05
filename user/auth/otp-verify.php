@@ -13,10 +13,12 @@ if ($requestMethod == 'POST') {
     require '../../PHPMailer/PHPMailer.php';
     require '../../PHPMailer/SMTP.php';
 
-    $userEmail = $_SESSION['userEmail'] ?? '';
+    $sessionEmail = $_SESSION['userEmail'] ?? '';
     $inputData = json_decode(file_get_contents("php://input"), true);
 
     if (!empty($inputData)) {
+        $requestEmail = $inputData['email'] ?? '';
+        $userEmail = !empty($requestEmail) ? $requestEmail : $sessionEmail;
         $otp = mysqli_real_escape_string($conn, $inputData['otp']);
         $isRegistration = isset($inputData['isRegistration']) ? (bool)$inputData['isRegistration'] : false;
 
@@ -30,7 +32,6 @@ if ($requestMethod == 'POST') {
             $data = [
                 'status' => 401,
                 'message' => 'Authentication error',
-                'userId' => $userId
             ];
             header("HTTP/1.0 401 Authentication error");
             echo json_encode($data);
