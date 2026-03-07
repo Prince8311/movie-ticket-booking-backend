@@ -6,14 +6,28 @@ if ($requestMethod == 'POST') {
     require "../../_db-connect.php";
     global $conn;
 
-    $userEmail = $_SESSION['userEmail'] ?? '';
+    $sessionEmail = $_SESSION['userEmail'] ?? '';
     $inputData = json_decode(file_get_contents("php://input"), true);
 
     if (!empty($inputData)) {
+        $requestEmail = $inputData['email'] ?? '';
+        $userEmail = !empty($requestEmail) ? $requestEmail : $sessionEmail;
         $password = mysqli_real_escape_string($conn, $inputData['password']);
         $confirmPassword = mysqli_real_escape_string($conn, $inputData['confirmPassword']);
 
         if ($password == $confirmPassword) {
+            $sql = "SELECT * FROM `users` WHERE `email` = '$userEmail'";
+            $result = mysqli_query($conn, $sql);
+            $row = mysqli_fetch_assoc($result);
+            if (password_verify($password, $row['password'])) {
+                $data = [
+                    'status' => 400,
+                    'message' => 'New password cannot be the same as your previous password.'
+                ];
+                header("HTTP/1.0 400 Bad Request");
+                echo json_encode($data);
+                exit;
+            }
             $hashPass = password_hash($password, PASSWORD_DEFAULT);
             $updateSql = "UPDATE `users` SET `password`='$hashPass' WHERE `email`='$userEmail'";
             $updateResult = mysqli_query($conn, $updateSql);
@@ -21,7 +35,7 @@ if ($requestMethod == 'POST') {
             if ($updateResult) {
                 $data = [
                     'status' => 200,
-                    'message' => 'Password updated.'
+                    'message' => 'Password updated successfully.'
                 ];
                 header("HTTP/1.0 200 Ok");
                 echo json_encode($data);
