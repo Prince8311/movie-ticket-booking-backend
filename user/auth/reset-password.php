@@ -12,6 +12,15 @@ if ($requestMethod == 'POST') {
     if (!empty($inputData)) {
         $requestEmail = $inputData['email'] ?? '';
         $userEmail = !empty($requestEmail) ? $requestEmail : $sessionEmail;
+        if (empty($userEmail)) {
+            $data = [
+                'status' => 400,
+                'message' => 'Email is required.'
+            ];
+            header("HTTP/1.0 400 Bad Request");
+            echo json_encode($data);
+            exit;
+        }
         $password = mysqli_real_escape_string($conn, $inputData['password']);
         $confirmPassword = mysqli_real_escape_string($conn, $inputData['confirmPassword']);
 
