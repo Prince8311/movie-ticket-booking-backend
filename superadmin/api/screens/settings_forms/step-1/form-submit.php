@@ -1,7 +1,7 @@
 <?php
 
-require "../../../../../utils/headers.php";
-require "../../../../../utils/middleware.php";
+require __DIR__ . "/../../../../../utils/headers.php";
+require __DIR__ . "/../../../../../utils/middleware.php";
 
 $authResult = superAdminAuthenticateRequest();
 
@@ -16,7 +16,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../../../../_db-connect.php";
+    require __DIR__ . "/../../../../../_db-connect.php";
     global $conn;
 
     $inputData = json_decode(file_get_contents("php://input"), true);
@@ -48,7 +48,7 @@ if ($requestMethod == 'POST') {
                 } else {
                     $data = [
                         'status' => 500,
-                        'message' => 'Database error: ' . $error
+                        'message' => 'Database error: ' . mysqli_error($conn)
                     ];
                     header("HTTP/1.0 500 Internal Server Error");
                     echo json_encode($data);
@@ -67,7 +67,7 @@ if ($requestMethod == 'POST') {
                 } else {
                     $data = [
                         'status' => 500,
-                        'message' => 'Database error: ' . $error
+                        'message' => 'Database error: ' . mysqli_error($conn)
                     ];
                     header("HTTP/1.0 500 Internal Server Error");
                     echo json_encode($data);
@@ -100,7 +100,7 @@ if ($requestMethod == 'POST') {
             } else {
                 $data = [
                     'status' => 500,
-                    'message' => 'Database error: ' . $error
+                    'message' => 'Database error: ' . mysqli_error($conn)
                 ];
                 header("HTTP/1.0 500 Internal Server Error");
                 echo json_encode($data);

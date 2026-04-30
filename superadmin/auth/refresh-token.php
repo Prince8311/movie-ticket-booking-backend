@@ -1,8 +1,8 @@
 <?php
 
 date_default_timezone_set('Asia/Kolkata');
-require "../../utils/headers.php";
-require "../../utils/middleware.php";
+require __DIR__ . "/../../utils/headers.php";
+require __DIR__ . "/../../utils/middleware.php";
 
 $authResult = superAdminAuthenticateRequest();
 if (!$authResult['current_token']) {
@@ -17,7 +17,7 @@ if (!$authResult['current_token']) {
 
 
 if ($requestMethod == 'GET') {
-    require "../../_db-connect.php";
+    require __DIR__ . "/../../_db-connect.php";
     global $conn;
 
     $currentToken = $authResult['current_token'];

@@ -1,7 +1,7 @@
 <?php
 
-require "../../../utils/headers.php";
-require "../../../utils/middleware.php";
+require __DIR__ . "/../../../utils/headers.php";
+require __DIR__ . "/../../../utils/middleware.php";
 
 $authResult = superAdminAuthenticateRequest();
 
@@ -16,7 +16,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../../_db-connect.php";
+    require __DIR__ . "/../../../_db-connect.php";
     global $conn;
 
     if (isset($_FILES['image'])) {
@@ -29,7 +29,7 @@ if ($requestMethod == 'POST') {
         $descriptionValue = $description === null ? "NULL" : "'$description'";
 
         $imageData = $_FILES['image'];
-        $folder = "../../../posters/banners/";
+        $folder = __DIR__ . "/../../../posters/banners/";
         $timestamp = date('YmdHis');
         $imageName = 'banner' . $timestamp . '.png';
         $imageDirectory = $folder . $imageName;

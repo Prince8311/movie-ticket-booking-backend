@@ -1,8 +1,8 @@
 <?php
 
 date_default_timezone_set('Asia/Kolkata');
-require "../../../utils/headers.php";
-require "../../../utils/middleware.php";
+require  __DIR__ . "/../../../utils/headers.php";
+require __DIR__ . "/../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
 
@@ -17,7 +17,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../../_db-connect.php";
+    require __DIR__ . "/../../../_db-connect.php";
     global $conn;
 
     if (isset($_POST['id']) && isset($_POST['inputs'])) {
@@ -31,7 +31,7 @@ if ($requestMethod == 'POST') {
 
         if (isset($_FILES['image'])) {
             $imageData = $_FILES['image'];
-            $folder = "../../../profile-images/users/";
+            $folder = __DIR__ . "/../../../profile-images/users/";
             $timestamp = date('YmdHis');
             $imageName = $name . $timestamp . '.png';
             $imageDirectory = $folder . $imageName;

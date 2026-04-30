@@ -1,27 +1,11 @@
 <?php
-
-session_start();
+require __DIR__ . "/../../../utils/headers.php";
+require __DIR__ . "/../../../utils/middleware.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-
-$requestMethod = $_SERVER["REQUEST_METHOD"];
-
-if ($requestMethod == 'OPTIONS') {
-    header('HTTP/1.1 200 OK');
-    exit();
-}
-
-require "../../../utils/middleware.php";
-
 $authResult = authenticateRequest();
-
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
@@ -33,12 +17,12 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../../_db-connect.php";
+    require __DIR__ . "/../../../_db-connect.php";
     global $conn;
 
-    require "../../../PHPMailer/Exception.php";
-    require "../../../PHPMailer/PHPMailer.php";
-    require "../../../PHPMailer/SMTP.php";
+    require __DIR__ . "/../../../PHPMailer/Exception.php";
+    require __DIR__ . "/../../../PHPMailer/PHPMailer.php";
+    require __DIR__ . "/../../../PHPMailer/SMTP.php";
 
     $inputData = json_decode(file_get_contents("php://input"), true);
     if (!empty($inputData)) {
@@ -54,7 +38,7 @@ if ($requestMethod == 'POST') {
         if ($password == $confirmPassword) {
             $hashPass = password_hash($password, PASSWORD_DEFAULT);
 
-            $checkSql = "SELECT * FROM `theater_users` WHERE `name` = '$name' OR `email` = '$email' OR `phone` = '$phone'";
+            $checkSql = "SELECT * FROM `theater_users` WHERE `name` = '$empName' OR `email` = '$empMail' OR `phone` = '$empPhone'";
             $checkResult = mysqli_query($conn, $checkSql);
             if(mysqli_num_rows($checkResult) > 0) {
                 $data = [
@@ -189,7 +173,7 @@ if ($requestMethod == 'POST') {
             } else {
                 $data = [
                     'status' => 500,
-                    'message' => 'Database error: ' . $error
+                    'message' => 'Database error: ' . mysqli_error($conn)
                 ];
                 header("HTTP/1.0 500 Internal Server Error");
                 echo json_encode($data);

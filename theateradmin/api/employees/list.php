@@ -1,23 +1,9 @@
 <?php 
 
-session_start();
-header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-
-$requestMethod = $_SERVER["REQUEST_METHOD"];
-
-if ($requestMethod == 'OPTIONS') {
-    header('HTTP/1.1 200 OK');
-    exit();
-}
-
-require "../../../utils/middleware.php";
+require __DIR__ . "/../../../utils/headers.php";
+require __DIR__ . "/../../../utils/middleware.php";
 
 $authResult = authenticateRequest();
-
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
@@ -29,7 +15,7 @@ if (!$authResult['authenticated']) {
 }
 
 if($requestMethod == 'GET') {
-    require "../../../_db-connect.php";
+    require __DIR__ . "/../../../_db-connect.php";
     global $conn;
 
     $authHeader = getAuthorizationHeader();

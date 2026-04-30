@@ -1,10 +1,9 @@
 <?php
 
-require "../../utils/headers.php";
-require "../../utils/middleware.php";
+require __DIR__ . "/../../utils/headers.php";
+require __DIR__ . "/../../utils/middleware.php";
 
 $authResult = authenticateRequest();
-
 if (!$authResult['authenticated']) {
     $data = [
         'status' => $authResult['status'],
@@ -16,7 +15,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../_db-connect.php";
+    require __DIR__ . "/../../_db-connect.php";
     global $conn;
 
     $token = $authResult['token'];

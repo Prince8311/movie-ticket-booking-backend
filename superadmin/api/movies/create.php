@@ -1,8 +1,8 @@
 <?php
 
 date_default_timezone_set('Asia/Kolkata');
-require "../../../utils/headers.php";
-require "../../../utils/middleware.php";
+require __DIR__ . "/../../../utils/headers.php";
+require __DIR__ . "/../../../utils/middleware.php";
 
 $authResult = superAdminAuthenticateRequest();
 
@@ -17,7 +17,7 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../../_db-connect.php";
+    require __DIR__ . "/../../../_db-connect.php";
     global $conn;
 
     function escapeOrNull($conn, $value)
@@ -58,7 +58,7 @@ if ($requestMethod == 'POST') {
         }
 
         $imageData = $_FILES['image'];
-        $folder = "../../../posters/movies/";
+        $folder = __DIR__ . "/../../../posters/movies/";
         $timestamp = date('YmdHis');
         $safeNameForFile = preg_replace("/[^a-zA-Z0-9_\-]/", "_", $nameRaw);
         $imageName = $safeNameForFile . $timestamp . '.png';

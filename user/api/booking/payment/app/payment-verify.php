@@ -1,10 +1,10 @@
 <?php
 
 date_default_timezone_set('Asia/Kolkata');
-require "../../../../../utils/headers.php";
+require  __DIR__ . "/../../../../../utils/headers.php";
 
 if ($requestMethod == 'POST') {
-    require "../../../../../_db-connect.php";
+    require __DIR__ . "/../../../../../_db-connect.php";
     global $conn;
 
     $inputData = json_decode(file_get_contents("php://input"), true);
@@ -42,12 +42,12 @@ if ($requestMethod == 'POST') {
         $statusURL = ($appEnv === 'uat') ? getenv('PHONEPE_UAT_STATUS_URL') : getenv('PHONEPE_PROD_STATUS_URL');
         $keyIndex = 1;
 
-        $string = '/pg/v1/status/' . $merchantId . '/' . $response['merchantTransactionId'] . $apiKey;
+        $string = '/pg/v1/status/' . $merchantId . '/' . $merchantTransactionId . $apiKey;
         $sha256 = hash('sha256', $string);
         $final_x_header = $sha256 . '###' . $keyIndex;
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $statusURL . $merchantId . "/" . $response['merchantTransactionId']);
+        curl_setopt($ch, CURLOPT_URL, $statusURL . $merchantId . "/" . $merchantTransactionId);
         curl_setopt(
             $ch,
             CURLOPT_HTTPHEADER,

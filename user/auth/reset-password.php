@@ -1,9 +1,9 @@
 <?php
 
-require "../../utils/headers.php";
+require  __DIR__ . "/../../utils/headers.php";
 
 if ($requestMethod == 'POST') {
-    require "../../_db-connect.php";
+    require __DIR__ . "/../../_db-connect.php";
     global $conn;
 
     $sessionEmail = $_SESSION['userEmail'] ?? '';

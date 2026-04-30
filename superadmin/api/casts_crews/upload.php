@@ -1,7 +1,7 @@
 <?php
 
-require "../../../utils/headers.php";
-require "../../../utils/middleware.php";
+require __DIR__ . "/../../../utils/headers.php";
+require __DIR__ . "/../../../utils/middleware.php";
 
 $authResult = superAdminAuthenticateRequest();
 
@@ -16,13 +16,13 @@ if (!$authResult['authenticated']) {
 }
 
 if ($requestMethod == 'POST') {
-    require "../../../_db-connect.php";
+    require __DIR__ . "/../../../_db-connect.php";
     global $conn;
 
     if (isset($_POST['member']) && isset($_FILES['image'])) {
         $memberName = mysqli_real_escape_string($conn,  $_POST['member']);
         $imageData = $_FILES['image'];
-        $folder = "../../../profile-images/casts_crews/";
+        $folder = __DIR__ . "/../../../profile-images/casts_crews/";
         $timestamp = date('YmdHis');
         $imageName = $memberName . $timestamp . '.png';
         $imageDirectory = $folder . $imageName;
